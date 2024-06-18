@@ -1,6 +1,9 @@
 Video tutorial: https://www.youtube.com/watch?v=eqrDHkIFe8U
+
 Written tutorial: https://neutrondev.com/how-to-set-up-ssl-certificate-localhost-xampp
+
 Ubuntu Install SSL: https://www.ssldragon.com/how-to/install-ssl-certificate/ubuntu/
+
 #### Step 1 Create a SSL Certificate using `makecert.bat`:
 `makecert.bat`
 ```powershell
