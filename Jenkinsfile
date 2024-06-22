@@ -1,23 +1,22 @@
 pipeline {
-  agent any
-  stages {
-    stage('Build') {
-      steps {
-        sh 'pip install -r requirements.txt'
-      }
-    }
+    agent any
 
-    stage('Testing') {
-      steps {
-        sh 'robot tests/tests.txt'
-      }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'composer install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'phpunit'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                // Example deployment step, adjust as per your setup
+                sh 'rsync -avz --delete ./ ~/docker-volumes/php-docker:/var/www/html'
+            }
+        }
     }
-
-    stage('Reporting') {
-      steps {
-        archiveArtifacts 'report.html,log.html,output.xml'
-      }
-    }
-
-  }
 }
