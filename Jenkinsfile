@@ -1,6 +1,11 @@
 pipeline {
   agent any
   stages {
+    stage('Checkout SCM') {
+      steps {
+        git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
+      }
+    }
     stage('Build') {
       steps {
        
