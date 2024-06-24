@@ -17,14 +17,14 @@ pipeline {
                     echo "Contents of the current working directory:"
                     ls -l
 
-                    // Ensure the target directory exists
+                    # Ensure the target directory exists
                     mkdir -p /home/student9/docker-volumes/php-docker
 
                     echo "Directory structure before copying files:"
                     ls -ld /home/student9/docker-volumes
                     ls -ld /home/student9/docker-volumes/php-docker
 
-                    // Copy the files to the target directory
+                    # Copy the files to the target directory
                     cp -r Dockerfile Jenkinsfile README.md SSL Implementation composer.json index.php /home/student9/docker-volumes/php-docker
 
                     echo "Directory structure after copying files:"
