@@ -1,5 +1,6 @@
 FROM php:apache
 
+# Install necessary dependencies and Composer
 RUN apt-get update && \
     apt-get install -y zip unzip git && \
     curl -sS https://getcomposer.org/installer | php && \
@@ -7,7 +8,7 @@ RUN apt-get update && \
     docker-php-source extract && \
     docker-php-ext-install mysqli
 
-WORKDIR /var/www/html
+WORKDIR ~/docker-volumes/php-docker
 
 COPY . .
 
