@@ -7,11 +7,20 @@ pipeline {
       }
     }
   
-    stage('Build') {
+     stage('Sync Files') {
       steps {
+        // Use rsync to copy files to the container
+        sh 'rsync -avz --delete . ~/docker-volumes/php-docker'
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+        // Install composer dependencies inside the container
         sh 'docker exec php-docker composer install'
       }
     }
+    
     stage('Test') {
       steps {
         sh 'docker exec php-docker ./vendor/bin/phpunit --configuration /var/www/html/tests/phpunit.xml'
