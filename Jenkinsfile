@@ -11,7 +11,7 @@ pipeline {
       steps {
         script {
           // Copy files to the volume
-          sh 'docker cp $WORKSPACE/. ~/docker-volume/php-docker'
+          sh 'docker cp $WORKSPACE/. php-docker:/var/www/html'
           
           // List files in the volume to verify the copy worked
           sh 'ls -la ~/docker-volumes/php-docker/'
