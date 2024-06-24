@@ -14,8 +14,11 @@ pipeline {
                     echo "Current working directory:"
                     pwd
 
-                    # Copy the files to the target directory
-                    docker cp * /home/student9/docker-volumes/php-docker
+                    # Determine the Jenkins workspace directory
+                    WORKSPACE=$(pwd)
+
+                    # Copy files from the Jenkins workspace to the host
+                    sudo docker cp $WORKSPACE /home/student9/docker-volumes/php-docker
 
   
                     '''
