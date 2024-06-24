@@ -6,27 +6,19 @@ pipeline {
         git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
       }
     }
-    stage('Build Docker Image') {
+    stage('Build') {
       steps {
-        script {
-          // Build the docker image
-          sh 'docker build -t php-docker .'
-        }
+        sh 'docker exec php-docker composer install'
       }
     }
-
-   stage('Run Tests') {
+    stage('Test') {
       steps {
-        script {
-          // Run PHPUnit tests inside the container
-           sh 'docker exec php-docker ./vendor/bin/phpunit --configuration /var/www/html/tests/phpunit.xml'
-        }
+        sh 'docker exec php-docker ./vendor/bin/phpunit --configuration /var/www/html/tests/phpunit.xml'
       }
     }
-
-     stage('Sync Files') {
+    stage('Sync Files') {
       steps {
-        sh 'rsync -av --exclude=\'vendor/\' ./ ~/docker-volumes/php-docker/'
+        sh 'rsync -av --exclude=\'vendor/\' ./ /path/to/your/container/volume/'
       }
     }
   }
@@ -34,6 +26,7 @@ pipeline {
     always {
       junit 'tests/reports/phpunit.xml' // Ensure this matches the path in phpunit.xml
     }
+  }
     success {
       echo 'Pipeline completed successfully.'
     }
