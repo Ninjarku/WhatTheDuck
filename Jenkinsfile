@@ -19,7 +19,7 @@ pipeline {
       steps {
         script {
           // Run PHPUnit tests inside the container
-          sh 'docker run --rm php-docker ./vendor/bin/phpunit --configuration /var/www/html/tests/phpunit.xml'
+          sh 'docker run --rm php-docker ./vendor/bin/phpunit --configuration tests/phpunit.xml tests'
         }
       }
     }
