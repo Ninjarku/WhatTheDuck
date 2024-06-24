@@ -10,11 +10,11 @@ pipeline {
      stage('Copy Files to Volume') {
             steps {
                 script {
-                    // Copy files from Jenkins workspace to the Docker container
-                     sh "docker cp ${WORKSPACE}/. \$(docker container ls -qf name=php-docker):/var/www/html"
+                   // Get the container ID or name dynamically
+                    def containerId = sh(script: "docker container ls -qf name=${DOCKER_CONTAINER}", returnStdout: true).trim()
                     
-                    // List files in the container directory to verify the copy worked
-                    sh 'docker exec $(docker container ls -qf name=php-docker) ls -la /var/www/html'
+                    // Copy files from Jenkins workspace to the Docker container
+                    sh "docker cp ${WORKSPACE}/. ${containerId}:/var/www/html"
                 }
             }
         }
