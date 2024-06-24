@@ -18,7 +18,7 @@ pipeline {
                     WORKSPACE=$(pwd)
 
                     # Copy files from the Jenkins workspace to the host
-                    docker cp $WORKSPACE php-docker:/home/student9/docker-volumes/php-docker
+                    docker cp jenkins-blueocean:$WORKSPACE /home/student9/docker-volumes/php-docker
 
   
                     '''
