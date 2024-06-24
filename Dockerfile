@@ -8,7 +8,7 @@ RUN apt-get update && \
     docker-php-source extract && \
     docker-php-ext-install mysqli
 
-WORKDIR ~/docker-volumes/php-docker
+WORKDIR /var/www/html
 
 COPY . .
 
