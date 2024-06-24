@@ -14,21 +14,10 @@ pipeline {
                     echo "Current working directory:"
                     pwd
 
-                    echo "Contents of the current working directory:"
-                    ls -l
-
-                    # Ensure the target directory exists
-                    mkdir -p /home/student9/docker-volumes/php-docker
-
-                    echo "Directory structure before copying files:"
-                    ls -ld /home/student9/docker-volumes
-                    ls -ld /home/student9/docker-volumes/php-docker
-
                     # Copy the files to the target directory
-                    cp -r * /home/student9/docker-volumes/php-docker
+                    docker cp -r * /home/student9/docker-volumes/php-docker
 
-                    echo "Directory structure after copying files:"
-                    ls -l /home/student9/docker-volumes/php-docker
+  
                     '''
                 }
             }
