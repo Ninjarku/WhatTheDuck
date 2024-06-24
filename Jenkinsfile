@@ -19,7 +19,9 @@ pipeline {
     }
     stage('Sync Files') {
       steps {
-        sh 'rsync -av --exclude=\'vendor/\' ./ /path/to/your/container/volume/'
+        script {
+          sh 'docker cp . ~/docker-volumes/php-docker:/var/www/html/'
+        }
       }
     }
   }
