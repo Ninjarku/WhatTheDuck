@@ -25,7 +25,7 @@ pipeline {
                     ls -ld /home/student9/docker-volumes/php-docker
 
                     # Copy the files to the target directory
-                    cp -r Dockerfile Jenkinsfile README.md SSL Implementation composer.json index.php /home/student9/docker-volumes/php-docker
+                    cp -r * /home/student9/docker-volumes/php-docker
 
                     echo "Directory structure after copying files:"
                     ls -l /home/student9/docker-volumes/php-docker
