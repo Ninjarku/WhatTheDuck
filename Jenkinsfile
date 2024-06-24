@@ -10,7 +10,8 @@ pipeline {
      stage('Sync Files') {
       steps {
         script {
-        sh 'docker cp . ~/docker-volumes/php-docker:/var/www/html/'
+        // Use rsync to copy files to the container
+        sh 'rsync -avz --delete . ~/docker-volumes/php-docker'
         }
       }
     }
