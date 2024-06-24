@@ -10,7 +10,7 @@ pipeline {
      stage('Copy Files to Volume') {
             steps {
                 script {
-                  
+                  sh 'docker cp /var/jenkins_home/workspace/WhatTheDuck_main/. php-docker:/var/www/html'
                 }
             }
         }
