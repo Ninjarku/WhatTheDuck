@@ -15,7 +15,7 @@ pipeline {
                     pwd
 
                     # Copy the files to the target directory
-                    docker cp -r * /home/student9/docker-volumes/php-docker
+                    docker cp * /home/student9/docker-volumes/php-docker
 
   
                     '''
