@@ -24,16 +24,9 @@ pipeline {
       }
     }
 
-    stage('Deploy') {
+     stage('Sync Files') {
       steps {
-        script {
-          // Stop and remove the old container, then start a new one
-          sh 'docker stop php-docker || true && docker rm php-docker || true'
-          sh 'docker run -d --name php-docker --network jenkins -p 80:80 -v ~/docker-volumes/php-docker:/var/www/html php-docker'
-          
-          // Optionally restart Nginx to apply new configurations if needed
-          sh 'docker restart nginx || true'
-        }
+        sh 'rsync -av --exclude=\'vendor/\' ./ ~/docker-volumes/php-docker/'
       }
     }
   }
