@@ -17,23 +17,18 @@ pipeline {
                     echo "Contents of the current working directory:"
                     ls -l
 
-                    // Ensure the target directory exists and print the directory structure
-                    mkdir -p ~/docker-volumes/php-docker
-                    echo "Directory structure before copying files:"
-                    ls -ld ~/docker-volumes
-                    ls -ld ~/docker-volumes/php-docker
+                    // Ensure the target directory exists
+                    mkdir -p /home/student9/docker-volumes/php-docker
 
-                    // Check directory path and permissions
-                    if [ ! -d "~/docker-volumes/php-docker" ]; then
-                        echo "Directory ~/docker-volumes/php-docker does not exist."
-                        exit 1
-                    fi
+                    echo "Directory structure before copying files:"
+                    ls -ld /home/student9/docker-volumes
+                    ls -ld /home/student9/docker-volumes/php-docker
 
                     // Copy the files to the target directory
-                    cp -r * ~/docker-volumes/php-docker
+                    cp -r Dockerfile Jenkinsfile README.md SSL Implementation composer.json index.php /home/student9/docker-volumes/php-docker
 
                     echo "Directory structure after copying files:"
-                    ls -l ~/docker-volumes/php-docker
+                    ls -l /home/student9/docker-volumes/php-docker
                     '''
                 }
             }
