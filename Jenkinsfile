@@ -9,10 +9,12 @@ pipeline {
   
      stage('Sync Files') {
       steps {
-        // Use rsync to copy files to the container
-        sh 'rsync -avz --delete . ~/docker-volumes/php-docker'
+        script {
+        sh 'docker cp . ~/docker-volumes/php-docker:/var/www/html/'
+        }
       }
     }
+    
 
     stage('Install Dependencies') {
       steps {
@@ -24,13 +26,6 @@ pipeline {
     stage('Test') {
       steps {
         sh 'docker exec php-docker ./vendor/bin/phpunit --configuration /var/www/html/tests/phpunit.xml'
-      }
-    }
-    stage('Sync Files') {
-      steps {
-        script {
-          sh 'docker cp . ~/docker-volumes/php-docker:/var/www/html/'
-        }
       }
     }
   }
