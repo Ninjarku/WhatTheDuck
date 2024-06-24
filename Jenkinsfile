@@ -1,5 +1,8 @@
 pipeline {
   agent any
+   environment {
+        DOCKER_CONTAINER = 'php-docker' // Replace with your actual container name or ID
+    }
   stages {
     stage('Checkout SCM') {
       steps {
