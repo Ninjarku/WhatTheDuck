@@ -7,17 +7,14 @@ pipeline {
       }
     }
   
-     stage('Copy Files to Container') {
+     stage('Copy Files to Volume') {
       steps {
         script {
-          // List files in the workspace to verify they are there
-          sh 'ls -la $WORKSPACE'
+          // Copy files to the volume
+          sh 'docker cp $WORKSPACE/. ~/docker-volume/php-docker'
           
-          // Copy files to the container
-          sh 'docker cp $WORKSPACE/. php-docker:/var/www/html/'
-          
-          // List files in the container to verify the copy worked
-          sh 'docker exec php-docker ls -la /var/www/html'
+          // List files in the volume to verify the copy worked
+          sh 'ls -la ~/docker-volumes/php-docker/'
         }
       }
     }
