@@ -10,7 +10,7 @@ pipeline {
      stage('Copy Files to Volume') {
             steps {
                 script {
-                  sh "cp -r * ~/docker-volumes/php-docker"
+                  sh "cp -r *  ~/docker-volumes/php-docker"
                 }
             }
         }
