@@ -6,23 +6,46 @@ pipeline {
         git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
       }
     }
-    stage('Build') {
+    stage('Build Docker Image') {
       steps {
-       
+        script {
+          // Build the docker image
+          sh 'docker build -t php-docker .'
+        }
       }
     }
 
-    stage('Test') {
+    stage('Run Tests') {
       steps {
-       
+        script {
+          // Run PHPUnit tests inside the container
+          sh 'docker run --rm php-docker ./vendor/bin/phpunit --configuration /var/www/html/phpunit.xml'
+        }
       }
     }
 
     stage('Deploy') {
       steps {
-        sh 'docker cp ./ ~/docker-volumes/php-docker:/var/www/html'
+        script {
+          // Stop and remove the old container, then start a new one
+          sh 'docker stop php-docker || true && docker rm php-docker || true'
+          sh 'docker run -d --name php-docker --network jenkins -p 80:80 -v ~/docker-volumes/php-docker:/var/www/html php-docker'
+          
+          // Optionally restart Nginx to apply new configurations if needed
+          sh 'docker restart nginx || true'
+        }
       }
     }
-
+  }
+  post {
+    always {
+      junit 'tests/reports/*.xml' // Assuming PHPUnit is configured to output JUnit XML format
+    }
+    success {
+      echo 'Pipeline completed successfully.'
+    }
+    failure {
+      echo 'Pipeline failed.'
+    }
   }
 }
