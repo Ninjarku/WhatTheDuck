@@ -15,11 +15,11 @@ pipeline {
       }
     }
 
-    stage('Run Tests') {
+   stage('Run Tests') {
       steps {
         script {
           // Run PHPUnit tests inside the container
-          sh 'docker run --rm php-docker ./vendor/bin/phpunit --configuration /var/www/html/phpunit.xml'
+          sh 'docker run --rm my-php-docker ./vendor/bin/phpunit --configuration /var/www/html/tests/phpunit.xml'
         }
       }
     }
@@ -39,7 +39,7 @@ pipeline {
   }
   post {
     always {
-      junit 'tests/reports/*.xml' // Assuming PHPUnit is configured to output JUnit XML format
+      junit 'tests/reports/phpunit.xml' // Ensure this matches the path in phpunit.xml
     }
     success {
       echo 'Pipeline completed successfully.'
