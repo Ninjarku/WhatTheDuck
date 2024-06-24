@@ -1,8 +1,5 @@
 pipeline {
   agent any
-   environment {
-        DOCKER_CONTAINER = 'php-docker' // Replace with your actual container name or ID
-    }
   stages {
     stage('Checkout SCM') {
       steps {
@@ -13,11 +10,7 @@ pipeline {
      stage('Copy Files to Volume') {
             steps {
                 script {
-                   // Get the container ID or name dynamically
-                    def containerId = sh(script: "docker container ls -qf name=${DOCKER_CONTAINER}", returnStdout: true).trim()
-                    
-                    // Copy files from Jenkins workspace to the Docker container
-                    sh "docker cp ${WORKSPACE}/. ${containerId}:/var/www/html"
+                  
                 }
             }
         }
