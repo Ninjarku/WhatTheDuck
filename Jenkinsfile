@@ -6,7 +6,6 @@ pipeline {
         git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
       }
     }
-  
     stage('Ensure PHP Docker is Running') {
       steps {
         script {
@@ -46,4 +45,3 @@ pipeline {
       echo 'Pipeline failed.'
     }
   }
-}
