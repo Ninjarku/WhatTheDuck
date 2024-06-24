@@ -37,11 +37,13 @@ pipeline {
     always {
       junit 'tests/reports/phpunit.xml' // Ensure this matches the path in phpunit.xml
     }
-  }
     success {
       echo 'Pipeline completed successfully.'
     }
     failure {
       echo 'Pipeline failed.'
     }
+  }
+    
+    
   }
