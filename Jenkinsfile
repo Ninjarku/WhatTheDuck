@@ -21,13 +21,6 @@ pipeline {
                 sh './vendor/bin/phpunit tests/unit'
             }
 		}
-	
 
-        success {
-            echo 'Pipeline succeeded!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
     }
 }
