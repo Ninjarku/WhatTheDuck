@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     
-                        sh './vendor/bin/phpunit tests/unit'
+                        sh './vendor/bin/phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests/unit'
                 
                 }
             }
