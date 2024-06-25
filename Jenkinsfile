@@ -7,21 +7,25 @@ pipeline {
                 git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
             }
         }
-	stage('Build') {
-            agent {
-                docker {
-                    image 'composer:latest'
+
+        stage('Build') {
+            steps {
+                script {
+                    docker.image('composer:latest').inside {
+                        sh 'composer install'
+                    }
                 }
             }
+        }
+
+        stage('Test') {
             steps {
-                sh 'composer install'
+                script {
+                    docker.image('composer:latest').inside {
+                        sh './vendor/bin/phpunit tests/unit'
+                    }
+                }
             }
         }
-	stage('Test') {
-			steps {
-                sh './vendor/bin/phpunit tests/unit'
-            }
-		}
-
     }
 }
