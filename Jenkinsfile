@@ -1,19 +1,25 @@
 pipeline {
-  agent any
+    agent any
 
-  stages {
-    stage('Checkout SCM') {
-      steps {
-        git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
-      }
-    }
-
-    stage('Build') {
+    stages {
+        stage('Checkout SCM') {
             steps {
-                sh 'composer install'
+                git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
             }
         }
-    
+
+        stage('Install Dependencies') {
+            steps {
+                script {
+                    // Install necessary PHP extensions
+                    sh 'apt-get update && apt-get install -y libxml2-dev'
+                    sh 'docker-php-ext-install simplexml dom'
+                    
+                    // Install Composer dependencies
+                    sh 'composer install'
+                }
+            }
+        }
 
         stage('Static Code Analysis') {
             steps {
@@ -39,8 +45,8 @@ pipeline {
                 }
             }
         }
-    
-  }
+    }
+
     post {
         always {
             archiveArtifacts artifacts: '**/coverage.xml', allowEmptyArchive: true
@@ -52,6 +58,5 @@ pipeline {
         failure {
             echo 'Pipeline failed!'
         }
-
-  }
+    }
 }
