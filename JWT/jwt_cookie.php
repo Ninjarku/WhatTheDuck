@@ -44,4 +44,11 @@ function validateJWT($jwt, $publicKeyPath, $algorithm = 'RS256') {
 }
 
 
+
+function getJWTFromCookie($cookieName = 'auth_token') {
+    return isset($_COOKIE[$cookieName]) ? $_COOKIE[$cookieName] : null;
+}
+
+
+
 ?>

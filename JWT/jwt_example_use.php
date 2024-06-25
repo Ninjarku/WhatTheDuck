@@ -32,15 +32,17 @@ function authenticatio_check(){
 }
 
 
-
 // Example Authentication
 // After performing authentication check
-$userId = "id queried from DB"
-$privateKeyPath = '/path/to/private/private.key';
+function gen_set_cookie(){
+    $userId = "id queried from DB"
+    $privateKeyPath = '/path/to/private/private.key';
 
-// Creates the cookie and sets it in the user's session
-$jwt = generateJWT($userId, $privateKeyPath) 
-setJWTInCookie($jwt)
+    // Creates the cookie and sets it in the user's session
+    $jwt = generateJWT($userId, $privateKeyPath) 
+    setJWTInCookie($jwt)
+}
+
 
 // Removal of cookie
 ?>

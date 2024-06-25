@@ -1,4 +1,6 @@
 <?php
+
+
 // Add a token to the blacklist
 function blacklistToken($token) {
     $pdo = getDbConnection();
