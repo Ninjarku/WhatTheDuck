@@ -1,1 +1,4 @@
-<?php echo "What the Duck?" ?>
+<?php
+echo "Hello, World!";
+?>
+
