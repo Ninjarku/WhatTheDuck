@@ -17,7 +17,7 @@ pipeline {
                 sh 'composer install'
             }
         }
-    }
+    
 
         stage('Static Code Analysis') {
             steps {
@@ -44,7 +44,7 @@ pipeline {
             }
         }
     
-
+  }
     post {
         always {
             archiveArtifacts artifacts: '**/coverage.xml', allowEmptyArchive: true
