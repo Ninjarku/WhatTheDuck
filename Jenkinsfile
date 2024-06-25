@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-		docker {
-			image 'composer:latest'
-		}
-	}
+    agent any
 
     stages {
         stage('Checkout SCM') {
@@ -11,12 +7,17 @@ pipeline {
                 git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
             }
         }
-		stage('Build') {
-			steps {
-				sh 'composer install'
-			}
-		}
-		stage('Test') {
+	stage('Build') {
+            agent {
+                docker {
+                    image 'composer:latest'
+                }
+            }
+            steps {
+                sh 'composer install'
+            }
+        }
+	stage('Test') {
 			steps {
                 sh './vendor/bin/phpunit tests/unit'
             }
