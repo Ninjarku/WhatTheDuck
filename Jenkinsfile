@@ -1,5 +1,9 @@
 pipeline {
-  agent any
+  agent {
+        docker {
+            image 'composer:latest'
+        }
+    }
   stages {
     stage('Checkout SCM') {
       steps {
@@ -7,11 +11,9 @@ pipeline {
       }
     }
 
-    stage('Install Dependencies') {
+    stage('Build') {
             steps {
-                script {
-                    sh 'composer install'
-                }
+                sh 'composer install'
             }
         }
 
