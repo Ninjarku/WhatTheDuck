@@ -17,6 +17,7 @@ pipeline {
                 sh 'composer install'
             }
         }
+    }
 
         stage('Static Code Analysis') {
             steps {
