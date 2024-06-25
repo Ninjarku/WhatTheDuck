@@ -7,35 +7,51 @@ pipeline {
       }
     }
 
-    stage('Copy Files to Volume') {
-      steps {
-        script {
-          sh '''
-echo "Current working directory:"
-pwd
-
-# Determine the Jenkins workspace directory
-WORKSPACE=$(pwd)
-
-# Copy files from the Jenkins workspace to the host
-docker cp jenkins-blueocean:/. /home/student9/docker-volumes/php-docker
-
-
-'''
+    stage('Install Dependencies') {
+            steps {
+                script {
+                    sh 'composer install'
+                }
+            }
         }
 
-      }
+        stage('Static Code Analysis') {
+            steps {
+                script {
+                    sh 'vendor/bin/phpcs --standard=PSR12 src'
+                }
+            }
+        }
+
+        stage('Unit Testing') {
+            steps {
+                script {
+                    sh 'vendor/bin/phpunit --coverage-clover coverage.xml'
+                }
+                junit 'tests/**/*.xml'
+            }
+        }
+
+        stage('Security Testing') {
+            steps {
+                script {
+                    sh 'vendor/bin/phpstan analyse --level=max src'
+                }
+            }
+        }
     }
 
-  }
-  post {
-    success {
-      echo 'Pipeline completed successfully.'
-    }
-
-    failure {
-      echo 'Pipeline failed.'
-    }
+    post {
+        always {
+            archiveArtifacts artifacts: '**/coverage.xml', allowEmptyArchive: true
+            junit '**/test-results/**/*.xml'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
 
   }
 }
