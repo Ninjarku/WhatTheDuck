@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'composer:latest'
+        }
+    }
 
     stages {
         stage('Checkout SCM') {
@@ -11,9 +15,9 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    docker.image('composer:latest').inside {
+           
                         sh 'composer install'
-                    }
+                    
                 }
             }
         }
@@ -21,9 +25,9 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    docker.image('composer:latest').inside {
+                    
                         sh './vendor/bin/phpunit tests/unit'
-                    }
+                
                 }
             }
         }
