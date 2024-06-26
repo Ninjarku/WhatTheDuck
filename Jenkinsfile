@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        scp -i $SSH_KEY -r src/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+                        cp -r src/* $DEPLOY_PATH
                     '''
                 }
             }
