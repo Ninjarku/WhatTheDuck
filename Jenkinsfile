@@ -45,10 +45,24 @@ pipeline {
          stage('Deploy') {
             steps {
                 script {
-                    sh '''
-                     mkdir -p /home/student9/docker-volumes/php-docker/whattheduck
-                        cp -r src/* "$DEPLOY_PATH"
-                    '''
+                    sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'jenkins ssh',
+                                transfers: [
+                                    sshTransfer(
+                                        sourceFiles: 'src/*',
+                                        removePrefix: 'src/',
+                                        remoteDirectory: '/home/student9/docker-volumes/php-docker/whattheduck/',
+                                        execCommand: ''
+                                    )
+                                ],
+                                usePromotionTimestamp: false,
+                                useWorkspaceInPromotion: false,
+                                verbose: true
+                            )
+                        ]
+                    )
                 }
             }
         }
