@@ -35,6 +35,13 @@ pipeline {
                 }
             }
         }
+        stage('Check Node') {
+            steps {
+                script {
+                    echo "Running on node: ${env.NODE_NAME}"
+                }
+            }
+        }
          stage('Deploy') {
             steps {
                 script {
