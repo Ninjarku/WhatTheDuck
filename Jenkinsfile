@@ -42,7 +42,7 @@ pipeline {
                 }
             }
         }
-          stage('Deploy') {
+         stage('Deploy') {
             steps {
                 script {
                     sshPublisher(
@@ -51,8 +51,8 @@ pipeline {
                                 configName: 'jenkins ssh',
                                 transfers: [
                                     sshTransfer(
-                                        sourceFiles: 'src/*',
-                                        removePrefix: 'src/',
+                                        sourceFiles: 'src/**/*', // Use wildcard to match all files in src directory
+                                        removePrefix: 'src', // Remove src prefix
                                         remoteDirectory: '/home/student9/docker-volumes/php-docker/whattheduck',
                                         execCommand: ''
                                     )
