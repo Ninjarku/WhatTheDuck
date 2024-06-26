@@ -6,7 +6,7 @@ pipeline {
     }
 
      environment {
-        DEPLOY_PATH = "~/docker-volumes/php-docker/whattheduck"  // Path on your AWS instance
+        DEPLOY_PATH = "/home/student9/docker-volumes/php-docker/whattheduck"  // Path on your AWS instance
     }
 
     stages {
