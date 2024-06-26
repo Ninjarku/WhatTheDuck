@@ -5,6 +5,13 @@ pipeline {
         }
     }
 
+     environment {
+        DEPLOY_USER = 'student9'  // Change to your SSH username
+        DEPLOY_HOST = '18.224.18.18'  // Change to your AWS instance IP
+        DEPLOY_PATH = '/home/student9/docker-volumes/php-docker/whattheduck'  // Path on your AWS instance
+        SSH_KEY = credentials('ssh')  // Jenkins credentials ID for your PEM key
+    }
+
     stages {
         stage('Checkout SCM') {
             steps {
@@ -34,8 +41,9 @@ pipeline {
          stage('Deploy') {
             steps {
                 script {
-                    sh 'pwd'
-                    sh 'sudo cp -r src/* /home/student9/docker-volumes/php-docker/whattheduck/'
+                    sh '''
+                        scp -i $SSH_KEY -r src/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+                    '''
                 }
             }
         }
