@@ -6,10 +6,7 @@ pipeline {
     }
 
      environment {
-        DEPLOY_USER = 'student9'  // Change to your SSH username
-        DEPLOY_HOST = '18.224.18.18'  // Change to your AWS instance IP
-        DEPLOY_PATH = '/home/student9/docker-volumes/php-docker/whattheduck'  // Path on your AWS instance
-        SSH_KEY = credentials('ssh')  // Jenkins credentials ID for your PEM key
+        DEPLOY_PATH = '~/docker-volumes/php-docker/whattheduck'  // Path on your AWS instance
     }
 
     stages {
