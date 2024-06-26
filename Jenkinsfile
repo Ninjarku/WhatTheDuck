@@ -6,7 +6,7 @@ pipeline {
     }
 
      environment {
-        DEPLOY_PATH = '~/docker-volumes/php-docker/whattheduck'  // Path on your AWS instance
+        DEPLOY_PATH = "~/docker-volumes/php-docker/whattheduck"  // Path on your AWS instance
     }
 
     stages {
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cp -r src/* $DEPLOY_PATH
+                        cp -r src/* "$DEPLOY_PATH"
                     '''
                 }
             }
