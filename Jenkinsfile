@@ -42,7 +42,7 @@ pipeline {
                 }
             }
         }
-         stage('Deploy') {
+          stage('Deploy') {
             steps {
                 script {
                     sshPublisher(
@@ -53,7 +53,7 @@ pipeline {
                                     sshTransfer(
                                         sourceFiles: 'src/*',
                                         removePrefix: 'src/',
-                                        remoteDirectory: '/home/student9/docker-volumes/php-docker/whattheduck/',
+                                        remoteDirectory: '/home/student9/docker-volumes/php-docker/whattheduck',
                                         execCommand: ''
                                     )
                                 ],
