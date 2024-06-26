@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     sh 'pwd'
-                    sh 'cp -r src/* /home/student9/docker-volumes/php-docker/whattheduck/'
+                    sh 'sudo cp -r src/* /home/student9/docker-volumes/php-docker/whattheduck/'
                 }
             }
         }
