@@ -53,8 +53,7 @@ pipeline {
                                     sshTransfer(
                                         sourceFiles: 'src/**/*', // Use wildcard to match all files in src directory
                                         removePrefix: 'src', // Remove src prefix
-                                        remoteDirectory: ''
-                                        execCommand: ''
+                
                                     )
                                 ],
                                 usePromotionTimestamp: false,
