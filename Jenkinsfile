@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                     sh 'mkdir -p /home/student9/docker-volumes/php-docker/whattheduck'
+                     mkdir -p /home/student9/docker-volumes/php-docker/whattheduck
                         cp -r src/* "$DEPLOY_PATH"
                     '''
                 }
