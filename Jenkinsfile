@@ -34,7 +34,7 @@ pipeline {
          stage('Deploy') {
             steps {
                 script {
-                    sh 'cp -r src/* /home/student9/docker-volumes/php-docker/whattheduck'
+                    sh 'cp -r src/* /home/student9/docker-volumes/php-docker/whattheduck/'
                 }
             }
         }
