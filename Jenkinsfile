@@ -3,6 +3,7 @@ pipeline {
     
      environment {
         DEPLOY_PATH = "/home/student9/docker-volumes/php-docker/whattheduck"  // Path on your AWS instance
+        NVD_API_DELAY = "5000"  // Setting the API delay to 5000 milliseconds (5 seconds)
     }
 
     stages {
@@ -67,7 +68,7 @@ pipeline {
         stage('OWASP Dependency-Check Vulnerabilities') {
             steps {
                 script {
-                   dependencyCheck additionalArguments: '--scan src --format HTML --format XML --nvdApiKey f9133a9c-4161-4bb6-846e-2aace202bb80 --cveDownloadWait 5000', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                   dependencyCheck additionalArguments: '--scan src --format HTML --format XML --nvdApiKey f9133a9c-4161-4bb6-846e-2aace202bb80', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
                 }
             }
         }
