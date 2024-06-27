@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     sh "pwd"
-                   dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                   dependencyCheck additionalArguments: '--scan src --format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
                 }
             }
         }
