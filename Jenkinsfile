@@ -11,6 +11,25 @@ pipeline {
                 git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
             }
         }
+     stage('Check Changes') {
+            steps {
+                script {
+                    def changes = currentBuild.changeSets
+                    def changesInFolder = changes.any { changeSet ->
+                        changeSet.items.any { item ->
+                            item.affectedFiles.any { file ->
+                                file.path.startsWith("src/")
+                            }
+                        }
+                    }
+                     if (!changesInFolder) {
+                        echo "No changes in the specified folder. Skipping build."
+                        currentBuild.result = 'SUCCESS'
+                        return
+                    }
+                }
+            }
+        }
 
      stage('Build') {
             steps {
