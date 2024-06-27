@@ -3,6 +3,7 @@ pipeline {
         docker {
             image 'composer:latest'
         }
+     }
     
      environment {
         DEPLOY_PATH = "/home/student9/docker-volumes/php-docker/whattheduck"  // Path on your AWS instance
