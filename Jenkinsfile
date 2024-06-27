@@ -39,7 +39,6 @@ pipeline {
             agent any  // This will run on the Jenkins master node, not inside the Docker container
             steps {
                 script {
-                    sh "pwd"
                    dependencyCheck additionalArguments: '--scan src --format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
                 }
             }
