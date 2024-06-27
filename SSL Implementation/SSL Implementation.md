@@ -4,7 +4,8 @@ Written tutorial: https://neutrondev.com/how-to-set-up-ssl-certificate-localhost
 
 Ubuntu Install SSL: https://www.ssldragon.com/how-to/install-ssl-certificate/ubuntu/
 
-#### Step 1 Create a SSL Certificate using `makecert.bat`:
+
+#### Step 1 Create a SSL Certificate using `makecert.bat` for windows:
 `makecert.bat`
 ```powershell
 @echo off
@@ -58,6 +59,7 @@ Copy `certificate.crt` and `ca_bundle.crt` to `/etc/ssl/` and `private.key` t
 
 Rename the `certificate.crt` to `whattheduck.crt`
 Rename the `private.key` to `whattheduck.key`
+
 
 #### Step 2 Edit Apache Config file:
  **/etc/apache2/sites-enabled/your_site_name**
