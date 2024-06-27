@@ -17,6 +17,7 @@ pipeline {
         docker {
             image 'composer:latest'
         }
+            }
             steps {
                 script {
            
