@@ -28,6 +28,11 @@ pipeline {
         }
 
         stage('PHPUnit Test') {
+            agent {
+        docker {
+            image 'composer:latest'
+        }
+            }
             steps {
                 script {
                     
@@ -37,7 +42,6 @@ pipeline {
             }
         }
         stage('OWASP Dependency-Check Vulnerabilities') {
-            agent any  // This will run on the Jenkins master node, not inside the Docker container
             steps {
                 script {
                    dependencyCheck additionalArguments: '--scan src --format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
