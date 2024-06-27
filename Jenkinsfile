@@ -35,18 +35,12 @@ pipeline {
                 }
             }
         }
-        stage('OWASP Dependency Check') {
+        stage('OWASP DependencyCheck') {
 			steps {
 				dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'Default'
 			}
 		}
-        stage('Check Node') {
-            steps {
-                script {
-                    echo "Running on node: ${env.NODE_NAME}"
-                }
-            }
-        }
+    
          stage('Deploy') {
             steps {
                 script {
