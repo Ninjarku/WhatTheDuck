@@ -1,9 +1,5 @@
 pipeline {
-     agent {
-        docker {
-            image 'composer:latest'
-        }
-     }
+     agent any
     
      environment {
         DEPLOY_PATH = "/home/student9/docker-volumes/php-docker/whattheduck"  // Path on your AWS instance
@@ -16,22 +12,12 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            
-            steps {
-                script {
-           
-                        sh 'composer install'
-                    
-                }
-            }
-        }
 
         stage('PHPUnit Test') {
             steps {
                 script {
                     
-                        sh './vendor/bin/phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests/unit'
+                        sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests/unit'
                 
                 }
             }
