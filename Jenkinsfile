@@ -26,7 +26,7 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('PHPUnit Test') {
             steps {
                 script {
                     
@@ -35,6 +35,11 @@ pipeline {
                 }
             }
         }
+        stage('OWASP Dependency Check') {
+			steps {
+				dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'Default'
+			}
+		}
         stage('Check Node') {
             steps {
                 script {
@@ -69,6 +74,13 @@ pipeline {
     post {
         always {
             junit testResults: 'logs/unitreport.xml'
+            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        }
+        success {
+            echo "Pipline Success!"
+        }
+        failure {
+            echo "Pipline Failed!"
         }
     }
 }
