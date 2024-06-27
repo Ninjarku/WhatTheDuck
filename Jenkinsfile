@@ -36,6 +36,7 @@ pipeline {
             }
         }
         stage('OWASP Dependency-Check Vulnerabilities') {
+            agent any  // This will run on the Jenkins master node, not inside the Docker container
             steps {
                 script {
                     sh "pwd"
