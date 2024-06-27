@@ -14,18 +14,33 @@ pipeline {
      stage('Check Changes') {
             steps {
                 script {
-                    def changes = currentBuild.changeSets
-                    def changesInFolder = changes.any { changeSet ->
-                        changeSet.items.any { item ->
-                            item.affectedFiles.any { file ->
-                                file.path.startsWith("src/")
+                    def changeLogSets = currentBuild.changeSets
+                    def foundChange = false
+
+                    for (int i = 0; i < changeLogSets.size(); i++) {
+                        def entries = changeLogSets[i].items
+                        for (int j = 0; j < entries.length; j++) {
+                            def files = entries[j].affectedFiles
+                            for (int k = 0; k < files.size(); k++) {
+                                def file = files[k]
+                                if (file.path.startsWith('src/')) {
+                                    foundChange = true
+                                    break
+                                }
+                            }
+                            if (foundChange) {
+                                break
                             }
                         }
+                        if (foundChange) {
+                            break
+                        }
                     }
-                     if (!changesInFolder) {
+
+                    if (!foundChange) {
                         echo "No changes in the specified folder. Skipping build."
                         currentBuild.result = 'SUCCESS'
-                        return
+                        error("No changes in the specified folder.")
                     }
                 }
             }
