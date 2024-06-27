@@ -12,6 +12,14 @@ pipeline {
             }
         }
 
+     stage('Build') {
+            steps {
+                script {
+                    sh 'composer install'
+                }
+            }
+        }
+
 
         stage('PHPUnit Test') {
             steps {
