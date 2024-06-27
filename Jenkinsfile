@@ -38,8 +38,7 @@ pipeline {
         stage('OWASP Dependency-Check Vulnerabilities') {
             steps {
                 script {
-                    def dependencyCheckHome = tool name: 'OWASP_Dependency-Check'
-                    sh "${dependencyCheckHome}/bin/dependency-check.sh --project WhatTheDuck --scan . --format ALL --out dependency-check-report.xml --prettyPrint"
+                   dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
                 }
             }
         }
