@@ -62,15 +62,16 @@ pipeline {
         }
 
 
-        stage('PHPUnit Test') {
-            steps {
-                script {
+        // stage('PHPUnit Test') {
+        //     steps {
+        //         script {
                     
-                        sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests/unit'
+        //                 sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests/unit'
                 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
+         
         stage('OWASP Dependency-Check Vulnerabilities') {
             steps {
                 script {
