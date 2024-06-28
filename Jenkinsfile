@@ -12,6 +12,9 @@ pipeline {
             }
         }
      stage('Check Changes') {
+          when {
+                branch 'main'
+            }
             steps {
                 script {
                     def changeLogSets = currentBuild.changeSets
