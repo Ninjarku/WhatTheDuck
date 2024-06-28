@@ -45,8 +45,12 @@ pipeline {
                 }
             }
         }
-
-     stage('Build') {
+        stage('Build') {
+            when {
+                expression {
+                    return currentBuild.result == null
+                }
+            }
             steps {
                 script {
                     sh 'composer install'
