@@ -11,43 +11,43 @@ pipeline {
                 git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
             }
         }
-     stage('Check Changes') {
-          when {
-                branch 'main'
-            }
-            steps {
-                script {
-                    def changeLogSets = currentBuild.changeSets
-                    def foundChange = false
+     // stage('Check Changes') {
+     //      when {
+     //            branch 'main'
+     //        }
+     //        steps {
+     //            script {
+     //                def changeLogSets = currentBuild.changeSets
+     //                def foundChange = false
 
-                    for (int i = 0; i < changeLogSets.size(); i++) {
-                        def entries = changeLogSets[i].items
-                        for (int j = 0; j < entries.length; j++) {
-                            def files = entries[j].affectedFiles
-                            for (int k = 0; k < files.size(); k++) {
-                                def file = files[k]
-                                if (file.path.startsWith('src/')) {
-                                    foundChange = true
-                                    break
-                                }
-                            }
-                            if (foundChange) {
-                                break
-                            }
-                        }
-                        if (foundChange) {
-                            break
-                        }
-                    }
+     //                for (int i = 0; i < changeLogSets.size(); i++) {
+     //                    def entries = changeLogSets[i].items
+     //                    for (int j = 0; j < entries.length; j++) {
+     //                        def files = entries[j].affectedFiles
+     //                        for (int k = 0; k < files.size(); k++) {
+     //                            def file = files[k]
+     //                            if (file.path.startsWith('src/')) {
+     //                                foundChange = true
+     //                                break
+     //                            }
+     //                        }
+     //                        if (foundChange) {
+     //                            break
+     //                        }
+     //                    }
+     //                    if (foundChange) {
+     //                        break
+     //                    }
+     //                }
 
-                    if (!foundChange) {
-                        echo "No changes in the specified folder. Skipping build."
-                        currentBuild.result = 'SUCCESS'
-                        error("No changes in the specified folder.")
-                    }
-                }
-            }
-        }
+     //                if (!foundChange) {
+     //                    echo "No changes in the specified folder. Skipping build."
+     //                    currentBuild.result = 'SUCCESS'
+     //                    error("No changes in the specified folder.")
+     //                }
+     //            }
+     //        }
+     //    }
         stage('Build') {
             when {
                 expression {
