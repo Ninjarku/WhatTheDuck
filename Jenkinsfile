@@ -3,7 +3,6 @@ pipeline {
     
      environment {
         DEPLOY_PATH = "/home/student9/docker-volumes/php-docker/whattheduck"  // Path on your AWS instance
-        NVD_API_DELAY = "5000"  // Setting the API delay to 5000 milliseconds (5 seconds)
     }
 
     stages {
