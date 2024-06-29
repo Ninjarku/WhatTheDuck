@@ -48,26 +48,15 @@ pipeline {
      //            }
      //        }
      //    }
-        stage('Build') {
-            when {
-                expression {
-                    return currentBuild.result == null
-                }
-            }
+       
+
+        stage('Code Quality Check via SonarQube') {
             steps {
                 script {
-                    sh 'composer install'
-                }
-            }
-        }
-
-
-        stage('PHPUnit Test') {
-            steps {
-                script {
-                    
-                        sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests/unit'
-                
+                    def scannerHome = tool 'SonarQube';
+                    withSonarQubeEnv('SonarQube') {
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=WhatTheDuck -Dsonar.sources=src"
+                    }
                 }
             }
         }
@@ -80,16 +69,25 @@ pipeline {
             }
         }
 
-        stage('Code Quality Check via SonarQube') {
+          stage('Build') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarQube';
-                    withSonarQubeEnv('SonarQube') {
-                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=WhatTheDuck -Dsonar.sources=src"
-                    }
+                    sh 'composer install'
                 }
             }
         }
+
+          stage('PHPUnit Test') {
+            steps {
+                script {
+                    
+                        sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests/unit'
+                
+                }
+            }
+        }
+
+        
     
          stage('Deploy') {
             steps {
@@ -117,7 +115,7 @@ pipeline {
     }
     post {
         always {
-           // junit testResults: 'logs/unitreport.xml'
+            junit testResults: 'logs/unitreport.xml'
             dependencyCheckPublisher pattern: 'dependency-check-report.xml'
         }
         success {
