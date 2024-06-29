@@ -2,9 +2,9 @@
 <?php
 session_start();
 ?>
-<script src="/ssd/js/jquery-3.5.1.js" type="text/javascript"></script>
+<script src="/js/jquery-3.5.1.js" type="text/javascript"></script>
 <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
-<script src="/ssd/js/navbar-active-btn.js" type="text/javascript"></script>
+<script src="/js/navbar-active-btn.js" type="text/javascript"></script>
 <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 <style>
     body, html {
