@@ -24,21 +24,24 @@ pipeline {
             }
         }
          
-        // stage('OWASP Dependency-Check Vulnerabilities') {
-        //     steps {
-        //         script {
-        //            dependencyCheck additionalArguments: '--scan src --format HTML --format XML', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-        //         }
-        //     }
-        // }
+        stage('OWASP Dependency-Check Vulnerabilities') {
+            steps {
+                withCredentials([string(credentialsId: 'nvd_api_key', variable: 'nvd_api_key')]) {
+                    script {
+                        env.DEPENDENCY_CHECK_OPTIONS = "--scan src --format HTML --format XML --nvdApiKey $nvd_api_key"
+                    }
+                    dependencyCheck additionalArguments: "${env.DEPENDENCY_CHECK_OPTIONS}", odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                }
+            }
+        }
 
-        //   stage('Build') {
-        //     steps {
-        //         script {
-        //             sh 'composer install'
-        //         }
-        //     }
-        // }
+          stage('Build') {
+            steps {
+                script {
+                    sh 'composer install'
+                }
+            }
+        }
 
           stage('PHPUnit Test') {
             steps {
