@@ -77,10 +77,10 @@ pipeline {
         }
     }
     post {
-        always {
+        // always {
             //junit testResults: 'logs/unitreport.xml'
             //dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-        }
+       // }
         success {
             echo "Pipline Success!"
         }
