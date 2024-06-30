@@ -1,3 +1,4 @@
+<?php include 'includes/navbar.php';?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -72,7 +73,6 @@
     </head>
     <body style="background-color:#fff5cc;">
         <!--    TODO: Toggle password visibility-->
-        <?php include 'includes/navbar.php'; ?>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6 col-lg-5 col-xl-5">
