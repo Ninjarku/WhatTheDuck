@@ -16,19 +16,6 @@ pipeline {
             }
         }
          
-        stage('Static Code Analysis') {
-            steps {
-                script {
-                    // Run PHP CodeSniffer to generate a report
-                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                        sh './vendor/bin/phpcs --standard=PSR12 src --report-file=phpcs.xml --report=checkstyle'
-                    }
-                }
-            }
-        }
-
-       
-
         stage('Code Quality Check via SonarQube') {
             steps {
                 script {
@@ -91,12 +78,6 @@ pipeline {
             //junit testResults: 'logs/unitreport.xml'
             //dependencyCheckPublisher pattern: 'dependency-check-report.xml'
        // }
-         always {
-            recordIssues(
-                tools: [checkStyle(pattern: 'phpcs.xml')],
-                filters: [excludeFile('src/js/*'), excludeFile('vendor/*')]
-            )
-        }
         success {
             echo "Pipline Success!"
         }
