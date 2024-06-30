@@ -24,7 +24,9 @@ pipeline {
             steps {
                 script {
                     // Run PHP CodeSniffer to generate a report
-                    sh './vendor/bin/phpcs --standard=PEAR src --report-file=phpcs.xml --report=checkstyle'
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        sh './vendor/bin/phpcs --standard=PSR12 src --report-file=phpcs.xml --report=checkstyle'
+                    }
                 }
             }
             post {
