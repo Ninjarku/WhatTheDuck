@@ -27,7 +27,7 @@ $user = [
 if ($Form_Type == 1 && $action === 'editUser') {
     $User_ID = isset($_GET['User_ID']) ? intval($_GET['User_ID']) : 0;
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);

@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($success) {
         $config = parse_ini_file('/var/www/private/db-config.ini');
-        $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+        $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
         if ($conn->connect_error) {
             $response["message"] = "Connection failed: " . $conn->connect_error;
