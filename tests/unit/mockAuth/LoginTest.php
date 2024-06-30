@@ -36,5 +36,27 @@ class LoginTest extends TestCase {
         $this->assertFalse($result);
     }
 
-    // Add more test cases as needed
+    public function testFailedUser() {
+        // Simulate form input
+        $_POST['cust_username'] = 'wronguser';
+        $_POST['cust_pass'] = 'testpassword';
+
+        // Simulate the login process
+        $result = $this->mockAuth->authenticate($_POST['cust_username'], $_POST['cust_pass']);
+
+        // Assert that the login failed
+        $this->assertFalse($result);
+    }
+
+    public function testFailedPassword() {
+        // Simulate form input
+        $_POST['cust_username'] = 'wronguser';
+        $_POST['cust_pass'] = 'wrongpassword';
+
+        // Simulate the login process
+        $result = $this->mockAuth->authenticate($_POST['cust_username'], $_POST['cust_pass']);
+
+        // Assert that the login failed
+        $this->assertFalse($result);
+    }
 }
