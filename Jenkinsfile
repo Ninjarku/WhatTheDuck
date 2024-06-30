@@ -30,7 +30,7 @@ pipeline {
             post {
                 always {
                     recordIssues(
-                        tool: php(codeAnalysisTool: 'PHP CodeSniffer', pattern: 'phpcs.xml'),
+                        tool: phpcs(pattern: 'phpcs.xml'),
                         qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]]
                     )
                 }
