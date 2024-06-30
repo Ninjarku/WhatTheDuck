@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 header('Content-Type: application/json');
 
@@ -20,8 +19,8 @@ $response = array(
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $success = true;
 
-    if (empty($_POST["signup_mobile_number"]) || empty($_POST["signup_email"]) || empty($_POST["signup_birthday"]) || empty($_POST["signup_username"]) || empty($_POST["signup_pwd"]) || empty($_POST["signup_pwdconfirm"]) || !isset($_POST["agree"])) {
-        $response["message"] = "Please fill in all required fields and agree to terms and conditions.";
+    if (empty($_POST["signup_mobile_number"]) || empty($_POST["signup_email"]) || empty($_POST["signup_birthday"]) || empty($_POST["signup_username"]) || empty($_POST["signup_pwd"]) || empty($_POST["signup_pwdconfirm"])){
+        $response["message"] = "Please fill in all required fields.";
         $success = false;
     } else {
         $mobile = $_POST["signup_mobile_number"];
@@ -82,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION["signup_success"] = "Account created successfully!";
                     $response["icon"] = "success";
                     $response["title"] = "Signup successful!";
-                    $response["message"] = "Please Login!";
+                    $response["message"] = "Click the button to login.";
                     $response["redirect"] = "Login.php";
                 } else {
                     $response["message"] = "Signup failed. Please try again.";
