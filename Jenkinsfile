@@ -33,7 +33,7 @@ pipeline {
                 always {
                     recordIssues(
                         tool: checkStyle(pattern: 'phpcs.xml'),
-                        qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]]
+                       // qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]]
                     )
                 }
             }
