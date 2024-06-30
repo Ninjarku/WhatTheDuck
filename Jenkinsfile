@@ -11,6 +11,32 @@ pipeline {
                 git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
             }
         }
+         
+         stage('Build') {
+            steps {
+                script {
+                    sh 'composer install'
+                }
+            }
+        }
+         
+        stage('Static Code Analysis') {
+            steps {
+                script {
+                    // Run PHP CodeSniffer to generate a report
+                    sh './vendor/bin/phpcs --standard=PSR12 src --report-file=phpcs.xml'
+                }
+            }
+            post {
+                always {
+                    recordIssues(
+                        tool: php(codeAnalysisTool: 'PHP CodeSniffer', pattern: 'phpcs.xml'),
+                        qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]]
+                    )
+                }
+            }
+        }
+
        
 
         stage('Code Quality Check via SonarQube') {
@@ -32,13 +58,7 @@ pipeline {
         //     }
         // }
 
-          stage('Build') {
-            steps {
-                script {
-                    sh 'composer install'
-                }
-            }
-        }
+          
 
           // stage('PHPUnit Test') {
           //  steps {
