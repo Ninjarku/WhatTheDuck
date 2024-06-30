@@ -1,0 +1,212 @@
+body {
+    background-color: black;    
+    font-family: Helvetica Neue,Helvetica,Arial,文泉驛正黑,WenQuanYi Zen Hei,Hiragino Sans GB,儷黑 Pro,LiHei Pro,Heiti TC,微軟正黑體,Microsoft JhengHei UI,Microsoft JhengHei,sans-serif;
+    font-size: 14px;
+    color:dimgray;
+}
+
+div {
+    display: block;
+}
+
+option {
+    font-weight: 500;
+}
+
+option:disabled {
+    background-color: #e8e3e3;
+}
+
+.main-container {
+    display: flex;
+}
+
+.left-container {
+    width: 75%;
+    float: left;
+    flex: 1;
+    width: 800px;
+}
+
+.right-container {
+    position: relative;
+    border-radius: 1px;
+    width: 30%;
+    height: fit-content;
+    min-width: 300px; /* Add this property */
+}
+
+.right-inner-container {
+    color: white;
+    font-size: 16px;
+}
+
+.table-div {
+    border-radius: 1px;
+}
+
+.hdr-row {
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 1px 0 rgb(0 0 0 / 5%);
+    border-radius: 0.125rem;
+    overflow: hidden;
+    border-radius: 3px;
+    border-bottom: 2px solid white;
+    height: 55px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: white;
+    padding: 0 20px;
+}
+
+.checkbox-all-rows {    
+    padding: 0 20px 0 5px;
+    display: flex;
+    flex-direction: row-reverse;        
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+}
+
+#room-hdr, .room-obj {
+    width: 40%;
+}
+
+#price-hdr{
+    width: 15%;
+}
+
+#date-hdr, .date-obj {
+    width: 15%;
+}
+
+#time-hdr{
+    width: 15%;
+}
+
+.price-obj {
+    width: 10%;
+}
+
+.time-obj{
+    width: 15%;
+    margin-left: 5%;
+}
+
+.obj-rows {
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 1px 0 rgb(0 0 0 / 5%);
+    border-radius: 0.125rem;
+    overflow: hidden;
+    border-radius: 3px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: white;
+    padding: 0 20px;
+}
+
+.display-images {
+    padding: 4% 0 4% 0;
+    width: 30%;
+    height: auto;
+}
+
+.name-labels {
+    margin-left: 5%;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: white;
+}
+
+.delete-btn:hover {
+    color: red;
+    font-size: 14.2px;
+}
+
+#order-summary-header {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#order-content-container {
+    margin: 2% 3% 0 3%;
+
+}
+
+#subtotal-row, #total-row, #discount-row, #voucher-row{
+    display: flex;
+    padding: 0 2% 2% 2%;
+    justify-content: space-between;
+}
+
+#total-row {
+    border-top: gray solid 2px;
+}
+
+#voucher-input {
+    padding-right: 2%;
+}
+
+#checkout-row {
+    text-align: center;
+}
+
+#checkout-btn {
+    width: 100%;
+    padding: 3% 0;
+    border: gray solid 1px;
+}
+
+#voucher-btn {
+    border: gray solid 1px;
+}
+
+.timing-obj {
+    display: inline-block;
+    margin: 0 auto;
+    font-size: 14px;
+    width: 100%;
+}
+
+.date-input {
+    font-size: 14px;
+    width: 130%;
+}
+
+.checkbox-all-rows [aria-hidden="true"],
+.date-obj [aria-hidden="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+#member-display {
+    flex: 1;
+    text-align: left;
+}
+
+#valueM-display {
+    flex: 1;
+    text-align: right;
+}
