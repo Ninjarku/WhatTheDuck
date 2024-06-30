@@ -38,7 +38,7 @@ function getAllProducts() {
 
 function deleteProduct($Product_ID) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
@@ -72,7 +72,7 @@ function deleteProduct($Product_ID) {
 
 function getProductById($Product_ID) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
@@ -109,7 +109,7 @@ function getProductById($Product_ID) {
 
 function addProduct($productData) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     // Check connection
     if ($conn->connect_error) {
@@ -172,7 +172,7 @@ function addProduct($productData) {
 
 function editProduct($productData) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");

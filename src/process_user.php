@@ -38,7 +38,7 @@ function getAllUsers() {
 
 function deleteUser($User_ID) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
@@ -72,7 +72,7 @@ function deleteUser($User_ID) {
 
 function getUserById($User_ID) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
@@ -109,7 +109,7 @@ function getUserById($User_ID) {
 
 function addUser($userData) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     // Check connection
     if ($conn->connect_error) {
@@ -183,7 +183,7 @@ function addUser($userData) {
 
 function editUser($userData) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
