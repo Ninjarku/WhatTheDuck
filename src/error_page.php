@@ -35,16 +35,31 @@ error_reporting(E_ALL);
 
 <div class="container">
     <br>
-    <h1 class="text-center">ERROR!!!!!</h1>
-    <p class="text-center"><?php echo htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'); ?></p>
     <?php
     $error_id = isset($_GET['error_id']) ? intval($_GET['error_id']) : -1;
-    if ($error_id == 0) {
-        $button_text = "Back to Admin Login";
-        $button_link = "admin_login.php";
+
+    $title = $error_id === -1 ? "SUCCESS!!!!!" : "ERROR!!!!!";
+    echo "<h1 class='text-center'>{$title}</h1>";
+    ?>
+    <p class="text-center"><?php echo htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'); ?></p>
+    <?php
+    $error_redirects = [
+        0 => ["Back to Admin Login", "admin_login.php"],
+        1 => ["Back to Admin Index", "admin_index.php"],
+        2 => ["Back to Admin Index", "admin_index.php"],
+        4 => ["Back to User Form", "user_form.php"],
+        5 => ["Back to User Form", "user_form.php"],
+        6 => ["Back to Product Index", "product_index.php"],
+        7 => ["Back to Product Index", "product_index.php"],
+        9 => ["Back to Product Form", "product_form.php"],
+        10 => ["Back to Product Form", "product_form.php"]
+    ];
+
+    if (array_key_exists($error_id, $error_redirects)) {
+        list($button_text, $button_link) = $error_redirects[$error_id];
     } else {
-        $button_text = "Back to Admin Index";
-        $button_link = "admin_index.php";
+        $button_text = $error_id === -1 ? "Back to Home" : "Back to Home";
+        $button_link = "index.php";
     }
     ?>
     <button id="btnBack" class="btn btn-primary" onclick="window.location.href='<?php echo $button_link; ?>'">

@@ -60,13 +60,13 @@ function deleteUser($User_ID) {
         $stmt->bind_param("i", $User_ID);
         if (!$stmt->execute()) {
             error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-            header("Location: eerror_page.php?error_id=2&error=" . urlencode("Execute failed: " . $stmt->error));
+            header("Location: error_page.php?error_id=2&error=" . urlencode("Execute failed: " . $stmt->error));
             exit();
         }
 
         $stmt->close();
         $conn->close();
-        return json_encode(["success" => "User deleted successfully"]);
+        return header("Location: error_page.php?error_id=-1&error=" . urlencode("User deleted successfully"));
     }
 }
 
@@ -94,7 +94,7 @@ function getUserById($User_ID) {
         $stmt->bind_param("i", $User_ID);
         if (!$stmt->execute()) {
             error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-            header("Location: eerror_page.php?error_id=3&error=" . urlencode("Execute failed: " . $stmt->error));
+            header("Location: error_page.php?error_id=3&error=" . urlencode("Execute failed: " . $stmt->error));
         }
 
         $result = $stmt->get_result();
@@ -171,14 +171,14 @@ function addUser($userData) {
 
             if (!$stmt->execute()) {
                 error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-                header("Location: eerror_page.php?error_id=4&error=" . urlencode("Execute failed: " . $stmt2->error));
+                header("Location: error_page.php?error_id=4&error=" . urlencode("Execute failed: " . $stmt->error));
             }
         }
     }
     $stmt->close();
     $conn->close();
 
-    return json_encode(["success" => "User added successfully"]);
+    return header("Location: error_page.php?error_id=-1&error=" . urlencode("User added successfully"));
 }
 
 function editUser($userData) {
@@ -230,13 +230,13 @@ function editUser($userData) {
 
         if (!$stmt->execute()) {
             error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=5&error=" . urlencode("Execute failed: " . $stmt2->error));
+            header("Location: error_page.php?error_id=5&error=" . urlencode("Execute failed: " . $stmt->error));
         }
 
         $stmt->close();
         $conn->close();
 
-        return json_encode(["success" => "User updated successfully"]);
+        return header("Location: error_page.php?error_id=-1&error=" . urlencode("User updated successfully"));       
     }
 }
 
