@@ -50,7 +50,7 @@ class LoginTest extends TestCase {
 
     public function testFailedPassword() {
         // Simulate form input
-        $_POST['cust_username'] = 'wronguser';
+        $_POST['cust_username'] = 'testuser';
         $_POST['cust_pass'] = 'wrongpassword';
 
         // Simulate the login process
