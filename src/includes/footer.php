@@ -92,7 +92,7 @@
     </div>
     <div class="col-12">
         <div class="copyright text-md-center text-lg-center">
-            <p>&copy; Copyright What The Duck 2023. All Rights Reserved. </p>
+            <p>&copy; Copyright WhatTheDuck 2024. All Rights Reserved. </p>
         </div>
     </div>
 </footer>
