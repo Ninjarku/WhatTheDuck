@@ -1,3 +1,4 @@
+<?php include 'includes/navbar.php';?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -65,7 +66,6 @@
         </style>
     </head>
     <body>
-        <?php include 'includes/navbar.php';?>
         <?php
 //// Enable error reporting for debugging
 //        error_reporting(E_ALL);
