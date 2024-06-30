@@ -37,15 +37,15 @@ pipeline {
 
           
 
-          // stage('PHPUnit Test') {
-          //  steps {
-           //     script {
+          stage('PHPUnit Test') {
+           steps {
+               script {
                     
-            //            sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests/unit'
+                       sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
                 
-            //    }
-          //  }
-       // }
+               }
+           }
+       }
 
         
     
@@ -74,10 +74,10 @@ pipeline {
         }
     }
     post {
-       //  always {
-       //      junit testResults: 'logs/unitreport.xml'
-       //      dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-       // }
+        always {
+            junit testResults: 'logs/unitreport.xml'
+        //    dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+       }
         success {
             echo "Pipline Success!"
         }
