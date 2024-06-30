@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     // Run PHP CodeSniffer to generate a report
-                    sh './vendor/bin/phpcs --standard=PHPCS src --report-file=phpcs.xml --report=checkstyle'
+                    sh './vendor/bin/phpcs --standard=PEAR src --report-file=phpcs.xml --report=checkstyle'
                 }
             }
             post {
