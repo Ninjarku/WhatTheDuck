@@ -17,6 +17,7 @@
             }
             .container {
                 margin-top: 20px;
+                margin-bottom: 20px;
             }
             .product-card {
                 border: 1px solid #ddd;
@@ -66,6 +67,39 @@
     <body>
         <?php include 'includes/navbar.php'; ?>
 
+        <?php
+//// Enable error reporting for debugging
+//        error_reporting(E_ALL);
+//        ini_set('display_errors', 1);
+//
+//// Parse the db-config.ini file
+//        $config = parse_ini_file('/var/www/private/db-config.ini');
+//
+//// Check if the configuration was successfully parsed
+//        if (!$config) {
+//            die("Error: Unable to load database configuration.");
+//        }
+//
+//// Extract configuration details
+//        $servername = $config['servername'];
+//        $username = $config['username'];
+//        $password = $config['password'];
+//        $dbname = $config['dbname'];
+//
+//// Create the database connection with increased timeout
+//        $conn = new mysqli($servername, $username, $password, $dbname);
+//
+//// Check the connection
+//        if ($conn->connect_error) {
+//            die("Connection failed: " . $conn->connect_error);
+//        } else {
+//            echo "Connected successfully to the database.";
+//        }
+//
+//// Close the connection
+//        $conn->close();
+        ?>
+
         <div class="container">
             <h1 class="text-center">Our Products</h1>
             <div class="row justify-content-center">
@@ -75,7 +109,7 @@
                         <img src="images/duck_plush.jpg" alt="Duck Plush Toy">
                         <p>Soft and cuddly duck plush toy.</p>
                         <p class="price">$19.99</p>
-                        <form action="PaymentPage.php" method="post">
+                        <form action="payment.php" method="post">
                             <input type="hidden" name="product_name" value="Duck Plush Toy">
                             <input type="hidden" name="product_price" value="19.99">
                             <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>
@@ -88,7 +122,7 @@
                         <img src="images/duck_mug.jpg" alt="Duck Mug">
                         <p>Enjoy your drinks with this cute duck mug.</p>
                         <p class="price">$9.99</p>
-                        <form action="PaymentPage.php" method="post">
+                        <form action="payment.php" method="post">
                             <input type="hidden" name="product_name" value="Duck Mug">
                             <input type="hidden" name="product_price" value="9.99">
                             <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>
@@ -101,7 +135,7 @@
                         <img src="images/duck_tshirt.jpg" alt="Duck T-shirt">
                         <p>Stylish T-shirt with a duck print.</p>
                         <p class="price">$14.99</p>
-                        <form action="PaymentPage.php" method="post">
+                        <form action="payment.php" method="post">
                             <input type="hidden" name="product_name" value="Duck T-shirt">
                             <input type="hidden" name="product_price" value="14.99">
                             <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>
@@ -114,7 +148,7 @@
                         <img src="images/duck_keychain.jpg" alt="Duck Keychain">
                         <p>Carry your keys with this adorable duck keychain.</p>
                         <p class="price">$4.99</p>
-                        <form action="PaymentPage.php" method="post">
+                        <form action="payment.php" method="post">
                             <input type="hidden" name="product_name" value="Duck Keychain">
                             <input type="hidden" name="product_price" value="4.99">
                             <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>
@@ -127,7 +161,7 @@
                         <img src="images/duck_pillow.jpg" alt="Duck Pillow">
                         <p>Comfortable pillow with a cute duck design.</p>
                         <p class="price">$24.99</p>
-                        <form action="PaymentPage.php" method="post">
+                        <form action="payment.php" method="post">
                             <input type="hidden" name="product_name" value="Duck Pillow">
                             <input type="hidden" name="product_price" value="24.99">
                             <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>
@@ -140,7 +174,7 @@
                         <img src="images/duck_hat.jpg" alt="Duck Hat">
                         <p>Fashionable hat with a duck logo.</p>
                         <p class="price">$12.99</p>
-                        <form action="PaymentPage.php" method="post">
+                        <form action="payment.php" method="post">
                             <input type="hidden" name="product_name" value="Duck Hat">
                             <input type="hidden" name="product_price" value="12.99">
                             <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>

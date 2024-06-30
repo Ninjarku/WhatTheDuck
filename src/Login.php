@@ -1,31 +1,24 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Project/PHP/PHPProject.php to edit this template
--->
-<html>
+<html lang="en">
     <head>
         <title>WhatTheDuck - Login</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet"
               href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-              integrity=
-              "sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+              integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
               crossorigin="anonymous">
         <link rel="stylesheet" href="css/main.css">
-        <!--jQuery-->
-        <script defer
-                src="https://code.jquery.com/jquery-3.4.1.min.js"
+        <!-- Ensure jQuery is loaded first -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"
                 integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-                crossorigin="anonymous">
-        </script>
-        <!--Bootstrap JS-->
-        <script defer
-                src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+        <!-- Then load Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
                 integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
-                crossorigin="anonymous">
-        </script>
+        crossorigin="anonymous"></script>
+        <!-- Load SweetAlert2 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
             .row {
                 margin-top: 20px;
@@ -49,51 +42,51 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Project/PHP/PHPProject.php to edi
                 background-color: #ff6347;
                 color: white;
             }
+            a {
+                color: blue;
+                text-decoration: underline;
+                font-weight: bold;
+            }
             a:hover {
                 color: #ff6347;
-                text-decoration: none;
+                text-decoration: underline;
+            }
+            .navbar a {
+                color: black !important;
+                text-decoration: none !important;
+            }
+            .navbar a:hover {
+                text-decoration: none !important;
             }
         </style>
-        <?php
-// Check if the form was submitted
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            // Retrieve the user's input
-            $cust_username = $_POST['cust_username'];
-            $cust_password = $_POST['cust_pass'];
-
-            // Sanitize the input
-            $cust_username = filter_var($cust_username, FILTER_SANITIZE_STRING);
-            $cust_password = filter_var($cust_password, FILTER_SANITIZE_STRING);
-
-            // Check connection
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            }
-
-            // Query the database to check if the username and password combination exists
-            $sql = "SELECT * FROM users WHERE username='$cust_username' AND password='$cust_password'";
-            $result = $conn->query($sql);
-
-            // If the username and password are correct, create a session and redirect the user
-            if ($result->num_rows > 0) {
-                session_start();
-                $_SESSION['username'] = $username;
-                header('Location: index.php');
-                exit();
-            }
-            // If the username and password are incorrect, display an error message
-            else {
-                echo "Invalid username or password";
-            }
-
-            // Close the database connection
-            $conn->close();
-        }
-        ?>
-
+        <script>
+            $(document).ready(function () {
+                $("#cust-login").submit(function (event) {
+                    event.preventDefault();
+                    $.ajax({
+                        type: "POST",
+                        url: "process_custlogin.php",
+                        data: $(this).serialize(),
+                        dataType: "json",
+                        success: function (response) {
+                            Swal.fire({
+                                icon: response.icon,
+                                title: response.title,
+                                text: response.message,
+                                showCloseButton: false,
+                                showCancelButton: false,
+                                confirmButtonText: response.icon === "success" ? "Return to Home" : "Return to Login",
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = response.redirect || "Login.php";
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
     </head>
-
     <body style="background-color:#fff5cc;">
         <?php include 'includes/navbar.php'; ?>
         <div class="container">
@@ -101,7 +94,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Project/PHP/PHPProject.php to edi
                 <div class="col-12 col-md-6 col-lg-4 col-xl-4">
                     <h1>Login</h1>
                     <div class="login-form">
-                        <form action="process_custlogin.php" id="cust-login" method="post" accept-charset="UTF-8">
+                        <form id="cust-login" method="post" accept-charset="UTF-8">
                             <div class="form-group" id="name-wrapper"> 
                                 <input type="text" name="cust_username" id="cust_username" value="" class="form-control" placeholder="Username" required="">
                             </div>
