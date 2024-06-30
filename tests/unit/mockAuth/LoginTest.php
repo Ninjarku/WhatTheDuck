@@ -1,4 +1,5 @@
 // tests/mockAuth/LoginTest.php
+<?php
 use PHPUnit\Framework\TestCase;
 
 require 'mockAuth.php';
