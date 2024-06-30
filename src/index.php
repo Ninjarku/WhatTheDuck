@@ -65,8 +65,7 @@
         </style>
     </head>
     <body>
-        <?php include 'includes/navbar.php'; ?>
-
+        <?php include 'includes/navbar.php';?>
         <?php
 //// Enable error reporting for debugging
 //        error_reporting(E_ALL);
@@ -99,7 +98,6 @@
 //// Close the connection
 //        $conn->close();
         ?>
-
         <div class="container">
             <h1 class="text-center">Our Products</h1>
             <div class="row justify-content-center">
