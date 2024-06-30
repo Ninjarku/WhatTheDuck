@@ -1,9 +1,5 @@
 pipeline {
      agent any
-    
-     environment {
-        DEPLOY_PATH = "/home/student9/docker-volumes/php-docker/whattheduck"  // Path on your AWS instance
-    }
 
     stages {
         stage('Checkout SCM') {
@@ -29,15 +25,6 @@ pipeline {
                     }
                 }
             }
-            post {
-                always {
-                    recordIssues(
-                        tool: checkStyle(pattern: 'phpcs.xml'),
-                       // qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]]
-                    )
-                }
-            }
-        }
 
        
 
@@ -103,6 +90,12 @@ pipeline {
             //junit testResults: 'logs/unitreport.xml'
             //dependencyCheckPublisher pattern: 'dependency-check-report.xml'
        // }
+         always {
+            recordIssues(
+                tools: [checkStyle(pattern: 'phpcs.xml')],
+                filters: [excludeFile('src/js/*'), excludeFile('vendor/*')]
+            )
+        }
         success {
             echo "Pipline Success!"
         }
