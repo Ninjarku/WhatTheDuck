@@ -1,7 +1,7 @@
+<noscript style="color:white;background-color:black;width: 100%;display: block;">This course portal requires JavaScript to verify your identity. Please enable JavaScript to access the course.</noscript>
 <?php
 session_start();
 ?>
-<noscript style="color:white;background-color:black;width: 100%;display: block;">This course portal requires JavaScript to verify your identity. Please enable JavaScript to access the course.</noscript>
 <script src="/js/jquery-3.5.1.js" type="text/javascript"></script>
 <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
 <script src="/js/navbar-active-btn.js" type="text/javascript"></script>

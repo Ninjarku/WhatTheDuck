@@ -1,4 +1,3 @@
-<?php include 'includes/navbar.php';?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -89,6 +88,7 @@
         </script>
     </head>
     <body style="background-color:#fff5cc;">
+        <?php include 'includes/navbar.php'; ?>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-6 col-lg-4 col-xl-4">

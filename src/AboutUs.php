@@ -1,4 +1,3 @@
-<?php include 'includes/navbar.php';?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,6 +45,9 @@
     </style>
 </head>
 <body>
+    <?php         
+        include 'includes/navbar.php'; 
+    ?>
     <div class="page-container">
         <div class="container my-1  p-5 main-container">
             <header>
