@@ -1,7 +1,8 @@
 // tests/mockAuth/LoginTest.php
+<?php
 use PHPUnit\Framework\TestCase;
 
-require 'tests/mockAuth/MockAuth.php';
+require 'tests/mockAuth/mockAuth.php';
 
 class LoginTest extends TestCase {
     private $mockAuth;

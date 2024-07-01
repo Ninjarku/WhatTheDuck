@@ -1,4 +1,5 @@
 // tests/mockAuth/MockAuth.php
+<?php
 class MockAuth {
     public function authenticate($username, $password) {
         // Mock authentication logic
