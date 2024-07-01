@@ -1,4 +1,7 @@
-<?php include "includes/navbar.php";?>
+<?php
+session_start();
+include "includes/navbar.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -112,7 +115,8 @@
         </style>
     </head>
     <body>
-            <?php
+        <?php
+        if ($_SESSION["cust_login"] == "success") {
             $success = true;
             global $username, $birthday, $email, $mobile, $address, $gender, $profile_image;
             $config = parse_ini_file('/var/www/private/db-config.ini');
