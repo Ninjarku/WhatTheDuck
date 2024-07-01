@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'includes/navbar.php';
 include 'process_product.php';
 $productsJson = getAllProducts();
