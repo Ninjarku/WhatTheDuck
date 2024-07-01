@@ -1,3 +1,4 @@
+<?php include "includes/navbar.php";?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -111,13 +112,6 @@
         </style>
     </head>
     <body>
-        <?php
-        session_start();
-        if ($_SESSION["cust_login"] == "success") {
-            include "includes/navbar.php";
-            ?>
-        
-
             <?php
             $success = true;
             global $username, $birthday, $email, $mobile, $address, $gender, $profile_image;
