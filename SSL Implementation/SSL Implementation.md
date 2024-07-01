@@ -1,6 +1,7 @@
 #### Step 1 Create a self signed cert
 Generate the SSL key and crt
 ```bash
+mkdir ~/nginx
 mkdir ~/nginx/ssl
 #sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 
@@ -130,7 +131,7 @@ echo "server {
 
     server_name whattheduck.com www.whattheduck.com whattheduck.ddns.net;
 
-    return 302 https://\$server_name\$request_uri;
+    return 301 https://\$server_name\$request_uri;
 }" > ~/nginx/ssl/whattheduck.ddns.net
 ```
 
@@ -225,6 +226,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) gd mysqli pdo pdo_mysql
 #     ufw \
 
+# Copy db-config.ini
+COPY db-config.ini /var/www/private/db-config.ini
+
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
@@ -253,7 +257,9 @@ CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
 
 # Linking to sites-enabled
 RUN rm /etc/nginx/sites-enabled/default
-RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/default
+#RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/default
+RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/whattheduck
+RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/whattheduck.ddns.net
 ```
 
 #### Step 6 build the image

@@ -29,8 +29,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
     </head>
     <body>
         <?php
+        require '/var/www/html/jwt/jwt_cookie.php';
+        echo "run";
+
         session_start();
         session_destroy();
+        unsetJWTInCookie();
+
+        $jwt = getJWTFromCookie();
+        blacklistToken($jwt);
+
         ?>
         <br/>
         <main class="container">
@@ -39,6 +47,5 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
             </script>
         </main>
         <br/>
-        
     </body>
 </html>

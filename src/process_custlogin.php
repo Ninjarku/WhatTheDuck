@@ -1,4 +1,5 @@
 <?php
+require '/var/www/html/jwt/jwt_gen_token.php';
 
 session_start();
 header('Content-Type: application/json');
@@ -50,12 +51,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $db_username = $row["Username"];
                 $db_password = $row["Password"];
                 $cust_id = $row["User_ID"];
+                $cust_rol = $row["User_Type"];
+
 
                 if (password_verify($cust_pw, $db_password)) {
                     $_SESSION["cust_login"] = "success";
                     $_SESSION["cust_username"] = $cust_username;
                     $_SESSION["userid"] = $cust_id;
                     $_SESSION["cust_id"] = $cust_id;
+
+                    // Set cookie
+                    // Creates the cookie and sets it in the user's session
+                    try {
+                        $jwt_val = gen_set_cookie($cust_id, $cust_rol);
+                    } catch (Exception $e) {
+                        echo 'Caught exception: ',  $e->getMessage(), "\n";
+                    }
 
                     $response["icon"] = "success";
                     $response["title"] = "Login successful!";
@@ -74,6 +85,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->close();
     }
 }
-
 echo json_encode($response);
 ?>
