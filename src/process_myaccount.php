@@ -1,11 +1,17 @@
 <?php
 session_start();
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: application/json');
 
-//Debugging stuff
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+$response = array(
+    "icon" => "error",
+    "title" => "Profile update failed!",
+    "message" => "Please try again.",
+    "redirect" => null
+);
 
 function sanitize_input($data) {
     $data = trim($data);
@@ -74,19 +80,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($stmt->execute()) {
             $_SESSION['cust_username'] = $username;  // Update session username if changed
-            echo "<script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Profile updated successfully!',
-                    showCloseButton: false,
-                    showCancelButton: false,
-                    confirmButtonText: 'Return to MyAccount',
-                }).then((result) => { 
-                    if (result.isConfirmed) {
-                        window.location.href = 'MyAccount.php';
-                    }
-                });
-              </script>";
+            $response["icon"] = "success";
+            $response["title"] = "Profile updated successfully!";
+            $response["message"] = "Your profile has been updated.";
+            $response["redirect"] = "MyAccount.php";
         } else {
             $success = false;
             $errorMsg = "Update failed: " . $stmt->error;
@@ -96,62 +93,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Display error message if update fails
     if (!$success) {
-        echo "<script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Profile update failed!',
-                html: '{$errorMsg}',
-                showCloseButton: false,
-                showCancelButton: false,
-                confirmButtonText: 'Return to MyAccount',
-            }).then((result) => { 
-                if (result.isConfirmed) {
-                    window.location.href = 'MyAccount.php';
-                }
-            });
-          </script>";
+        $response["message"] = $errorMsg;
     }
 
     $conn->close();
 } else {
-    echo "<script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid request!',
-            text: 'Please submit the form properly.',
-            showCloseButton: false,
-            showCancelButton: false,
-            confirmButtonText: 'Return to MyAccount',
-        }).then((result) => { 
-            if (result.isConfirmed) {
-                window.location.href = 'MyAccount.php';
-            }
-        });
-      </script>";
+    $response["message"] = "Invalid request! Please submit the form properly.";
 }
+
+echo json_encode($response);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>My Account</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
-    <!-- jQuery -->
-    <script defer
-            src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script defer
-            src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
-            integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body>
-</body>
-</html>

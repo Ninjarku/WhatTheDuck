@@ -23,6 +23,7 @@ include "includes/navbar.php";
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
             integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
             crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body, html {
             font-family: 'Comic Neue', cursive;
@@ -113,6 +114,35 @@ include "includes/navbar.php";
             margin-bottom: 50px;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            $("#profile-form").on("submit", function (event) {
+                event.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    type: "POST",
+                    url: "process_myaccount.php",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: response.icon,
+                            title: response.title,
+                            text: response.message,
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: response.redirect ? 'Return to MyAccount' : 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed && response.redirect) {
+                                window.location.href = response.redirect;
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <?php
@@ -160,7 +190,7 @@ include "includes/navbar.php";
                 </div>
                 <div class="col-md-9">
                     <div class="profile-content">
-                        <form method="post" action="process_myaccount.php" enctype="multipart/form-data" class="d-flex w-100">
+                        <form id="profile-form" method="post" enctype="multipart/form-data" class="d-flex w-100">
                             <div class="form-container">
                                 <h1>My Profile</h1>
                                 <p>Manage and protect your account</p>
