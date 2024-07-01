@@ -1,6 +1,6 @@
 <?php
+include 'includes/navbar.php';
 include 'process_product.php';
-
 $productsJson = getAllProducts();
 $products = json_decode($productsJson, true);
 ?>
@@ -62,8 +62,6 @@ $products = json_decode($productsJson, true);
     </style>
 </head>
 <body>
-    <?php include 'includes/navbar.php'; ?>
-
     <div class="container">
         <h1 class="text-center">Our Products</h1>
         <div class="row justify-content-center">
