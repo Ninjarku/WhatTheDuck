@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 <noscript style="color:white;background-color:black;width: 100%;display: block;">This course portal requires JavaScript to verify your identity. Please enable JavaScript to access the course.</noscript>
 <script src="/js/jquery-3.5.1.js" type="text/javascript"></script>
