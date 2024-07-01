@@ -25,6 +25,7 @@ if (session_status() === PHP_SESSION_NONE) {
         font-weight: bold;
         display: inline-block;
         padding: 10px 15px;
+        font-family: 'Comic Neue', cursive;
     }
     .nav-item .nav-link:hover, .login-link:hover, .cart-link:hover {
         color: #fff !important;
