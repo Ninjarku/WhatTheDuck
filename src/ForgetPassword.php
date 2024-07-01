@@ -1,3 +1,7 @@
+<?php
+session_start();
+include "includes/navbar.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,8 +43,6 @@
     </style>
 </head>
 <body>
-    <?php include 'includes/navbar.php'; ?>
-
     <div class="container">
         <h1 class="text-center">Forget Password</h1>
         <div class="forget-password-card">
