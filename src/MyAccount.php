@@ -120,7 +120,7 @@ include "includes/navbar.php";
         $success = true;
         global $username, $birthday, $email, $mobile, $address, $gender, $profile_image;
         $config = parse_ini_file('/var/www/private/db-config.ini');
-        $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+        $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
         if ($conn->connect_error) {
             $errorMsg = "Connection failed: " . $conn->connect_error;
             $success = false;
