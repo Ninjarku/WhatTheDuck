@@ -1,4 +1,4 @@
-// tests/mockAuth/MockAuth.php
+// tests/unit/mockAuth/MockAuth.php
 <?php
 class MockAuth {
     public function authenticate($username, $password) {
