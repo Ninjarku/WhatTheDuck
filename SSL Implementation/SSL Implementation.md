@@ -113,7 +113,12 @@ echo "server {
     location / {
 	    try_files \$uri \$uri/ =404;
     }
-    
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        include fastcgi_params;
+    }
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
         fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
@@ -129,7 +134,7 @@ echo "server {
     listen 80;
     listen [::]:80;
 
-    server_name whattheduck.com www.whattheduck.com whattheduck.ddns.net;
+    server_name whattheduck.ddns.net;
 
     return 301 https://\$server_name\$request_uri;
 }" > ~/nginx/ssl/whattheduck.ddns.net
@@ -217,6 +222,9 @@ FROM php:7.4-fpm
 
 # Install Nginx and necessary dependencies
 RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
     nginx \
     openssl \
     libpng-dev \
@@ -224,11 +232,17 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd mysqli pdo pdo_mysql
-#     ufw \
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set environment variable to allow Composer to run as root
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Copy db-config.ini
 COPY db-config.ini /var/www/private/db-config.ini
-
+COPY private.pem /var/www/private/private.pem
+COPY public.pem /var/www/private/public.pem
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
@@ -260,6 +274,9 @@ RUN rm /etc/nginx/sites-enabled/default
 #RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/default
 RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/whattheduck
 RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/whattheduck.ddns.net
+RUN chown www-data /var/www/private/private.pem
+RUN chown www-data /var/www/private/public.pem
+RUN composer require firebase/php-jwt predis/predis twilio/sdk phpmailer/phpmailer
 ```
 
 #### Step 6 build the image

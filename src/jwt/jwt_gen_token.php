@@ -31,21 +31,21 @@ function setJWTInCookie($jwt, $cookieName = 'auth_token', $cookieExpiry = 3600) 
     // Ensure the cookie is sent only over HTTPS and is inaccessible via JavaScript
     $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
     // Actual
-    // $cookieParams = [
-    //     'expires' => time() + $cookieExpiry,
-    //     'path' => '/',
-    //     'domain' => 'whattheduck.ddns.net',
-    //     'secure' => $isSecure,
-    //     'httponly' => true,
-    // ];
-
-    // Test site only, change on production to top
     $cookieParams = [
         'expires' => time() + $cookieExpiry,
         'path' => '/',
+        'domain' => 'whattheduck.ddns.net',
         'secure' => $isSecure,
         'httponly' => true,
     ];
+
+    // Test site only, change on production to top
+    // $cookieParams = [
+    //     'expires' => time() + $cookieExpiry,
+    //     'path' => '/',
+    //     'secure' => $isSecure,
+    //     'httponly' => true,
+    // ];
 
     setcookie($cookieName, $jwt, $cookieParams);
 }
