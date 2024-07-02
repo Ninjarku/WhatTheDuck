@@ -42,11 +42,12 @@ pipeline {
            steps {
                script {
                     
-                       sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
+                       sh 'docker exec -it php-docker ./vendor/bin/phpunit --configuration --log-junit logs/unitreport.xml -c /var/www/private/tests/phpunit.xml /var/www/private/tests/unit'
                 
                }
            }
        }
+
 
         
     
