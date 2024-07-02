@@ -39,25 +39,25 @@ function deleteUser($User_ID) {
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=2&error=" . urlencode("Connection failed: " . $conn->connect_error));
+        header("Location: error_page.php?error_id=1&error=" . urlencode("Connection failed: " . $conn->connect_error));
         exit();
     } else {
         if (empty($User_ID)) {
-            header("Location: error_page.php?error_id=2&error=" . urlencode("Empty User ID."));
+            header("Location: error_page.php?error_id=1&error=" . urlencode("Empty User ID."));
             exit();
         }
 
         $stmt = $conn->prepare("DELETE FROM User WHERE User_ID = ?");
         if (!$stmt) {
             error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=2&error=" . urlencode("Prepare failed: " . $conn->error));
+            header("Location: error_page.php?error_id=1&error=" . urlencode("Prepare failed: " . $conn->error));
             exit();
         }
 
         $stmt->bind_param("i", $User_ID);
         if (!$stmt->execute()) {
             error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=2&error=" . urlencode("Execute failed: " . $stmt->error));
+            header("Location: error_page.php?error_id=1&error=" . urlencode("Execute failed: " . $stmt->error));
             exit();
         }
 
@@ -67,31 +67,32 @@ function deleteUser($User_ID) {
     }
 }
 
+// error_id might need to change
 function getUserById($User_ID) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
     $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=3&error=" . urlencode("Connection failed: " . $conn->connect_error));
+        header("Location: error_page.php?error_id=1&error=" . urlencode("Connection failed: " . $conn->connect_error));
         exit();
     } else {
         if (empty($User_ID)) {
-            header("Location: error_page.php?error_id=3&error=" . urlencode("Empty User ID."));
+            header("Location: error_page.php?error_id=1&error=" . urlencode("Empty User ID."));
             exit();
         }
 
         $stmt = $conn->prepare("SELECT * FROM User WHERE User_ID = ?");
         if (!$stmt) {
             error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=3&error=" . urlencode("Prepare failed: " . $conn->error));
+            header("Location: error_page.php?error_id=1&error=" . urlencode("Prepare failed: " . $conn->error));
             exit();
         }
 
         $stmt->bind_param("i", $User_ID);
         if (!$stmt->execute()) {
             error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=3&error=" . urlencode("Execute failed: " . $stmt->error));
+            header("Location: error_page.php?error_id=1&error=" . urlencode("Execute failed: " . $stmt->error));
         }
 
         $result = $stmt->get_result();
@@ -111,7 +112,7 @@ function addUser($userData) {
     // Check connection
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=4&error=" . urlencode("Connection failed: " . $conn->connect_error));
+        header("Location: error_page.php?error_id=2&error=" . urlencode("Connection failed: " . $conn->connect_error));
         exit();
     } else {
         // Check if the username is already taken
@@ -121,7 +122,7 @@ function addUser($userData) {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            header("Location: error_page.php?error_id=4&error=" . urlencode("Username is already taken.")); // Redirect to login page
+            header("Location: error_page.php?error_id=2&error=" . urlencode("Username is already taken.")); // Redirect to login page
             exit();
         } else {
             $stmt->close();
@@ -130,7 +131,7 @@ function addUser($userData) {
             $stmt = $conn->prepare("INSERT INTO User (Username, Password, Email, Mobile_Number, Billing_Address, Gender, DOB, User_Type, Account_Active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             if (!$stmt) {
                 error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-                header("Location: error_page.php?error_id=4&error=" . urlencode("Prepare failed: " . $conn->error));
+                header("Location: error_page.php?error_id=2&error=" . urlencode("Prepare failed: " . $conn->error));
                 exit();
             }
 
@@ -147,7 +148,7 @@ function addUser($userData) {
 
             // Check if validation failed for mobile number
             if ($mobileNumber === false) {
-                header("Location: error_page.php?error_id=4&error=" . urlencode("Invalid mobile number format."));
+                header("Location: error_page.php?error_id=2&error=" . urlencode("Invalid mobile number format."));
                 exit();
             } else {
                 $mobileNumber = sanitize_input($userData["Mobile_Number"]);
@@ -168,7 +169,7 @@ function addUser($userData) {
 
             if (!$stmt->execute()) {
                 error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-                header("Location: error_page.php?error_id=4&error=" . urlencode("Execute failed: " . $stmt->error));
+                header("Location: error_page.php?error_id=2&error=" . urlencode("Execute failed: " . $stmt->error));
             }
         }
     }
@@ -184,13 +185,13 @@ function editUser($userData) {
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=5&error=" . urlencode("Connection failed: " . $conn->connect_error));
+        header("Location: error_page.php?error_id=2&error=" . urlencode("Connection failed: " . $conn->connect_error));
         exit();
     } else {
         $stmt = $conn->prepare("UPDATE User SET Username=?, Email=?, Mobile_Number=?, Billing_Address=?, Gender=?, DOB=?, User_Type=?, Account_Active=? WHERE User_ID=?");
         if (!$stmt) {
             error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=5&error=" . urlencode("Prepare failed: " . $conn->error));
+            header("Location: error_page.php?error_id=2&error=" . urlencode("Prepare failed: " . $conn->error));
             exit();
         }
 
@@ -206,7 +207,7 @@ function editUser($userData) {
 
         // Check if validation failed for mobile number
         if ($mobileNumber === false) {
-            header("Location: error_page.php?error_id=4&error=" . urlencode("Invalid mobile number format."));
+            header("Location: error_page.php?error_id=2&error=" . urlencode("Invalid mobile number format."));
             exit();
         } else {
             $mobileNumber = sanitize_input($userData["Mobile_Number"]);
@@ -227,7 +228,7 @@ function editUser($userData) {
 
         if (!$stmt->execute()) {
             error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=5&error=" . urlencode("Execute failed: " . $stmt->error));
+            header("Location: error_page.php?error_id=2&error=" . urlencode("Execute failed: " . $stmt->error));
         }
 
         $stmt->close();

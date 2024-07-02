@@ -44,15 +44,11 @@ error_reporting(E_ALL);
     <p class="text-center"><?php echo htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'); ?></p>
     <?php
     $error_redirects = [
-        0 => ["Back to Admin Login", "admin_login.php"],
-        1 => ["Back to Admin Index", "admin_index.php"],
-        2 => ["Back to Admin Index", "admin_index.php"],
-        4 => ["Back to User Form", "user_form.php"],
-        5 => ["Back to User Form", "user_form.php"],
-        6 => ["Back to Product Index", "product_index.php"],
-        7 => ["Back to Product Index", "product_index.php"],
-        9 => ["Back to Product Form", "product_form.php"],
-        10 => ["Back to Product Form", "product_form.php"]
+        0 => ["Back to Admin Login", "Login.php"],
+        1 => ["Back to Admin Index", "admin_index.php"]
+        2 => ["Back to User Form", "user_form.php"],
+        3 => ["Back to Product Index", "product_index.php"],
+        4 => ["Back to Product Form", "product_form.php"],
     ];
 
     if (array_key_exists($error_id, $error_redirects)) {
