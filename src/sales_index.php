@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 
 session_start(); // Start the session at the beginning of the file
 // Check if the admin is logged in
-if ($_SESSION["admin_login"] !== "success") {
+if ($_SESSION["cust_rol"] !== "Sales Admin") {
     header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!")); // Redirect to login page
     exit();
 }
@@ -14,7 +14,7 @@ if ($_SESSION["admin_login"] !== "success") {
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>What The Duck - Sales Admin</title>
+        <title>WhatTheDuck - Sales Admin</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">  
 
         <!-- START OF THE LINK -->
@@ -54,7 +54,6 @@ if ($_SESSION["admin_login"] !== "success") {
                                 {title: "Product ID"},
                                 {title: "Product Name"},
                                 {title: "Product Description"},
-                                {title: "Product Image"},
                                 {title: "Price"},
                                 {title: "Quantity"},
                                 {title: "Product of Category"},
@@ -133,7 +132,6 @@ if ($_SESSION["admin_login"] !== "success") {
                                             product.Product_ID,
                                             product.Product_Name,
                                             product.Product_Description,
-                                            product.Product_Image,
                                             product.Price,
                                             product.Quantity,
                                             product.Product_Category,

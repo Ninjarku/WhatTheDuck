@@ -1,7 +1,7 @@
 <?php
 session_start(); // Start the session at the beginning of the file
 // Check if the admin is logged in
-if ($_SESSION["admin_login"] !== "success") {
+if ($_SESSION["cust_rol"] !== "Sales Admin") {
     header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!"));
     exit();
 }

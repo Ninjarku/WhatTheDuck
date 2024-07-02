@@ -1,7 +1,9 @@
 <?php
-session_start(); // Start the session at the beginning of the file
+session_start(); 
+include_once "includes/navbar.php";
+
 // Check if the admin is logged in
-if ($_SESSION["admin_login"] !== "success") {
+if ($_SESSION["cust_rol"] !== "IT Admin") {
     header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!"));
     exit();
 }
@@ -95,11 +97,11 @@ if ($Form_Type == 1 && $action === 'editUser') {
                 </div>
                 <div class="form-group">
                     <label for="Mobile_Number">Mobile Number:</label>
-                    <input type="text" class="form-control" id="Mobile_Number" name="Mobile_Number" value="<?php echo htmlspecialchars($user['Mobile_Number']); ?>" required>
+                    <input type="text" class="form-control" id="Mobile_Number" name="Mobile_Number" maxlength="8" value="<?php echo htmlspecialchars($user['Mobile_Number']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="Billing_Address">Billing Address:</label>
-                    <input type="text" class="form-control" id="Billing_Address" name="Billing_Address" value="<?php echo htmlspecialchars($user['Billing_Address']); ?>" required>
+                    <input type="text" class="form-control" id="Billing_Address" name="Billing_Address" value="<?php echo htmlspecialchars($user['Billing_Address']); ?>">
                 </div>
                 <div class="form-group">
                     <label for="Gender">Gender:</label>
@@ -116,9 +118,9 @@ if ($Form_Type == 1 && $action === 'editUser') {
                 <div class="form-group">
                     <label for="User_Type">User Type:</label>
                     <select class="form-control" id="User_Type" name="User_Type" required>
-                        <option value="admin" <?php echo $user['User_Type'] == 'IT Admin' ? 'selected' : ''; ?>>IT Admin</option>
-                        <option value="user" <?php echo $user['User_Type'] == 'Sales Admin' ? 'selected' : ''; ?>>Sales Admin</option>
-                        <option value="user" <?php echo $user['User_Type'] == 'Customer' ? 'selected' : ''; ?>>Customer</option>
+                        <option value="IT Admin" <?php echo $user['User_Type'] == 'IT Admin' ? 'selected' : ''; ?>>IT Admin</option>
+                        <option value="Sales Admin" <?php echo $user['User_Type'] == 'Sales Admin' ? 'selected' : ''; ?>>Sales Admin</option>
+                        <option value="Customer" <?php echo $user['User_Type'] == 'Customer' ? 'selected' : ''; ?>>Customer</option>
                     </select>
                 </div>
                 <?php if ($User_ID == 0): // Show password fields only when adding a new user ?>
@@ -135,6 +137,6 @@ if ($Form_Type == 1 && $action === 'editUser') {
                 <button type="submit" class="btn btn-primary"><?php echo $Form_Type == 1 ? 'Update' : 'Add'; ?> User</button>
             </form>
         </div>
-
+        <?php include "includes/footer.php"; ?>
     </body>
 </html>

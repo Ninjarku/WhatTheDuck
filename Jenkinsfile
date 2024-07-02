@@ -27,25 +27,29 @@ pipeline {
             }
         }
          
-        // stage('OWASP Dependency-Check Vulnerabilities') {
-        //      steps {
-        //         withCredentials([string(credentialsId: 'nvd_api_key', variable: 'nvd_api_key')]) {
-        //             dependencyCheck additionalArguments: "--scan src --format HTML --format XML --nvdApiKey ${env.nvd_api_key}", odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-        //         }
-        //     }
-        // }
+        stage('OWASP Dependency-Check Vulnerabilities') {
+             steps {
+                withCredentials([string(credentialsId: 'nvd_api_key', variable: 'nvd_api_key')]) {
+                    dependencyCheck additionalArguments: "--scan src --format HTML --format XML --nvdApiKey ${env.nvd_api_key}", odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                }
+                 // dependencyCheck additionalArguments: "--scan src --format HTML --format XML", odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+            }
+        }
 
           
 
           stage('PHPUnit Test') {
            steps {
                script {
-                    
-                       sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
+
+                    sh 'docker exec -i php-docker ./vendor/bin/phpunit -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
+                       //sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
                 
                }
            }
        }
+
+
 
         
     
@@ -76,7 +80,7 @@ pipeline {
     post {
         always {
             junit testResults: 'logs/unitreport.xml'
-        //    dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
        }
         success {
             echo "Pipline Success!"
