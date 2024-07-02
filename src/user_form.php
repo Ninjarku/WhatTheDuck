@@ -97,7 +97,7 @@ if ($Form_Type == 1 && $action === 'editUser') {
                 </div>
                 <div class="form-group">
                     <label for="Mobile_Number">Mobile Number:</label>
-                    <input type="text" class="form-control" id="Mobile_Number" name="Mobile_Number" value="<?php echo htmlspecialchars($user['Mobile_Number']); ?>" required>
+                    <input type="text" class="form-control" id="Mobile_Number" name="Mobile_Number" maxlength="8" value="<?php echo htmlspecialchars($user['Mobile_Number']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label for="Billing_Address">Billing Address:</label>
