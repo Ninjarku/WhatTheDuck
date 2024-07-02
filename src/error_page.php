@@ -45,10 +45,10 @@ error_reporting(E_ALL);
     <?php
     $error_redirects = [
         0 => ["Back to Admin Login", "Login.php"],
-        1 => ["Back to Admin Index", "admin_index.php"]
+        1 => ["Back to Admin Index", "admin_index.php"],
         2 => ["Back to User Form", "user_form.php"],
         3 => ["Back to Product Index", "product_index.php"],
-        4 => ["Back to Product Form", "product_form.php"],
+        4 => ["Back to Product Form", "product_form.php"]
     ];
 
     if (array_key_exists($error_id, $error_redirects)) {
