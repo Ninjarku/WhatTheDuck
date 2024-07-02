@@ -36,7 +36,7 @@ include "includes/navbar.php";
     <?php
     $error_id = isset($_GET['error_id']) ? intval($_GET['error_id']) : -1;
 
-    $title = $error_id === -1 ? "SUCCESS!!!!!" : "ERROR!!!!!";
+    $title = $error_id === -1 ? "Duck Yeah!!!!" : "DUCK YOU!!!!";
     echo "<h1 class='text-center'>{$title}</h1>";
     ?>
     <p class="text-center"><?php echo htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'); ?></p>
