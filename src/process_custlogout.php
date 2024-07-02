@@ -4,13 +4,20 @@ require '/var/www/html/jwt/jwt_cookie.php';
 session_start();
 session_destroy();
 
-unsetJWTInCookie();
+try {
+        $jwt = getJWTFromCookie();
+        blacklistToken($jwt);
+        unsetJWTInCookie();    
+        exit();
+}
+catch (Exception $e){
+        // token already blacklisted
+        header("Location: index.php");
+        exit();
+}
 
-$jwt = getJWTFromCookie();
-blacklistToken($jwt);
 
-header("Location: index.php");
-exit();
+
 ?>
 <!DOCTYPE html>
 <html>
