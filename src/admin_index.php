@@ -2,7 +2,7 @@
 session_start(); 
 
 // Check if the admin is logged in
-if ($_SESSION["admin_login"] !== "success") {
+if ($_SESSION["cust_rol"] !== "IT Admin") {
     header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!")); // Redirect to login page
     exit();
 } else {
