@@ -1,12 +1,12 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+session_start(); 
 
-session_start(); // Start the session at the beginning of the file
 // Check if the admin is logged in
 if ($_SESSION["admin_login"] !== "success") {
     header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!")); // Redirect to login page
     exit();
+} else {
+    include "includes/navbar.php";
 }
 ?>
 
@@ -152,7 +152,6 @@ if ($_SESSION["admin_login"] !== "success") {
     </head>
 
     <body>
-        <?php include "includes/navbar.php"; ?>
         <div class="container">
             <h1 class="text-center">User Management</h1>
             <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New User</button>
