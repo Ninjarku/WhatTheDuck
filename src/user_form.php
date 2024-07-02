@@ -1,5 +1,7 @@
 <?php
-session_start(); // Start the session at the beginning of the file
+session_start(); 
+include_once "includes/navbar.php";
+
 // Check if the admin is logged in
 if ($_SESSION["admin_login"] !== "success") {
     header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!"));
@@ -27,7 +29,7 @@ $user = [
 if ($Form_Type == 1 && $action === 'editUser') {
     $User_ID = isset($_GET['User_ID']) ? intval($_GET['User_ID']) : 0;
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -116,9 +118,9 @@ if ($Form_Type == 1 && $action === 'editUser') {
                 <div class="form-group">
                     <label for="User_Type">User Type:</label>
                     <select class="form-control" id="User_Type" name="User_Type" required>
-                        <option value="admin" <?php echo $user['User_Type'] == 'IT Admin' ? 'selected' : ''; ?>>IT Admin</option>
-                        <option value="user" <?php echo $user['User_Type'] == 'Sales Admin' ? 'selected' : ''; ?>>Sales Admin</option>
-                        <option value="user" <?php echo $user['User_Type'] == 'Customer' ? 'selected' : ''; ?>>Customer</option>
+                        <option value="IT Admin" <?php echo $user['User_Type'] == 'IT Admin' ? 'selected' : ''; ?>>IT Admin</option>
+                        <option value="Sales Admin" <?php echo $user['User_Type'] == 'Sales Admin' ? 'selected' : ''; ?>>Sales Admin</option>
+                        <option value="Customer" <?php echo $user['User_Type'] == 'Customer' ? 'selected' : ''; ?>>Customer</option>
                     </select>
                 </div>
                 <?php if ($User_ID == 0): // Show password fields only when adding a new user ?>
@@ -135,6 +137,6 @@ if ($Form_Type == 1 && $action === 'editUser') {
                 <button type="submit" class="btn btn-primary"><?php echo $Form_Type == 1 ? 'Update' : 'Add'; ?> User</button>
             </form>
         </div>
-
+        <?php include "includes/footer.php"; ?>
     </body>
 </html>
