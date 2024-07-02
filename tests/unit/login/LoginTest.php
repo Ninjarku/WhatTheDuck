@@ -4,7 +4,7 @@
 use PHPUnit\Framework\TestCase;
 
 // Include the login script
-require '/home/student9/docker-volumes/php-docker/whattheduck/process_custlogin.php';
+require '/var/html/www/process_custlogin.php';
 
 class LoginTest extends TestCase
 {
