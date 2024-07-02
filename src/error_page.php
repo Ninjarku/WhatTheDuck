@@ -1,6 +1,6 @@
-<?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+<?php 
+session_start();
+include "includes/navbar.php"; 
 ?>
 
 <!DOCTYPE html>
@@ -31,8 +31,6 @@ error_reporting(E_ALL);
 </head>
 
 <body>
-<?php include "includes/navbar.php"; ?>
-
 <div class="container">
     <br>
     <?php
