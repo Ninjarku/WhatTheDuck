@@ -101,9 +101,6 @@ if (session_status() === PHP_SESSION_NONE) {
             <li class="nav-item active">
                 <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
             </li>
-<!--            <li class="nav-item">
-                <a class="nav-link" href="OurRooms.php">Our Rooms</a>
-            </li>-->
             <li class="nav-item">
                 <a class="nav-link" href="AboutUs.php">About Us</a>
             </li>
@@ -138,7 +135,6 @@ if (session_status() === PHP_SESSION_NONE) {
 <div id="AccountSidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
     <a href="MyAccount.php">My Account</a>
-    <a href="ViewReservations.php">View Reservation</a>
     <a href="process_custlogout.php">Logout</a>
 </div>
 <script>
