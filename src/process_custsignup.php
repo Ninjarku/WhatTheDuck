@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $response["message"] = "Phone number already exists.";
                 }
             } else {
-                $pwd_hashed = password_hash($pwd, PASSWORD_DEFAULT);
+                $pwd_hashed = password_hash($pwd, PASSWORD_ARGON2ID);
                 $stmt1 = $conn->prepare("INSERT INTO User (Username, Email, DOB, Mobile_Number, Password, User_Type) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt1->bind_param("ssssss", $username, $email, $birthday, $mobile, $pwd_hashed, $user_type);
                 if ($stmt1->execute()) {
