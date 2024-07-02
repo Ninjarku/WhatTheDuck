@@ -101,7 +101,7 @@ if ($Form_Type == 1 && $action === 'editUser') {
                 </div>
                 <div class="form-group">
                     <label for="Billing_Address">Billing Address:</label>
-                    <input type="text" class="form-control" id="Billing_Address" name="Billing_Address" value="<?php echo htmlspecialchars($user['Billing_Address']); ?>" required>
+                    <input type="text" class="form-control" id="Billing_Address" name="Billing_Address" value="<?php echo htmlspecialchars($user['Billing_Address']); ?>">
                 </div>
                 <div class="form-group">
                     <label for="Gender">Gender:</label>
