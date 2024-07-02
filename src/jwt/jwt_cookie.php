@@ -114,22 +114,22 @@ function isTokenBlacklisted($token) {
 function unsetJWTInCookie($cookieName = 'auth_token') {
     // Ensure the cookie is sent only over HTTPS and is inaccessible via JavaScript
     $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
-    // $cookieParams = [
-    //     'expires' => time() - 3600,  // Set the expiration time to 1 hour in the past
-    //     'path' => '/',
-    //     'domain' => 'whattheduck.com',
-    //     'secure' => $isSecure,
-    //     'httponly' => true,
-    //     'samesite' => 'Strict', 
-    // ];
-
-    // for test
     $cookieParams = [
         'expires' => time() - 3600,  // Set the expiration time to 1 hour in the past
         'path' => '/',
+        'domain' => 'whattheduck.com',
         'secure' => $isSecure,
         'httponly' => true,
+        'samesite' => 'Strict', 
     ];
+
+    // for test
+    // $cookieParams = [
+    //     'expires' => time() - 3600,  // Set the expiration time to 1 hour in the past
+    //     'path' => '/',
+    //     'secure' => $isSecure,
+    //     'httponly' => true,
+    // ];
 
     // Set the cookie with an empty value and past expiration time
     setcookie($cookieName, '', $cookieParams);
