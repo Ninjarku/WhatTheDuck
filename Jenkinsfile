@@ -29,9 +29,10 @@ pipeline {
          
         stage('OWASP Dependency-Check Vulnerabilities') {
              steps {
-                withCredentials([string(credentialsId: 'nvd_api_key', variable: 'nvd_api_key')]) {
-                    dependencyCheck additionalArguments: "--scan src --format HTML --format XML --nvdApiKey ${env.nvd_api_key}", odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-                }
+                // withCredentials([string(credentialsId: 'nvd_api_key', variable: 'nvd_api_key')]) {
+                //     dependencyCheck additionalArguments: "--scan src --format HTML --format XML --nvdApiKey ${env.nvd_api_key}", odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                // }
+                  dependencyCheck additionalArguments: "--scan src --format HTML --format XML", odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
             }
         }
 
