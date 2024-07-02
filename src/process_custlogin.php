@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION["cust_username"] = $cust_username;
                     $_SESSION["userid"] = $cust_id;
                     $_SESSION["cust_id"] = $cust_id;
+                    $_SESSION["cust_rol"] = $cust_rol;
 
                     // Set cookie
                     // Creates the cookie and sets it in the user's session
@@ -71,7 +72,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $response["icon"] = "success";
                     $response["title"] = "Login successful!";
                     $response["message"] = "Welcome back, " . htmlspecialchars($cust_username);
-                    $response["redirect"] = "index.php";
+
+                    if ($cust_rol == 'IT Admin') {
+                        $response["redirect"] = "admin_index.php";
+                    } elseif ($cust_rol == 'Sales Admin') {
+                        $response["redirect"] = "sales_index.php";
+                    } else {
+                        $response["redirect"] = "index.php";
+                    }
+
+                    // $response["icon"] = "success";
+                    // $response["title"] = "Login successful!";
+                    // $response["message"] = "Welcome back, " . htmlspecialchars($cust_username);
+                    // $response["redirect"] = "index.php";
                 } else {
                     $response["message"] = "Invalid username or password.";
                 }
