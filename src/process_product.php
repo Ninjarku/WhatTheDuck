@@ -63,10 +63,10 @@ function getAllProductsCustomer() {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (isset($_GET['action']) && $_GET['action'] === 'getAllProductsForSales') {
-        echo getAllProductsForSales();
-    } elseif (isset($_GET['action']) && $_GET['action'] === 'getAllProductsForCustomer') {
-        echo getAllProductsForCustomer();
+    if (isset($_GET['action']) && $_GET['action'] === 'getAllProductsSales') {
+        echo getAllProductsSales();
+    } elseif (isset($_GET['action']) && $_GET['action'] === 'getAllProductsCustomer') {
+        echo getAllProductsCustomer();
     }
     exit;
 }
