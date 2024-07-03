@@ -71,27 +71,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-
 function deleteProduct($Product_ID) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
     $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error, 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error, 'redirect' => 'sales_index.php']);
     }
 
     if (empty($Product_ID)) {
-        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Empty Product ID.', 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Empty Product ID.', 'redirect' => 'sales_index.php']);
     }
 
     $stmt = $conn->prepare("DELETE FROM Product WHERE Product_ID = ?");
     if (!$stmt) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error, 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error, 'redirect' => 'sales_index.php']);
     }
 
     $stmt->bind_param("i", $Product_ID);
     if (!$stmt->execute()) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error, 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error, 'redirect' => 'sales_index.php']);
     }
 
     $stmt->close();
