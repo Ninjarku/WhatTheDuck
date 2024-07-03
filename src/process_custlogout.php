@@ -8,7 +8,6 @@ try {
         $jwt = getJWTFromCookie();
         blacklistToken($jwt);
         unsetJWTInCookie();    
-        exit();
 }
 catch (Exception $e){
         // token already blacklisted
