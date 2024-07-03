@@ -120,7 +120,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
             $.ajax({
                 type: "GET",
-                url: "process_product.php?action=getAllProducts", // Fetch all products from process_product.php
+                url: "process_product.php?action=getAllProductsForSales", // Fetch all products from process_product.php
                 cache: false,
                 dataType: "json",
                 success: function (response) {

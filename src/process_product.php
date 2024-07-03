@@ -4,7 +4,8 @@ header('Content-Type: application/json');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-function getAllProducts() {
+//For sales index page
+function getAllProductsSales() {
     $config = parse_ini_file('/var/www/private/db-config.ini');
     $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
@@ -12,7 +13,7 @@ function getAllProducts() {
         return json_encode(['error' => 'Connection failed: ' . $conn->connect_error]);
     }
 
-    $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available FROM Product ORDER BY Product_ID ASC");
+    $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Price, Quantity, Product_Category, Product_Available FROM Product ORDER BY Product_ID ASC");
     if (!$stmt) {
         return json_encode(['error' => 'Prepare failed: ' . $conn->error]);
     }
@@ -29,11 +30,44 @@ function getAllProducts() {
 
     $stmt->close();
     $conn->close();
-    return json_encode($arrResult);
+    return json_encode(['icon' => 'success', 'data' => $arrResult]);
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'getAllProducts') {
-    echo getAllProducts();
+//For main index page
+function getAllProductsCustomer() {
+    $config = parse_ini_file('/var/www/private/db-config.ini');
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+
+    if ($conn->connect_error) {
+        return json_encode(['error' => 'Connection failed: ' . $conn->connect_error]);
+    }
+
+    $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price FROM Product WHERE Product_Available = 1 ORDER BY Product_ID ASC");
+    if (!$stmt) {
+        return json_encode(['error' => 'Prepare failed: ' . $conn->error]);
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $arrResult = [];
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $arrResult[] = $row;
+        }
+    }
+
+    $stmt->close();
+    $conn->close();
+    return json_encode(['icon' => 'success', 'data' => $arrResult]);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['action']) && $_GET['action'] === 'getAllProductsForSales') {
+        echo getAllProductsForSales();
+    } elseif (isset($_GET['action']) && $_GET['action'] === 'getAllProductsForCustomer') {
+        echo getAllProductsForCustomer();
+    }
     exit;
 }
 
