@@ -78,25 +78,7 @@ pipeline {
                 }
             }
         }
-        //   stage('Run Selenium Tests') {
-        //     agent {
-        //         docker {
-        //             image 'selenium/standalone-chrome' // Use official Selenium image with Chrome
-        //             args '-v /dev/shm:/dev/shm' // To avoid Chrome crashes
-        //         }
-        //     }
-        //     environment {
-        //         TEST_USERNAME = credentials('UserTest')
-        //         TEST_PASSWORD = credentials('UserTest')
-        //     }
-        //     steps {
-        //         script {
-        //             sh 'apt-get update && apt-get install -y python3 python3-pip' // Install Python and pip
-        //             sh 'pip3 install selenium' // Install Selenium
-        //             sh 'python3 test_login.py' // Execute the test script
-        //         }
-        //     }
-        // }
+     
          
     }
     
