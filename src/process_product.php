@@ -104,6 +104,7 @@ function addProduct($productData) {
         return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error, 'redirect' => 'product_form.php']);
     }
 
+    // Check if the product name is already taken
     $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_Name=?");
     $stmt->bind_param("s", $productData["Product_Name"]);
     $stmt->execute();
@@ -126,13 +127,15 @@ function addProduct($productData) {
     $quantity = sanitize_input($productData['Quantity']);
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
-    $image = null;
 
-    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
+    // Handle image upload
+    $image = null;
+    if (isset($productData['Product_Image']) && $productData['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $image = file_get_contents($productData['Product_Image']['tmp_name']);
     }
 
     $stmt->bind_param("ssdisis", $name, $description, $image, $price, $quantity, $category, $available);
+
     if (!$stmt->execute()) {
         return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error, 'redirect' => 'product_form.php']);
     }
@@ -141,6 +144,16 @@ function addProduct($productData) {
     $conn->close();
 
     return json_encode(['icon' => 'success', 'title' => 'Product Added', 'message' => 'Product added successfully', 'redirect' => 'sales_index.php']);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $productData = $_POST;
+    if (isset($_FILES['Product_Image'])) {
+        $productData['Product_Image'] = $_FILES['Product_Image'];
+    }
+
+    $response = addProduct($productData);
+    echo $response;
 }
 
 function editProduct($productData) {

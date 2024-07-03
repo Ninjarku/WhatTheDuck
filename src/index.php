@@ -56,6 +56,11 @@ $products = json_decode($productsJson, true);
         .product-card p {
             flex-grow: 1;
         }
+        .product-card .price {
+            font-size: 1.2em;
+            color: #28a745;
+            margin: 10px 0;
+        }
         .navbar {
             margin-bottom: 20px;
         }
@@ -74,13 +79,14 @@ $products = json_decode($productsJson, true);
     <div class="container">
         <h1 class="text-center">Our Products</h1>
         <div class="row justify-content-center">
-            <?php if (!empty($products) && is_array($products)): ?>
-                <?php foreach ($products as $product): ?>
+            <?php if (!empty($products) && isset($products['data']) && is_array($products['data'])): ?>
+                <?php foreach ($products['data'] as $product): ?>
                     <div class="col-md-4 d-flex justify-content-center">
                         <div class="product-card">
                             <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
-                            <img src="images/<?php echo htmlspecialchars($product['Product_Image']); ?>" alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
+                            <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>" alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
                             <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
+                            <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
                             <button class="btn btn-primary btn-buy-now">Buy Now</button>
                         </div>
                     </div>
