@@ -30,14 +30,16 @@ if ($result->num_rows > 0) {
 $stmt->close();
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duck Shop - Our Products</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>WhatTheDuck - Home</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
     <style>
         body, html {
             height: 100%;
@@ -47,6 +49,7 @@ $conn->close();
         }
         .container {
             margin-top: 20px;
+            margin-bottom: 20px;
         }
         .product-card {
             border: 1px solid #ddd;
@@ -57,7 +60,7 @@ $conn->close();
             background-color: #fff;
             width: 100%;
             max-width: 300px;
-            height: 450px;
+            height: 500px; /* Adjusted height to accommodate price */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -68,11 +71,16 @@ $conn->close();
         }
         .product-card img {
             max-width: 100%;
-            height: 300px;
+            height: 250px;
             object-fit: cover;
         }
         .product-card p {
             flex-grow: 1;
+        }
+        .product-card .price {
+            font-size: 1.2em;
+            color: #28a745;
+            margin: 10px 0;
         }
         .navbar {
             margin-bottom: 20px;
@@ -83,7 +91,7 @@ $conn->close();
             padding: 10px;
             background-color: #f1f1f1;
         }
-        .btn-buy-now {
+        .btn-buy-now { 
             margin-top: auto;
         }
     </style>
@@ -99,8 +107,12 @@ $conn->close();
                             <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
                             <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>" alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
                             <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
-                            <p><?php echo htmlspecialchars($product['Price']); ?> USD</p>
-                            <button class="btn btn-primary btn-buy-now">Buy Now</button>
+                            <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
+                            <form action="PaymentPage.php" method="post">
+                                <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
+                                <input type="hidden" name="product_price" value="<?php echo htmlspecialchars($product['Price']); ?>">
+                                <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>
+                            </form>
                         </div>
                     </div>
                 <?php endforeach; ?>
