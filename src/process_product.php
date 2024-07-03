@@ -4,18 +4,28 @@ header('Content-Type: application/json');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-//For sales index page
-function getAllProductsSales() {
+// Database configuration
+function getDatabaseConnection() {
     $config = parse_ini_file('/var/www/private/db-config.ini');
     $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
-        return json_encode(['error' => 'Connection failed: ' . $conn->connect_error]);
+        return null;
+    }
+
+    return $conn;
+}
+
+// For sales index page
+function getAllProductsSales() {
+    $conn = getDatabaseConnection();
+    if (!$conn) {
+        return json_encode(['icon' => 'error', 'message' => 'Database connection failed']);
     }
 
     $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Price, Quantity, Product_Category, Product_Available FROM Product ORDER BY Product_ID ASC");
     if (!$stmt) {
-        return json_encode(['error' => 'Prepare failed: ' . $conn->error]);
+        return json_encode(['icon' => 'error', 'message' => 'Prepare failed: ' . $conn->error]);
     }
 
     $stmt->execute();
@@ -34,15 +44,13 @@ function getAllProductsSales() {
 }
 
 function deleteProduct($Product_ID) {
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
-
-    if ($conn->connect_error) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error]);
+    $conn = getDatabaseConnection();
+    if (!$conn) {
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed']);
     }
 
     if (empty($Product_ID)) {
-        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Empty Product ID.']);
+        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Empty Product ID']);
     }
 
     $stmt = $conn->prepare("DELETE FROM Product WHERE Product_ID = ?");
@@ -61,25 +69,23 @@ function deleteProduct($Product_ID) {
 }
 
 function getProductById($Product_ID) {
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
-
-    if ($conn->connect_error) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error, 'redirect' => 'product_form.php']);
+    $conn = getDatabaseConnection();
+    if (!$conn) {
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed']);
     }
 
     if (empty($Product_ID)) {
-        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Empty Product ID.', 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Empty Product ID']);
     }
 
     $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_ID = ?");
     if (!$stmt) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error, 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error]);
     }
 
     $stmt->bind_param("i", $Product_ID);
     if (!$stmt->execute()) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error, 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error]);
     }
 
     $result = $stmt->get_result();
@@ -92,47 +98,43 @@ function getProductById($Product_ID) {
 }
 
 function addProduct($productData) {
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
-
-    if ($conn->connect_error) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error, 'redirect' => 'product_form.php']);
+    $conn = getDatabaseConnection();
+    if (!$conn) {
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed']);
     }
 
-    // Check if the product name is already taken
     $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_Name=?");
     $stmt->bind_param("s", $productData["Product_Name"]);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Product name is already taken.', 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Product name is already taken.']);
     }
 
     $stmt->close();
 
     $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error, 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error]);
     }
 
     $name = sanitize_input($productData['Product_Name']);
     $description = sanitize_input($productData['Product_Description']);
-    $price = floatval(sanitize_input($productData['Price']));
-    $quantity = intval(sanitize_input($productData['Quantity']));
+    $price = sanitize_input($productData['Price']);
+    $quantity = sanitize_input($productData['Quantity']);
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
 
-    // Handle image upload
     $image = null;
-    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
+    if (isset($productData['Product_Image']) && $productData['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $image = file_get_contents($productData['Product_Image']['tmp_name']);
     }
 
     $stmt->bind_param("ssdisis", $name, $description, $image, $price, $quantity, $category, $available);
 
     if (!$stmt->execute()) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error, 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error]);
     }
 
     $stmt->close();
@@ -152,16 +154,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 function editProduct($productData) {
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
-
-    if ($conn->connect_error) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error, 'redirect' => 'product_form.php']);
+    $conn = getDatabaseConnection();
+    if (!$conn) {
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed']);
     }
 
     $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Product_Image = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
     if (!$stmt) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error, 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error]);
     }
 
     $name = sanitize_input($productData['Product_Name']);
@@ -178,7 +178,7 @@ function editProduct($productData) {
 
     $stmt->bind_param("sssdisii", $name, $description, $image, $price, $quantity, $category, $available, $productData["Product_ID"]);
     if (!$stmt->execute()) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error, 'redirect' => 'product_form.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error]);
     }
 
     $stmt->close();
@@ -190,6 +190,7 @@ function editProduct($productData) {
 function sanitize_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
+    $data = htmlspecialchars($data); // Ensure special characters are converted to HTML entities
     return $data;
 }
 
@@ -199,6 +200,8 @@ if ($action === 'getAllProductsSales') {
     echo getAllProductsSales();
 } elseif ($action === 'deleteProduct' && isset($_GET['Product_ID'])) {
     echo deleteProduct($_GET['Product_ID']);
+} elseif ($action === 'getProduct' && isset($_GET['Product_ID'])) {
+    echo getProductById($_GET['Product_ID']);
 } elseif ($action === 'addProduct' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     echo addProduct($_POST);
 } elseif ($action === 'editProduct' && $_SERVER['REQUEST_METHOD'] === 'POST') {

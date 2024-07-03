@@ -1,6 +1,5 @@
 <?php
-session_start(); // Start the session at the beginning of the file
-// Check if the admin is logged in
+session_start();
 include 'includes/navbar.php';
 if ($_SESSION["cust_rol"] !== "Sales Admin") {
     header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!"));
@@ -52,7 +51,6 @@ if ($Form_Type == 1 && $action === 'editProduct') {
     <title><?php echo $Form_Type == 1 ? 'Edit Product' : 'Add Product'; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- START OF THE LINK -->
     <!-- Bootstrap CSS -->
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -60,28 +58,22 @@ if ($Form_Type == 1 && $action === 'editProduct') {
           crossorigin="anonymous">
     <!-- jQuery -->
     <script src="js/jquery-3.5.1.js" type="text/javascript"></script>
-    <!--Bootstrap JS-->
+    <!-- Bootstrap JS -->
     <script defer
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
             integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
             crossorigin="anonymous">
     </script>
-    <!-- DataTables JS -->
-    <script defer src="js/datatables.min.js" type="text/javascript"></script>
-    <!-- DataTables CSS -->
-    <link href="css/datatables.min.css" rel="stylesheet" type="text/css"/>
     <!-- FontAwesome for Icons -->
     <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
     <!-- SweetAlert2 for Popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- END OF THE LINK -->
 </head>
 <body>
 <div class="container">
     <h2><?php echo $Form_Type == 1 ? 'Edit Product' : 'Add Product'; ?></h2>
-    <form id="product-form" method="post" action="process_product.php" enctype="multipart/form-data">
+    <form id="product-form" method="post" action="process_product.php?action=<?php echo $Form_Type == 1 ? 'editProduct' : 'addProduct'; ?>" enctype="multipart/form-data">
         <input type="hidden" name="Product_ID" value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
-        <input type="hidden" name="action" value="<?php echo $Form_Type == 1 ? 'editProduct' : 'addProduct'; ?>">
 
         <div class="form-group">
             <label for="Product_Name">Product Name:</label>
@@ -141,7 +133,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
                         showCancelButton: false,
                         confirmButtonText: 'OK'
                     }).then((result) => {
-                        if (result.isConfirmed) {
+                        if (result.isConfirmed && response.redirect) {
                             window.location.href = response.redirect;
                         }
                     });
