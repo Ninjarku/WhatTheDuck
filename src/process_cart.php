@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//error_reporting(E_ALL);
 
 if (isset($_GET['action']) && $_GET['action'] == 'deleteCartItem') {
     $config = parse_ini_file('/var/www/private/db-config.ini');
@@ -55,13 +55,19 @@ function getCartItemByUserId() {
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=6&error=" . urlencode("Connection failed: " . $conn->connect_error));
+        $urlloc = "error_page.php?error_id=6&error=" . urlencode("Connection failed: " . $conn->connect_error);
+        echo "<script>
+            window.location.href = '".$urlloc."';
+        </script>"; 
         exit();
     } else {
         $stmt = $conn->prepare("SELECT c.Cart_ID, c.Product_ID, c.Quantity, c.Price, c.Total_Price, p.Product_Name, p.Product_Image FROM ict2216db.Cart c, ict2216db.Product p WHERE c.Product_ID = p.Product_ID AND User_ID = ?");
         if (!$stmt) {
             error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=6&error=" . urlencode("Prepare failed: " . $conn->error));
+            $urlloc = "error_page.php?error_id=6&error=" . urlencode("Prepare failed: " . $conn->connect_error);
+            echo "<script>
+                window.location.href = '".$urlloc."';
+            </script>"; 
             exit();
         }
         $stmt->bind_param("i", $User_ID);
