@@ -3,13 +3,15 @@ session_start();
 include 'includes/navbar.php';
 include 'process_product.php';
 
+// Fetch products data
 $productsJson = getAllProducts();
 $products = json_decode($productsJson, true);
 
-if (json_last_error() !== JSON_ERROR_NONE) {
-    // Handle JSON error if necessary
-    $products = [];
-}
+// // Handle JSON decoding errors
+// if (json_last_error() !== JSON_ERROR_NONE) {
+//     $products = [];
+//     error_log("JSON decoding error: " . json_last_error_msg(), 3, "/var/www/logs/error.log");
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,7 +74,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     <div class="container">
         <h1 class="text-center">Our Products</h1>
         <div class="row justify-content-center">
-            <?php if (!empty($products)): ?>
+            <?php if (!empty($products) && is_array($products)): ?>
                 <?php foreach ($products as $product): ?>
                     <div class="col-md-4 d-flex justify-content-center">
                         <div class="product-card">

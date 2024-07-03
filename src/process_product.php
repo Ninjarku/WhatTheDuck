@@ -9,12 +9,12 @@ function getAllProducts() {
     $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error, 'redirect' => 'product_form.php']);
+        return json_encode(['error' => 'Connection failed: ' . $conn->connect_error]);
     }
 
     $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available FROM Product ORDER BY Product_ID ASC");
     if (!$stmt) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error, 'redirect' => 'product_form.php']);
+        return json_encode(['error' => 'Prepare failed: ' . $conn->error]);
     }
 
     $stmt->execute();
@@ -29,8 +29,14 @@ function getAllProducts() {
 
     $stmt->close();
     $conn->close();
-    return json_encode(['icon' => 'success', 'title' => 'Products Fetched', 'message' => 'All products fetched successfully', 'data' => $arrResult]);
+    return json_encode($arrResult);
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'getAllProducts') {
+    echo getAllProducts();
+    exit;
+}
+
 
 function deleteProduct($Product_ID) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
