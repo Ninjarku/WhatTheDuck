@@ -21,7 +21,10 @@ class LoginTest extends TestCase
             $this->config['dbname']
         );
 
-
+        // Ensure the database connection is established
+        if ($this->conn->connect_error) {
+            die('Connection failed: ' . $this->conn->connect_error);
+        }
     }
 
     protected function tearDown(): void
@@ -41,6 +44,7 @@ class LoginTest extends TestCase
         $_POST['cust_pass'] = '$d!70@G1`O|p';
 
         ob_start();
+        include '/var/www/html/process_custlogin.php';
         $response = json_decode(ob_get_clean(), true);
 
         $this->assertEquals('success', $response['icon']);
@@ -55,6 +59,7 @@ class LoginTest extends TestCase
         $_POST['cust_pass'] = 'invalid_password';
 
         ob_start();
+        include '/var/www/html/process_custlogin.php';
         $response = json_decode(ob_get_clean(), true);
 
         $this->assertEquals('error', $response['icon']);
@@ -69,6 +74,7 @@ class LoginTest extends TestCase
         $_POST['cust_pass'] = '';
 
         ob_start();
+        include '/var/www/html/process_custlogin.php';
         $response = json_decode(ob_get_clean(), true);
 
         $this->assertEquals('error', $response['icon']);
