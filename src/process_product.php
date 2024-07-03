@@ -102,49 +102,6 @@ function addProduct($productData) {
     return json_encode($response);
 }
 
-// Upload product image
-function uploadProductImage($Product_ID) {
-    $conn = getDatabaseConnection();
-    global $response;
-    if (!$conn) {
-        $response["message"] = 'Database connection failed';
-        return json_encode($response);
-    }
-
-    // Handle image upload
-    $image = null;
-    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
-    }
-
-    if (!$image) {
-        $response["message"] = 'Image upload failed';
-        return json_encode($response);
-    }
-
-    $stmt = $conn->prepare("UPDATE Product SET Product_Image = ? WHERE Product_ID = ?");
-    if (!$stmt) {
-        $response["message"] = 'Prepare failed: ' . $conn->error;
-        return json_encode($response);
-    }
-
-    $stmt->bind_param("bi", $image, $Product_ID);
-
-    if (!$stmt->execute()) {
-        $response["message"] = 'Execute failed: ' . $stmt->error;
-        return json_encode($response);
-    }
-
-    $stmt->close();
-    $conn->close();
-
-    $response["icon"] = "success";
-    $response["title"] = "Image Uploaded";
-    $response["message"] = "Product image uploaded successfully";
-    $response["redirect"] = "sales_index.php";
-    return json_encode($response);
-}
-
 // Delete product
 function deleteProduct($Product_ID) {
     $conn = getDatabaseConnection();
@@ -179,11 +136,49 @@ function deleteProduct($Product_ID) {
     return json_encode($response);
 }
 
+// Edit product
+function editProduct($productData) {
+    $conn = getDatabaseConnection();
+    global $response;
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
+
+    $name = sanitize_input($productData['Product_Name']);
+    $description = sanitize_input($productData['Product_Description']);
+    $price = sanitize_input($productData['Price']);
+    $quantity = sanitize_input($productData['Quantity']);
+    $category = sanitize_input($productData['Product_Category']);
+    $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
+
+    $stmt->bind_param("ssdisii", $name, $description, $price, $quantity, $category, $available, $productData["Product_ID"]);
+
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    $response["icon"] = "success";
+    $response["title"] = "Product Updated";
+    $response["message"] = "Product updated successfully";
+    $response["redirect"] = "sales_index.php";
+    return json_encode($response);
+}
+
 // Sanitize input
 function sanitize_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
-    $data = htmlspecialchars($data);
     return $data;
 }
 
@@ -197,8 +192,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'addProduct') {
         echo addProduct($_POST);
-    } elseif ($action === 'uploadImage' && isset($_GET['Product_ID'])) {
-        echo uploadProductImage($_GET['Product_ID']);
     } elseif ($action === 'editProduct') {
         echo editProduct($_POST);
     } elseif ($action === 'deleteProduct' && isset($_POST['Product_ID'])) {
