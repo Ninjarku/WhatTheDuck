@@ -1,9 +1,7 @@
 <?php
 require '/var/www/html/jwt/jwt_gen_token.php';
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
 header('Content-Type: application/json');
 
 function sanitize_input($data) {
