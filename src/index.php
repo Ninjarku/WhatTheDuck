@@ -2,7 +2,7 @@
 session_start();
 include 'includes/navbar.php';
 include 'process_product.php';
-$productsJson = getAllProducts();
+$productsJson = getAllProductsCustomer();
 $products = json_decode($productsJson, true);
 ?>
 <!DOCTYPE html>
