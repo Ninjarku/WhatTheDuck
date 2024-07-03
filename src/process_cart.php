@@ -61,7 +61,7 @@ function getCartItemByUserId() {
         </script>"; 
         exit();
     } else {
-        $stmt = $conn->prepare("SELECT c.Cart_ID, c.Product_ID, c.Quantity, c.Price, c.Total_Price, p.Product_Name, p.Product_Image FROM ict2216db.Cart c, ict2216db.Product p WHERE c.Product_ID = p.Product_ID AND User_ID = ?");
+        $stmt = $conn->prepare("SELECT c.Cart_ID, c.Product_ID, c.Quantity, c.Price, c.Total_Price, p.Product_Name, p.Product_Image FROM Cart c, Product p WHERE c.Product_ID = p.Product_ID AND User_ID = ?");
         if (!$stmt) {
             error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
             $urlloc = "error_page.php?error_id=6&error=" . urlencode("Prepare failed: " . $conn->connect_error);
@@ -99,7 +99,7 @@ function getCartCount(){
         $success = false;
     } else {
         // Prepare the statement:
-        $stmt = $conn->prepare("SELECT COUNT(c.Cart_ID) AS cartcount FROM ict2216db.Cart c, ict2216db.User u WHERE c.User_ID = u.User_ID AND u.User_ID = ?;");
+        $stmt = $conn->prepare("SELECT COUNT(c.Cart_ID) AS cartcount FROM Cart c, User u WHERE c.User_ID = u.User_ID AND u.User_ID = ?;");
         $stmt->bind_param("s", $User_ID);
         $stmt->execute();
         $result = $stmt->get_result();
