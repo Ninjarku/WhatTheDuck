@@ -163,8 +163,8 @@ function addProduct($productData) {
 
     // Handle image upload
     $image = null;
-    if (isset($productData['Product_Image']) && $productData['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $image = file_get_contents($productData['Product_Image']['tmp_name']);
+    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
     }
 
     $stmt->bind_param("ssdisis", $name, $description, $image, $price, $quantity, $category, $available);
