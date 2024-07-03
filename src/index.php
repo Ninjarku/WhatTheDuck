@@ -1,10 +1,36 @@
 <?php
 session_start();
 include 'includes/navbar.php';
-include 'process_product.php';
-$productsJson = getAllProductsCustomer();
-$products = json_decode($productsJson, true);
+
+// Database connection
+$config = parse_ini_file('/var/www/private/db-config.ini');
+$conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch products
+$stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price FROM Product WHERE Product_Available = 1 ORDER BY Product_ID ASC");
+if (!$stmt) {
+    die("Prepare failed: " . $conn->error);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+$products = [];
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $products[] = $row;
+    }
+}
+
+$stmt->close();
+$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,18 +92,14 @@ $products = json_decode($productsJson, true);
     <div class="container">
         <h1 class="text-center">Our Products</h1>
         <div class="row justify-content-center">
-            <?php if (!empty($products['data'])): ?>
-                <?php foreach ($products['data'] as $product): ?>
+            <?php if (!empty($products)): ?>
+                <?php foreach ($products as $product): ?>
                     <div class="col-md-4 d-flex justify-content-center">
                         <div class="product-card">
                             <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
-                            <?php if (!empty($product['Product_Image'])): ?>
-                                <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>" alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
-                            <?php else: ?>
-                                <img src="images/default_product.jpg" alt="Default Image">
-                            <?php endif; ?>
+                            <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>" alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
                             <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
-                            <p><strong>Price:</strong> $<?php echo htmlspecialchars($product['Price']); ?></p>
+                            <p><?php echo htmlspecialchars($product['Price']); ?> USD</p>
                             <button class="btn btn-primary btn-buy-now">Buy Now</button>
                         </div>
                     </div>
