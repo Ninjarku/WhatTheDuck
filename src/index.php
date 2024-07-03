@@ -104,13 +104,17 @@ $conn->close();
                 <?php foreach ($products as $product): ?>
                     <div class="col-md-4 d-flex justify-content-center">
                         <div class="product-card">
-                            <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
-                            <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>" alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
-                            <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
-                            <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
-                            <form action="PaymentPage.php" method="post">
-                                <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
-                                <input type="hidden" name="product_price" value="<?php echo htmlspecialchars($product['Price']); ?>">
+                            <h2><?php echo ($product['Product_Name']); ?></h2>
+                            <?php if (!empty($product['Product_Image'])): ?>
+                                <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>" alt="<?php echo ($product['Product_Name']); ?>">
+                            <?php else: ?>
+                                <img src="images/default_product.jpg" alt="Default Product Image">
+                            <?php endif; ?>
+                            <p><?php echo ($product['Product_Description']); ?></p>
+                            <p class="price">$<?php echo ($product['Price']); ?></p>
+                            <form action="payment.php" method="post">
+                                <input type="hidden" name="product_name" value="<?php echo ($product['Product_Name']); ?>">
+                                <input type="hidden" name="product_price" value="<?php echo ($product['Price']); ?>">
                                 <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>
                             </form>
                         </div>
