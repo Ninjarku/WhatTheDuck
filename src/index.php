@@ -2,8 +2,14 @@
 session_start();
 include 'includes/navbar.php';
 include 'process_product.php';
+
 $productsJson = getAllProducts();
 $products = json_decode($productsJson, true);
+
+if (json_last_error() !== JSON_ERROR_NONE) {
+    // Handle JSON error if necessary
+    $products = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
