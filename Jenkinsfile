@@ -42,8 +42,8 @@ pipeline {
            steps {
                script {
 
-                    sh 'docker exec -i php-docker ./vendor/bin/phpunit -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
-                       //sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
+                    //sh 'docker exec -i php-docker ./vendor/bin/phpunit -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
+                       sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
                 
                }
            }
