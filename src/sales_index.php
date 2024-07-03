@@ -136,7 +136,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             products.forEach(function (product) {
                                 var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
                                               <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
-                                var image = "<img src='data:image/jpeg;base64," + btoa(product.Product_Image) + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>";
+                                var image = "<img src='data:image/jpeg;base64," + base64_encode(product.Product_Image) + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>";
 
                                 table.row.add([
                                     product.Product_ID,
