@@ -91,11 +91,13 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'pip install selenium' // Install selenium in the container
-                    sh 'python3 test_login.py'
+                    sh 'apt-get update && apt-get install -y python3 python3-pip' // Install Python and pip
+                    sh 'pip3 install selenium' // Install Selenium
+                    sh 'python3 test_login.py' // Execute the test script
                 }
             }
         }
+         
     }
     
     post {
