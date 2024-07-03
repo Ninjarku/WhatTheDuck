@@ -112,7 +112,7 @@ $conn->close();
                             <?php endif; ?>
                             <p><?php echo ($product['Product_Description']); ?></p>
                             <p class="price">$<?php echo ($product['Price']); ?></p>
-                            <form action="payment.php" method="post">
+                            <form action="PaymentPage.php" method="post">
                                 <input type="hidden" name="product_name" value="<?php echo ($product['Product_Name']); ?>">
                                 <input type="hidden" name="product_price" value="<?php echo ($product['Price']); ?>">
                                 <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>

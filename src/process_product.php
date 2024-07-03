@@ -33,69 +33,31 @@ function getAllProductsSales() {
     return json_encode(['icon' => 'success', 'data' => $arrResult]);
 }
 
-//For main index page
-function getAllProductsCustomer() {
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
-
-    if ($conn->connect_error) {
-        return json_encode(['error' => 'Connection failed: ' . $conn->connect_error]);
-    }
-
-    $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price FROM Product WHERE Product_Available = 1 ORDER BY Product_ID ASC");
-    if (!$stmt) {
-        return json_encode(['error' => 'Prepare failed: ' . $conn->error]);
-    }
-
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $arrResult = [];
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $arrResult[] = $row;
-        }
-    }
-
-    $stmt->close();
-    $conn->close();
-    return json_encode(['icon' => 'success', 'data' => $arrResult]);
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (isset($_GET['action']) && $_GET['action'] === 'getAllProductsSales') {
-        echo getAllProductsSales();
-    } elseif (isset($_GET['action']) && $_GET['action'] === 'getAllProductsCustomer') {
-        echo getAllProductsCustomer();
-    }
-    exit;
-}
-
 function deleteProduct($Product_ID) {
     $config = parse_ini_file('/var/www/private/db-config.ini');
     $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error, 'redirect' => 'sales_index.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed: ' . $conn->connect_error]);
     }
 
     if (empty($Product_ID)) {
-        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Empty Product ID.', 'redirect' => 'sales_index.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Empty Product ID.']);
     }
 
     $stmt = $conn->prepare("DELETE FROM Product WHERE Product_ID = ?");
     if (!$stmt) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error, 'redirect' => 'sales_index.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error]);
     }
 
     $stmt->bind_param("i", $Product_ID);
     if (!$stmt->execute()) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error, 'redirect' => 'sales_index.php']);
+        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error]);
     }
 
     $stmt->close();
     $conn->close();
-    return json_encode(['icon' => 'success', 'title' => 'Product Deleted', 'message' => 'Product deleted successfully', 'redirect' => 'sales_index.php']);
+    return json_encode(['icon' => 'success', 'title' => 'Product Deleted', 'message' => 'Product deleted successfully']);
 }
 
 function getProductById($Product_ID) {
@@ -233,12 +195,10 @@ function sanitize_input($data) {
 
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
 
-if ($action === 'getAllProducts') {
-    echo getAllProducts();
+if ($action === 'getAllProductsSales') {
+    echo getAllProductsSales();
 } elseif ($action === 'deleteProduct' && isset($_GET['Product_ID'])) {
     echo deleteProduct($_GET['Product_ID']);
-} elseif ($action === 'getProduct' && isset($_GET['Product_ID'])) {
-    echo getProductById($_GET['Product_ID']);
 } elseif ($action === 'addProduct' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     echo addProduct($_POST);
 } elseif ($action === 'editProduct' && $_SERVER['REQUEST_METHOD'] === 'POST') {

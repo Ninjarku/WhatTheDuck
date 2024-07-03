@@ -2,10 +2,10 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-session_start(); // Start the session at the beginning of the file
+session_start();
 // Check if the admin is logged in
 if ($_SESSION["cust_rol"] !== "Sales Admin") {
-    header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!")); // Redirect to login page
+    header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!"));
     exit();
 }
 ?>
@@ -75,8 +75,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                 window.location.href = "product_form.php?action=editProduct&Form_Type=1&Product_ID=" + Product_ID; // Redirect to product_form.php for editing the product
             });
 
-           // Delete product button click event
-           $("#product_table").on("click", "#btnDelete", function () {
+            // Delete product button click event
+            $("#product_table").on("click", "#btnDelete", function () {
                 var Product_ID = $(this).val();
                 Swal.fire({
                     title: 'Are you sure you would like to delete?',
@@ -106,13 +106,6 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                                         loadTableData(); // Reload table data after deletion
                                     }
                                 });
-                            },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'An error occurred while deleting the product. Please try again.'
-                                });
                             }
                         });
                     }
@@ -137,7 +130,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             table.row.add(['', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
                         } else {
                             products.forEach(function (product) {
-                                var action = "<button id='btnEdit' value='" + product.Product_ID + "' class='btn btn' aria-label='edit-staff' style='border: 1px solid #A9A9A9;'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button><button id='btnDelete' value='" + product.Product_ID + "' class='btn btn' style='border: 1px solid #A9A9A9;'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>";
+                                var action = "<button id='btnEdit' value='" + product.Product_ID + "' class='btn btn' aria-label='edit-product' style='border: 1px solid #A9A9A9;'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button><button id='btnDelete' value='" + product.Product_ID + "' class='btn btn' style='border: 1px solid #A9A9A9;'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>";
                                 table.row.add([
                                     product.Product_ID,
                                     product.Product_Name,
