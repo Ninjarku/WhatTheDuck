@@ -75,8 +75,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                 window.location.href = "product_form.php?action=editProduct&Form_Type=1&Product_ID=" + Product_ID; // Redirect to product_form.php for editing the product
             });
 
-            // Delete product button click event
-            $("#product_table").on("click", "#btnDelete", function () {
+           // Delete product button click event
+           $("#product_table").on("click", "#btnDelete", function () {
                 var Product_ID = $(this).val();
                 Swal.fire({
                     title: 'Are you sure you would like to delete?',
@@ -105,6 +105,13 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                                     if (response.icon === 'success') {
                                         loadTableData(); // Reload table data after deletion
                                     }
+                                });
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'An error occurred while deleting the product. Please try again.'
                                 });
                             }
                         });

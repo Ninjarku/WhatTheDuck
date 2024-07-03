@@ -66,13 +66,18 @@ $products = json_decode($productsJson, true);
     <div class="container">
         <h1 class="text-center">Our Products</h1>
         <div class="row justify-content-center">
-            <?php if (!empty($products)): ?>
-                <?php foreach ($products as $product): ?>
+            <?php if (!empty($products['data'])): ?>
+                <?php foreach ($products['data'] as $product): ?>
                     <div class="col-md-4 d-flex justify-content-center">
                         <div class="product-card">
                             <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
-                            <img src="images/<?php echo htmlspecialchars($product['Product_Image']); ?>" alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
+                            <?php if (!empty($product['Product_Image'])): ?>
+                                <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>" alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
+                            <?php else: ?>
+                                <img src="images/default_product.jpg" alt="Default Image">
+                            <?php endif; ?>
                             <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
+                            <p><strong>Price:</strong> $<?php echo htmlspecialchars($product['Price']); ?></p>
                             <button class="btn btn-primary btn-buy-now">Buy Now</button>
                         </div>
                     </div>
