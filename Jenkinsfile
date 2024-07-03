@@ -38,19 +38,45 @@ pipeline {
 
           
 
-          stage('PHPUnit Test') {
-           steps {
-                 withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
-               script {
+       //    stage('PHPUnit Test') {
+       //     steps {
+       //           withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
+       //         script {
 
-                    sh 'docker exec -e TEST_USERNAME=$TEST_USERNAME -e TEST_PASSWORD=$TEST_PASSWORD -i php-docker ./vendor/bin/phpunit -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
-                     //  sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
-               }
-               }
-           }
-       }
+       //              sh 'docker exec -e TEST_USERNAME=$TEST_USERNAME -e TEST_PASSWORD=$TEST_PASSWORD -i php-docker ./vendor/bin/phpunit -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
+       //               //  sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
+       //         }
+       //         }
+       //     }
+       // }
 
+     stage('UITest') {
+            parallel {
+                stage('Deploy PHP Server') {
+                    steps {
+                        sh 'jenkins/scripts/deploy.sh'
+                    }
+                }
 
+                stage('Headless Browser Test') {
+                    environment {
+                        TEST_USERNAME = credentials('UserTest')
+                        TEST_PASSWORD = credentials('UserTest')
+                    }
+                    steps {
+                        script {
+                            sh 'mvn test'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Kill PHP Server') {
+            steps {
+                sh 'jenkins/scripts/kill.sh'
+            }
+        }
 
         
     
@@ -80,7 +106,7 @@ pipeline {
     }
     post {
         always {
-            junit testResults: 'logs/unitreport.xml'
+          //  junit testResults: 'logs/unitreport.xml'
             dependencyCheckPublisher pattern: 'dependency-check-report.xml'
        }
         success {
