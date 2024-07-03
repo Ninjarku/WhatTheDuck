@@ -1,6 +1,11 @@
 pipeline {
      agent any
 
+     environment {
+        TEST_USERNAME = credentials('UserTest')
+        TEST_PASSWORD = credentials('UserTest')
+    }
+
     stages {
         stage('Checkout SCM') {
             steps {
@@ -49,36 +54,6 @@ pipeline {
        //         }
        //     }
        // }
-
-     stage('UITest') {
-            parallel {
-                stage('Deploy PHP Server') {
-                    steps {
-                        sh 'jenkins/scripts/deploy.sh'
-                    }
-                }
-
-                stage('Headless Browser Test') {
-                    environment {
-                        TEST_USERNAME = credentials('UserTest')
-                        TEST_PASSWORD = credentials('UserTest')
-                    }
-                    steps {
-                        script {
-                            sh 'mvn test'
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Kill PHP Server') {
-            steps {
-                sh 'jenkins/scripts/kill.sh'
-            }
-        }
-
-        
     
          stage('Deploy') {
             steps {
@@ -103,6 +78,25 @@ pipeline {
                 }
             }
         }
+          stage('Run Selenium Tests') {
+            agent {
+                docker {
+                    image 'selenium/standalone-chrome' // Use official Selenium image with Chrome
+                    args '-v /dev/shm:/dev/shm' // To avoid Chrome crashes
+                }
+            }
+            environment {
+                TEST_USERNAME = credentials('UserTest')
+                TEST_PASSWORD = credentials('UserTest')
+            }
+            steps {
+                script {
+                    sh 'pip install selenium' // Install selenium in the container
+                    sh 'python3 test_login.py'
+                }
+            }
+        }
+    }
     }
     post {
         always {
