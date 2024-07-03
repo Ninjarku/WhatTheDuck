@@ -68,7 +68,7 @@ $cartitem = json_decode($cartJson, true);
                                     <input type="checkbox" name="selectedCartIds[]" value="<?php echo htmlspecialchars($item['Cart_ID']); ?>" class="cart-checkbox form-check-input" id="checkbox-<?php echo htmlspecialchars($item['Cart_ID']); ?>">
                                 </div>
                                 <div class="room-obj">
-                                    <img src="images/<?php echo htmlspecialchars($item['Product_Image']); ?>" alt="<?php echo htmlspecialchars($item['Product_Name']); ?>" class="display-images">
+                                    <img src="data:image/jpeg;base64,<?php echo base64_encode($item['Product_Image']); ?>" alt="<?php echo htmlspecialchars($item['Product_Name']); ?>" class="display-images">
                                     <div class="name-labels"><?php echo htmlspecialchars($item['Product_Name']); ?></div>
                                 </div>
                                 <div class="qty-obj"><?php echo htmlspecialchars($item['Quantity']); ?></div> 

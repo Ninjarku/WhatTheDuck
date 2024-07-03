@@ -89,7 +89,7 @@
                             <div class="checkbox-all-rows"></div>
                             <div class="room-obj">
                                 <!-- Image & Name -->
-                                <img src="images/<?php echo htmlspecialchars($row['Product_Image']); ?>" alt="<?php echo htmlspecialchars($row['Product_Name']); ?>" class="display-images">
+                                <img src="data:image/jpeg;base64,<?php echo base64_encode($row['Product_Image']); ?>" alt="<?php echo htmlspecialchars($row['Product_Name']); ?>" class="display-images">
                                 <label for="object1" class="name-labels"><?php echo htmlspecialchars($row['Product_Name']); ?></label>
                             </div>
                             <div class="qty-obj"><?php echo htmlspecialchars($row['Quantity']); ?></div> 
