@@ -4,7 +4,7 @@
 use PHPUnit\Framework\TestCase;
 
 // Include the login script
-require '/var/html/www/process_custlogin.php';
+require '/var/www/html/process_custlogin.php';
 
 class LoginTest extends TestCase
 {
