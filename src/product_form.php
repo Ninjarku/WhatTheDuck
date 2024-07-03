@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start(); // Start the session at the beginning of the file
 include 'includes/navbar.php';
 if ($_SESSION["cust_rol"] !== "Sales Admin") {
     header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!"));
@@ -14,11 +14,11 @@ $product = [
     'Product_ID' => '',
     'Product_Name' => '',
     'Product_Description' => '',
-    'Product_Image' => '',
     'Price' => '',
     'Quantity' => '',
     'Product_Category' => '',
-    'Product_Available' => 0
+    'Product_Available' => 0,
+    'Product_Image' => ''
 ];
 
 // Include your database connection here
@@ -72,7 +72,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
 <body>
 <div class="container">
     <h2><?php echo $Form_Type == 1 ? 'Edit Product' : 'Add Product'; ?></h2>
-    <form id="product-form" method="post" action="process_product.php?action=<?php echo $Form_Type == 1 ? 'editProduct' : 'addProduct'; ?>" enctype="multipart/form-data">
+    <form id="product-form" method="post" action="process_product.php?action=<?php echo $Form_Type == 1 ? 'editProduct' : 'addProduct'; ?>">
         <input type="hidden" name="Product_ID" value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
 
         <div class="form-group">
@@ -82,13 +82,6 @@ if ($Form_Type == 1 && $action === 'editProduct') {
         <div class="form-group">
             <label for="Product_Description">Product Description:</label>
             <textarea class="form-control" id="Product_Description" name="Product_Description" required><?php echo htmlspecialchars($product['Product_Description']); ?></textarea>
-        </div>
-        <div class="form-group">
-            <label for="Product_Image">Product Image:</label>
-            <input type="file" class="form-control-file" id="Product_Image" name="Product_Image" accept="image/*" <?php echo $Form_Type == 1 ? '' : 'required'; ?>>
-            <?php if ($Form_Type == 1 && !empty($product['Product_Image'])): ?>
-                <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>" alt="Product Image" class="img-thumbnail mt-2" style="max-height: 200px;">
-            <?php endif; ?>
         </div>
         <div class="form-group">
             <label for="Price">Price:</label>
@@ -109,11 +102,58 @@ if ($Form_Type == 1 && $action === 'editProduct') {
 
         <button type="submit" class="btn btn-primary"><?php echo $Form_Type == 1 ? 'Update' : 'Add'; ?> Product</button>
     </form>
+
+    <form id="product-image-form" method="post" action="process_product.php?action=uploadImage&Product_ID=<?php echo htmlspecialchars($product['Product_ID']); ?>" enctype="multipart/form-data" class="mt-3">
+        <div class="form-group">
+            <label for="Product_Image">Product Image:</label>
+            <input type="file" class="form-control-file" id="Product_Image" name="Product_Image" accept="image/*" required>
+            <?php if ($Form_Type == 1 && !empty($product['Product_Image'])): ?>
+                <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>" alt="Product Image" class="img-thumbnail mt-2" style="max-height: 200px;">
+            <?php endif; ?>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload Image</button>
+    </form>
 </div>
 
 <script>
     $(document).ready(function () {
         $("#product-form").submit(function (event) {
+            event.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: $(this).attr("action"),
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    Swal.fire({
+                        icon: response.icon,
+                        title: response.title,
+                        text: response.message,
+                        showCloseButton: false,
+                        showCancelButton: false,
+                        confirmButtonText: response.redirect ? 'OK' : 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed && response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                    });
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'There was a problem with the request. Please try again.',
+                        showCloseButton: false,
+                        showCancelButton: false,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+        $("#product-image-form").submit(function (event) {
             event.preventDefault();
 
             var formData = new FormData(this);
