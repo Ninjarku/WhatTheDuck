@@ -51,6 +51,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                 columns: [
                     {title: "Product ID"},
                     {title: "Product Name"},
+                    {title: "Product Image"},
                     {title: "Product Description"},
                     {title: "Price"},
                     {title: "Quantity"},
@@ -130,19 +131,21 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                     if (response.icon === 'success') {
                         var products = response.data;
                         if (products.length === 0) {
-                            table.row.add(['', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
+                            table.row.add(['', '', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
                         } else {
                             products.forEach(function (product) {
-                                var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
-                                              <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
+                                var action = "<button id='btnEdit' value='" + product.Product_ID + "' class='btn btn' aria-label='edit-staff' style='border: 1px solid #A9A9A9;'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button><button id='btnDelete' value='" + product.Product_ID + "' class='btn btn' style='border: 1px solid #A9A9A9;'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>";
+                                var image = "<img src='data:image/jpeg;base64," + btoa(product.Product_Image) + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>";
+
                                 table.row.add([
                                     product.Product_ID,
                                     product.Product_Name,
                                     product.Product_Description,
+                                    image,
                                     product.Price,
                                     product.Quantity,
                                     product.Product_Category,
-                                    product.Product_Available,
+                                    product.Product_Available ? 'Yes' : 'No',
                                     action
                                 ]).draw(false);
                             });

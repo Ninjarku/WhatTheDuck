@@ -30,7 +30,7 @@ function getAllProductsSales() {
         return json_encode($response);
     }
 
-    $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Price, Quantity, Product_Category, Product_Available FROM Product ORDER BY Product_ID ASC");
+    $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available FROM Product ORDER BY Product_ID ASC");
     if (!$stmt) {
         $response["message"] = 'Prepare failed: ' . $conn->error;
         return json_encode($response);
