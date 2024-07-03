@@ -25,6 +25,7 @@ class LoginTest extends TestCase
         if ($this->conn->connect_error) {
             die('Connection failed: ' . $this->conn->connect_error);
         }
+        echo('db success');
     }
 
     protected function tearDown(): void
