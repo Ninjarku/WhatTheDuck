@@ -99,8 +99,10 @@ function getProductById($Product_ID) {
 
 function addProduct($productData) {
     $conn = getDatabaseConnection();
+    global $response;
     if (!$conn) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Connection failed']);
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
     }
 
     $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_Name=?");
@@ -109,14 +111,16 @@ function addProduct($productData) {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        return json_encode(['icon' => 'error', 'title' => 'Error', 'message' => 'Product name is already taken.']);
+        $response["message"] = 'Product name is already taken.';
+        return json_encode($response);
     }
 
     $stmt->close();
 
     $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Prepare failed: ' . $conn->error]);
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
     }
 
     $name = sanitize_input($productData['Product_Name']);
@@ -126,31 +130,27 @@ function addProduct($productData) {
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
 
+    // Handle image upload
     $image = null;
-    if (isset($productData['Product_Image']) && $productData['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $image = file_get_contents($productData['Product_Image']['tmp_name']);
+    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
     }
 
     $stmt->bind_param("ssdisis", $name, $description, $image, $price, $quantity, $category, $available);
 
     if (!$stmt->execute()) {
-        return json_encode(['icon' => 'error', 'title' => 'Database Error', 'message' => 'Execute failed: ' . $stmt->error]);
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
     }
 
     $stmt->close();
     $conn->close();
 
-    return json_encode(['icon' => 'success', 'title' => 'Product Added', 'message' => 'Product added successfully', 'redirect' => 'sales_index.php']);
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $productData = $_POST;
-    if (isset($_FILES['Product_Image'])) {
-        $productData['Product_Image'] = $_FILES['Product_Image'];
-    }
-
-    $response = addProduct($productData);
-    echo $response;
+    $response["icon"] = "success";
+    $response["title"] = "Product Added";
+    $response["message"] = "Product added successfully";
+    $response["redirect"] = "sales_index.php";
+    return json_encode($response);
 }
 
 function editProduct($productData) {
@@ -194,17 +194,20 @@ function sanitize_input($data) {
     return $data;
 }
 
+// Handle actions
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
 
-if ($action === 'getAllProductsSales') {
-    echo getAllProductsSales();
-} elseif ($action === 'deleteProduct' && isset($_GET['Product_ID'])) {
-    echo deleteProduct($_GET['Product_ID']);
-} elseif ($action === 'getProduct' && isset($_GET['Product_ID'])) {
-    echo getProductById($_GET['Product_ID']);
-} elseif ($action === 'addProduct' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    echo addProduct($_POST);
-} elseif ($action === 'editProduct' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    echo editProduct($_POST);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if ($action === 'getAllProductsSales') {
+        echo getAllProductsSales();
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($action === 'addProduct') {
+        echo addProduct($_POST);
+    } elseif ($action === 'editProduct') {
+        echo editProduct($_POST);
+    } elseif ($action === 'deleteProduct' && isset($_POST['Product_ID'])) {
+        echo deleteProduct($_POST['Product_ID']);
+    }
 }
 ?>

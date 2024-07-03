@@ -131,7 +131,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
                         text: response.message,
                         showCloseButton: false,
                         showCancelButton: false,
-                        confirmButtonText: 'OK'
+                        confirmButtonText: response.redirect ? 'OK' : 'OK'
                     }).then((result) => {
                         if (result.isConfirmed && response.redirect) {
                             window.location.href = response.redirect;
