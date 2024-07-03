@@ -42,6 +42,7 @@ function getAllProductsSales() {
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
+            $row['Product_Image'] = base64_encode($row['Product_Image']); // Encode the image data
             $arrResult[] = $row;
         }
     }

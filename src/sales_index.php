@@ -117,7 +117,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
             });
         });
 
-        // Function to load product data into the DataTable
+               // Function to load product data into the DataTable
         function loadTableData() {
             var table = $('#product_table').DataTable();
             table.clear().draw();
@@ -134,7 +134,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             table.row.add(['', '', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
                         } else {
                             products.forEach(function (product) {
-                                var action = "<button id='btnEdit' value='" + product.Product_ID + "' class='btn btn' aria-label='edit-staff' style='border: 1px solid #A9A9A9;'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button><button id='btnDelete' value='" + product.Product_ID + "' class='btn btn' style='border: 1px solid #A9A9A9;'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>";
+                                var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
+                                              <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
                                 var image = "<img src='data:image/jpeg;base64," + btoa(product.Product_Image) + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>";
 
                                 table.row.add([
