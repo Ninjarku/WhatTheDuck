@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 
 if (isset($_GET['action']) && $_GET['action'] == 'deleteCartItem') {
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     $cartId = $_GET['cartid']; // Get the cart ID from the POST data
 
@@ -47,59 +47,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'deleteCartItem') {
 
     $conn->close(); 
 }
-//if (isset($_GET['action']) && $_GET['action'] == 'checkout') {
-//    $selectedCartIds = $_POST['selectedCartIds']; // Get the selected cart IDs from the POST data
-//
-//    // Validate the selected cart IDs
-//    if (!empty($selectedCartIds) && is_array($selectedCartIds)) {
-//        $placeholders = implode(',', array_fill(0, count($selectedCartIds), '?'));
-//        $types = str_repeat('i', count($selectedCartIds));
-//
-//        // SQL query to update the cart items as checked out
-//        $sql = "UPDATE cart SET CheckedOut = 1 WHERE Cart_ID IN ($placeholders)";
-//
-//        // Prepare the statement
-//        if ($stmt = $conn->prepare($sql)) {
-//            $stmt->bind_param($types, ...$selectedCartIds);
-//            
-//            if ($stmt->execute()) {
-//                // Success response
-//                echo json_encode([
-//                    'success' => true,
-//                    'message' => 'Checkout completed successfully.'
-//                ]);
-//            } else {
-//                // Error response
-//                echo json_encode([
-//                    'success' => false,
-//                    'message' => 'Error completing checkout.'
-//                ]);
-//            }
-//
-//            $stmt->close();
-//        } else {
-//            // Error response
-//            echo json_encode([
-//                'success' => false,
-//                'message' => 'Database error.'
-//            ]);
-//        }
-//    } else {
-//        // Invalid cart IDs response
-//        echo json_encode([
-//            'success' => false,
-//            'message' => 'No items selected for checkout.'
-//        ]);
-//    }
-//
-//    $conn->close();
-//    exit();
-//}
 
 function getCartItemByUserId() {
     $User_ID = $_SESSION['userid'];
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
@@ -132,7 +84,7 @@ function getCartCount(){
     $User_ID = $_SESSION['userid'];
     // Create database connection.
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'],
+    $conn = new mysqli($config['host'], $config['username'],
             $config['password'], $config['dbname']);
     // Check connection
     if ($conn->connect_error) {
@@ -162,7 +114,7 @@ function updateCartCount(){
     $checksuccess = true;
     $userid = $_SESSION['userid'];
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'],
+    $conn = new mysqli($config['host'], $config['username'],
             $config['password'], $config['dbname']);
     // Check connection
     if ($conn->connect_error) {
@@ -199,7 +151,7 @@ function getSelectedCartItem($cart_ids){
 
     // Create database connection.
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     // Check connection
     if ($conn->connect_error) {
