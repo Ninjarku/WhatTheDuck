@@ -118,8 +118,8 @@ function addProduct($productData) {
 
     $name = sanitize_input($productData['Product_Name']);
     $description = sanitize_input($productData['Product_Description']);
-    $price = sanitize_input($productData['Price']);
-    $quantity = sanitize_input($productData['Quantity']);
+    $price = floatval(sanitize_input($productData['Price']));
+    $quantity = intval(sanitize_input($productData['Quantity']));
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
 
