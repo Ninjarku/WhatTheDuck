@@ -46,41 +46,56 @@ if ($Form_Type == 1 && $action === 'editProduct') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title><?php echo $Form_Type == 1 ? 'Edit Product' : 'Add Product'; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
     <!-- jQuery -->
-    <script defer src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script defer src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <!-- Bootstrap JS -->
-    <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+    <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+        integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body, html {
+        body,
+        html {
             font-family: 'Comic Neue', cursive;
             background-color: #fff5cc;
             color: black;
         }
+
         .navbar {
             background-color: #ffcc00;
         }
+
         .navbar-brand img {
             border-radius: 50%;
         }
-        .nav-item .nav-link, .login-link, .cart-link {
+
+        .nav-item .nav-link,
+        .login-link,
+        .cart-link {
             color: black !important;
             font-weight: bold;
             display: inline-block;
             padding: 10px 15px;
         }
-        .nav-item .nav-link:hover, .login-link:hover, .cart-link:hover {
+
+        .nav-item .nav-link:hover,
+        .login-link:hover,
+        .cart-link:hover {
             color: #fff !important;
             background-color: #ff6347;
             border-radius: 5px;
             transition: background-color 0.3s ease-in-out;
         }
+
         .profile-content {
             background-color: white;
             padding: 20px;
@@ -90,120 +105,142 @@ if ($Form_Type == 1 && $action === 'editProduct') {
             justify-content: space-between;
             align-items: flex-start;
         }
+
         .profile-content h1 {
             color: black;
         }
+
         .profile-content .form-group label {
             font-weight: bold;
         }
-        .profile-content .form-group input, .profile-content .form-group select, .profile-content .form-group textarea {
+
+        .profile-content .form-group input,
+        .profile-content .form-group select,
+        .profile-content .form-group textarea {
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
         .btn-primary {
             background-color: #ffcc00;
             border: none;
             color: black;
         }
+
         .btn-primary:hover {
             background-color: #ff6347;
             color: white;
         }
+
         .profile-img-container {
             text-align: center;
             margin-top: 20px;
         }
+
         .profile-img {
             width: 150px;
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
         }
+
         .form-container {
             flex: 1;
         }
+
         .image-container {
             margin-left: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
         .container {
             margin-top: 50px;
             margin-bottom: 50px;
         }
     </style>
     <script>
-       $(document).ready(function () {
-    $("#product-form").on("submit", function (event) {
-        event.preventDefault();
-        var formData = new FormData(this);
-        $.ajax({
-            type: "POST",
-            url: $(this).attr("action"),
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                Swal.fire({
-                    icon: response.icon,
-                    title: response.title,
-                    text: response.message + "\nDebug: " + (response.debug || ""),
-                    showCloseButton: false,
-                    showCancelButton: false,
-                    confirmButtonText: response.redirect ? 'OK' : 'OK'
-                }).then((result) => {
-                    if (result.isConfirmed && response.redirect) {
-                        window.location.href = response.redirect;
+        $(document).ready(function () {
+            $("#product-form").on("submit", function (event) {
+                event.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr("action"),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: response.icon,
+                            title: response.title,
+                            text: response.message + "\nDebug: " + (response.debug || ""),
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: response.redirect ? 'OK' : 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed && response.redirect) {
+                                window.location.href = response.redirect;
+                            }
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'There was a problem with the request. Please try again.',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'OK'
+                        });
                     }
                 });
-            },
-            error: function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'There was a problem with the request. Please try again.',
-                    showCloseButton: false,
-                    showCancelButton: false,
-                    confirmButtonText: 'OK'
-                });
-            }
+            });
         });
-    });
-});
     </script>
 </head>
+
 <body>
     <div class="container">
         <div class="profile-content">
-            <form id="product-form" method="post" enctype="multipart/form-data" class="d-flex w-100" action="process_product.php?action=<?php echo $Form_Type == 1 ? 'editProduct' : 'addProduct'; ?>">
+            <form id="product-form" method="post" enctype="multipart/form-data"
+                action="process_product.php?action=editProduct">
+                <input type="hidden" name="Product_ID" value="<?php echo $product['Product_ID']; ?>">
+                <!-- Other form fields -->
                 <div class="form-container">
-                    <h1><?php echo $Form_Type == 1 ? 'Edit Product' : 'Add Product'; ?></h1>
+                    <h1>Edit Product</h1>
                     <div class="form-group">
                         <label for="Product_Name">Product Name:</label>
-                        <input type="text" class="form-control" id="Product_Name" name="Product_Name" value="<?php echo htmlspecialchars($product['Product_Name']); ?>" required>
+                        <input type="text" class="form-control" id="Product_Name" name="Product_Name"
+                            value="<?php echo htmlspecialchars($product['Product_Name']); ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="Product_Description">Product Description:</label>
-                        <textarea class="form-control" id="Product_Description" name="Product_Description" required><?php echo htmlspecialchars($product['Product_Description']); ?></textarea>
+                        <textarea class="form-control" id="Product_Description" name="Product_Description"
+                            required><?php echo htmlspecialchars($product['Product_Description']); ?></textarea>
                     </div>
                     <div class="form-group">
                         <label for="Price">Price:</label>
-                        <input type="number" step="0.01" class="form-control" id="Price" name="Price" value="<?php echo htmlspecialchars($product['Price']); ?>" required>
+                        <input type="number" step="0.01" class="form-control" id="Price" name="Price"
+                            value="<?php echo htmlspecialchars($product['Price']); ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="Quantity">Quantity:</label>
-                        <input type="number" class="form-control" id="Quantity" name="Quantity" value="<?php echo htmlspecialchars($product['Quantity']); ?>" required>
+                        <input type="number" class="form-control" id="Quantity" name="Quantity"
+                            value="<?php echo htmlspecialchars($product['Quantity']); ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="Product_Category">Product Category:</label>
-                        <input type="text" class="form-control" id="Product_Category" name="Product_Category" value="<?php echo htmlspecialchars($product['Product_Category']); ?>" required>
+                        <input type="text" class="form-control" id="Product_Category" name="Product_Category"
+                            value="<?php echo htmlspecialchars($product['Product_Category']); ?>" required>
                     </div>
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="Product_Available" name="Product_Available" value="1" <?php echo $product['Product_Available'] == 1 ? 'checked' : ''; ?>>
+                        <input type="checkbox" class="form-check-input" id="Product_Available" name="Product_Available"
+                            value="1" <?php echo $product['Product_Available'] == 1 ? 'checked' : ''; ?>>
                         <label class="form-check-label" for="Product_Available">Product Available</label>
                     </div>
-                    <button class="btn btn-primary mt-3" type="submit"><?php echo $Form_Type == 1 ? 'Update' : 'Add'; ?> Product</button>
+                    <button class="btn btn-primary mt-3" type="submit">Update Product</button>
                 </div>
                 <div class="image-container">
                     <h3>Product Image</h3>
@@ -215,7 +252,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
                             echo '<img src="images/default_product.jpg" alt="Product Image" class="profile-img">';
                         }
                         ?>
-                        <input type="file" name="Product_Image" accept="image/*" class="form-control-file mt-2" <?php echo $Form_Type == 1 ? '' : 'required'; ?>>
+                        <input type="file" name="Product_Image" accept="image/*" class="form-control-file mt-2">
                     </div>
                 </div>
             </form>
@@ -223,5 +260,5 @@ if ($Form_Type == 1 && $action === 'editProduct') {
     </div>
     <?php include 'includes/footer.php'; ?>
 </body>
-</html>
 
+</html>
