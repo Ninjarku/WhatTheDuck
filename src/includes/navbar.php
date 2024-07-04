@@ -106,6 +106,19 @@ $userRole = isset($_SESSION['cust_rol']) ? $_SESSION['cust_rol'] : null;
             <li class="nav-item">
                 <a class="nav-link" href="AboutUs.php">About Us</a>
             </li>
+            <?php if ($userRole === 'Sales Admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="sales_index.php">Manage Sales</a>
+                </li>
+            <?php elseif ($userRole === 'IT Admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="admin_index.php">Admin Dashboard</a>
+                </li>
+            <?php elseif ($userRole === 'Customer'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="my_orders.php">My Orders</a>
+                </li>
+            <?php endif; ?>
             <?php
             if (isset($_SESSION["cust_login"]) && $_SESSION["cust_login"] == "success") {
                 ?>
@@ -124,19 +137,6 @@ $userRole = isset($_SESSION['cust_rol']) ? $_SESSION['cust_rol'] : null;
                 <?php
             }
             ?>
-            <?php if ($userRole === 'Sales Admin'): ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="sales_index.php">Manage Products</a>
-                </li>
-            <?php elseif ($userRole === 'IT Admin'): ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="admin_index.php">Manage Users</a>
-                </li>
-            <?php elseif ($userRole === 'Customer'): ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="">My Orders</a>
-                </li>
-            <?php endif; ?>
             <?php if ($userRole !== 'Sales Admin' && $userRole !== 'IT Admin'): ?>
                 <li class="nav-item">
                     <a class="nav-link cart-link" href="cart.php">
