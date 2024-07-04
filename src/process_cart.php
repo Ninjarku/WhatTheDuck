@@ -61,7 +61,7 @@ function getCartItemByUserId() {
         </script>"; 
         exit();
     } else {
-        $stmt = $conn->prepare("SELECT c.Cart_ID, c.Product_ID, c.Quantity, c.Price, c.Total_Price, p.Product_Name, p.Product_Image FROM Cart c, Product p WHERE c.Product_ID = p.Product_ID AND User_ID = ?");
+        $stmt = $conn->prepare("SELECT c.Cart_ID, c.Product_ID, c.Quantity, c.Price, c.Total_Price, p.Product_Name, p.Product_Image FROM Cart c, Product p WHERE c.Product_ID = p.Product_ID AND User_ID = 4");
         if (!$stmt) {
             error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
             $urlloc = "error_page.php?error_id=6&error=" . urlencode("Prepare failed: " . $conn->connect_error);
@@ -70,7 +70,7 @@ function getCartItemByUserId() {
             </script>"; 
             exit();
         }
-        $stmt->bind_param("i", "4"); //$User_ID
+//        $stmt->bind_param("i", $User_ID);
         $stmt->execute();
         $result = $stmt->get_result();
 
