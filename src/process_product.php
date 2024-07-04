@@ -54,7 +54,7 @@ function getAllProductsSales()
     return json_encode(['icon' => 'success', 'data' => $arrResult]);
 }
 
-// Add product
+// Add product function (modified with logging)
 function addProduct($productData)
 {
     $conn = getDatabaseConnection();
@@ -63,6 +63,9 @@ function addProduct($productData)
         $response["message"] = 'Database connection failed';
         return json_encode($response);
     }
+
+    // Debugging: Check received product data
+    $response["debug"] = "Received product data: " . json_encode($productData);
 
     $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_Name=?");
     $stmt->bind_param("s", $productData["Product_Name"]);
@@ -76,29 +79,44 @@ function addProduct($productData)
 
     $stmt->close();
 
-    $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
         $response["message"] = 'Prepare failed: ' . $conn->error;
+        $response["debug"] = 'Prepare failed: ' . $conn->error;
         return json_encode($response);
     }
-
+    
     $name = sanitize_input($productData['Product_Name']);
     $description = sanitize_input($productData['Product_Description']);
-    $price = sanitize_input($productData['Price']);
-    $quantity = sanitize_input($productData['Quantity']);
-    $category = sanitize_input($productData['Product_Category']);
-    $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
-
-    $stmt->bind_param("ssdisi", $name, $description, $price, $quantity, $category, $available);
-
-    if (!$stmt->execute()) {
-        $response["message"] = 'Execute failed: ' . $stmt->error;
+    $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    if ($price === false) {
+        $response["message"] = 'Invalid price format.';
         return json_encode($response);
     }
-
+    $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
+    $category = sanitize_input($productData['Product_Category']);
+    $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
+    
+    $image = null;
+    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
+    }
+    
+    // Debugging: Output the SQL query
+    $sql_query = "INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES ('$name', '$description', '$image', '$price', '$quantity', '$category', '$available')";
+    $response["debug"] .= " | SQL Query: $sql_query";
+    
+    $stmt->bind_param("ssdisis", $name, $description, $image, $price, $quantity, $category, $available);
+    
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        $response["debug"] .= ' | Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+    
     $stmt->close();
     $conn->close();
-
+    
     $response["icon"] = "success";
     $response["title"] = "Product Added";
     $response["message"] = "Product added successfully";
@@ -151,7 +169,7 @@ function editProduct($productData)
         return json_encode($response);
     }
 
-    $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
+    $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Product_Image = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
     if (!$stmt) {
         $response["message"] = 'Prepare failed: ' . $conn->error;
         return json_encode($response);
@@ -159,12 +177,18 @@ function editProduct($productData)
 
     $name = sanitize_input($productData['Product_Name']);
     $description = sanitize_input($productData['Product_Description']);
-    $price = sanitize_input($productData['Price']);
-    $quantity = sanitize_input($productData['Quantity']);
+    $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT);
+    $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
 
-    $stmt->bind_param("ssdisii", $name, $description, $price, $quantity, $category, $available, $productData["Product_ID"]);
+    // Handle image upload
+    $image = null;
+    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
+    }
+
+    $stmt->bind_param("ssdisisi", $name, $description, $image, $price, $quantity, $category, $available, $productData["Product_ID"]);
 
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
@@ -180,6 +204,7 @@ function editProduct($productData)
     $response["redirect"] = "sales_index.php";
     return json_encode($response);
 }
+
 
 // Sanitize input
 function sanitize_input($data)
