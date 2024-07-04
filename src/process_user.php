@@ -133,7 +133,7 @@ function deleteUser($User_ID)
     }
 
     if (empty($User_ID)) {
-        $response["message"] = 'Empty Product ID.';
+        $response["message"] = 'Empty User ID.';
         return json_encode($response);
     }
 
