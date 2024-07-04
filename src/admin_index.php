@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
 // Check if it admin is logged in
@@ -45,7 +48,6 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
             $('#user_table').DataTable({
                 "iDisplayLength": 5,
                 "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-                data: $("#user_table tbody").html(),
                 columns: [
                     { title: "User ID" },
                     { title: "Username" },
@@ -157,7 +159,7 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
                             confirmButtonText: 'Ok'
                         });
                     }
-                }
+            }
             });
         }
     </script>
@@ -165,6 +167,7 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
 
 <body>
     <div class="container">
+        <br><br>
         <h1 class="text-center">User Management</h1>
         <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
             User</button>
