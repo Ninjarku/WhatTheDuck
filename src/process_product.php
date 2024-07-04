@@ -55,7 +55,8 @@ function getAllProductsSales()
 }
 
 // Add product
-function addProduct($productData) {
+function addProduct($productData)
+{
     $conn = getDatabaseConnection();
     global $response;
     if (!$conn) {
@@ -147,7 +148,8 @@ function deleteProduct($Product_ID)
 }
 
 // Edit product
-function editProduct($productData) {
+function editProduct($productData)
+{
     $conn = getDatabaseConnection();
     global $response;
     if (!$conn) {
@@ -155,10 +157,7 @@ function editProduct($productData) {
         return json_encode($response);
     }
 
-    // Check if image is included in the request
-    $includeImage = isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK;
-
-    $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ?" . ($includeImage ? ", Product_Image = ?" : "") . " WHERE Product_ID = ?");
+    $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Product_Image = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
     if (!$stmt) {
         $response["message"] = 'Prepare failed: ' . $conn->error;
         return json_encode($response);
@@ -170,14 +169,14 @@ function editProduct($productData) {
     $quantity = sanitize_input($productData['Quantity']);
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
-    $productID = $productData["Product_ID"];
 
-    if ($includeImage) {
+    // Handle image upload
+    $image = null;
+    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
         $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
-        $stmt->bind_param("ssdisisbi", $name, $description, $price, $quantity, $category, $available, $image, $productID);
-    } else {
-        $stmt->bind_param("ssdisii", $name, $description, $price, $quantity, $category, $available, $productID);
     }
+
+    $stmt->bind_param("ssdisisi", $name, $description, $image, $price, $quantity, $category, $available, $productData["Product_ID"]);
 
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
