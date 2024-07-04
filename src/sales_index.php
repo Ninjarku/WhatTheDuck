@@ -1,13 +1,16 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
 
 // Check if sales admin is logged in
 if ($_SESSION["cust_rol"] !== "Sales Admin") {
-    header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!")); // Redirect to login page
+    ?>
+    <script>
+        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
+    </script>
+    <?php
     exit();
+} else {
+    include "includes/navbar.php";
 }
 ?>
 
@@ -165,7 +168,6 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 </head>
 
 <body>
-    <?php include "includes/navbar.php"; ?>
     <div class="container">
         <br><br>
         <h1 class="text-center">Product Management</h1>

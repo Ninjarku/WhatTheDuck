@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
 
 // Check if it admin is logged in
@@ -11,7 +8,9 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
         window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
     </script>
     <?php
-    exit(); // Make sure to stop further execution after redirection
+    exit();
+} else {
+    include "includes/navbar.php";
 }
 ?>
 
@@ -170,7 +169,6 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
 </head>
 
 <body>
-    <?php include "includes/navbar.php"; ?>
     <div class="container">
         <br><br>
         <h1 class="text-center">User Management</h1>
