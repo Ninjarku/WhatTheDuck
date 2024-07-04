@@ -11,10 +11,12 @@ if (time() - $otp_time > $otp_expiry) {
     echo 'OTP has expired. Please request a new one.';
 } else {
     if ($entered_otp == $correct_otp) {
-        echo 'Yay it works'; // Redirect to reset password page
+        echo 'Yay it works'; 
+        echo 'To do: reset password page';
         exit;
     } else {
         echo 'Incorrect OTP. Please try again.';
+        echo 'To do: incorrect message';
     }
 }
 ?>
