@@ -12,7 +12,8 @@ $response = array(
 );
 
 // Database connection
-function getDatabaseConnection() {
+function getDatabaseConnection()
+{
     $config = parse_ini_file('/var/www/private/db-config.ini');
     $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
     if ($conn->connect_error) {
@@ -22,7 +23,8 @@ function getDatabaseConnection() {
 }
 
 // Get all products for sales index
-function getAllProductsSales() {
+function getAllProductsSales()
+{
     $conn = getDatabaseConnection();
     global $response;
     if (!$conn) {
@@ -53,7 +55,8 @@ function getAllProductsSales() {
 }
 
 // Add product
-function addProduct($productData) {
+function addProduct($productData)
+{
     $conn = getDatabaseConnection();
     global $response;
     if (!$conn) {
@@ -104,7 +107,8 @@ function addProduct($productData) {
 }
 
 // Delete product
-function deleteProduct($Product_ID) {
+function deleteProduct($Product_ID)
+{
     $conn = getDatabaseConnection();
     global $response;
     if (!$conn) {
@@ -138,7 +142,8 @@ function deleteProduct($Product_ID) {
 }
 
 // Edit product
-function editProduct($productData) {
+function editProduct($productData)
+{
     $conn = getDatabaseConnection();
     global $response;
     if (!$conn) {
@@ -177,7 +182,8 @@ function editProduct($productData) {
 }
 
 // Sanitize input
-function sanitize_input($data) {
+function sanitize_input($data)
+{
     $data = trim($data);
     $data = stripslashes($data);
     return $data;

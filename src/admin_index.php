@@ -12,9 +12,6 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
     </script>
     <?php
     exit(); // Make sure to stop further execution after redirection
-} else {
-    include "includes/navbar.php";
-    // Your other code for IT Admin
 }
 ?>
 
@@ -173,6 +170,7 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
 </head>
 
 <body>
+    <?php include "includes/navbar.php"; ?>
     <div class="container">
         <br><br>
         <h1 class="text-center">User Management</h1>
