@@ -16,7 +16,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
 <!DOCTYPE html>
 <html lang="en">
-    
+
 <head>
     <meta charset="UTF-8">
     <title>What The Duck - Sales Admin</title>
@@ -97,6 +97,87 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                 var Product_ID = $(this).data("id");
                 $("#Product_ID").val(Product_ID); // Set Product_ID in the modal form
                 $("#uploadImageModal").modal("show"); // Show the modal
+            });
+
+            // Handle image upload form submission
+            $("#image-upload-form").submit(function (event) {
+                event.preventDefault();
+
+                var formData = new FormData(this);
+                var fileInput = $("#Product_Image")[0];
+                var file = fileInput.files[0];
+
+                if (!file) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No File Selected',
+                        text: 'Please select an image file to upload.',
+                        showCloseButton: false,
+                        showCancelButton: false,
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                var fileType = file.type;
+                var fileSize = file.size;
+
+                if (!['image/jpeg', 'image/png'].includes(fileType)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid File Type',
+                        text: 'Only JPG and PNG files are allowed.',
+                        showCloseButton: false,
+                        showCancelButton: false,
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                if (fileSize > 5 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'File Too Large',
+                        text: 'The file size must be less than 5MB.',
+                        showCloseButton: false,
+                        showCancelButton: false,
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                $.ajax({
+                    url: $(this).attr("action"),
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: response.icon,
+                            title: response.title,
+                            text: response.message,
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $("#uploadImageModal").modal("hide"); // Hide the modal
+                                loadTableData(); // Reload table data
+                            }
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'There was a problem with the request. Please try again.',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             });
 
             // Delete product button click event
@@ -263,7 +344,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             <label for="Product_Image">Product Image:</label>
                             <input type="file" class="form-control-file" id="Product_Image" name="Product_Image"
                                 accept="image/jpeg, image/png" required>
-                            <small class="form-text text-muted">Only JPG and PNG files are allowed. Max size 5MB.</small>
+                            <small class="form-text text-muted">Only JPG and PNG files are allowed. Max size
+                                5MB.</small>
                         </div>
                         <button type="submit" class="btn btn-primary">Upload Image</button>
                     </form>
