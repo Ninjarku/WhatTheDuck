@@ -193,10 +193,11 @@ function editProduct($productData, $files)
         return json_encode($response);
     }
 
-    $query = "UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ?";
     $params = [$name, $description, $price, $quantity, $category, $available];
     $paramTypes = "ssdisi";
+    $query = "UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ?";
 
+    // Handle image upload
     if (isset($files['Product_Image']) && $files['Product_Image']['error'] == UPLOAD_ERR_OK) {
         $image = file_get_contents($files['Product_Image']['tmp_name']);
         $query .= ", Product_Image = ?";
