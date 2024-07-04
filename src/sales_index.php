@@ -118,9 +118,50 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
             });
 
             // Upload image button click event
-            $("#product_table").on("click", ".btn-upload-image", function () {
+            $("#product_table").on("click", ".btn-upload", function () {
                 var Product_ID = $(this).data("id");
-                window.location.href = "product_image_upload.php?Product_ID=" + Product_ID; // Redirect to image upload form
+                $("#Product_ID").val(Product_ID); // Set Product_ID in the modal form
+                $("#uploadImageModal").modal("show"); // Show the modal
+            });
+
+            // Handle image upload form submission
+            $("#image-upload-form").submit(function (event) {
+                event.preventDefault();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: $(this).attr("action"),
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: response.icon,
+                            title: response.title,
+                            text: response.message,
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $("#uploadImageModal").modal("hide"); // Hide the modal
+                                loadTableData(); // Reload table data
+                            }
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'There was a problem with the request. Please try again.',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             });
         });
 
@@ -143,7 +184,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             products.forEach(function (product) {
                                 var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
                                               <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>
-                                              <button class='btn btn-upload-image' data-id='${product.Product_ID}'><i class='fas fa-upload' style='padding-top: 0px;color:blue;'></i></button>`;
+                                              <button class='btn btn-upload' data-id='${product.Product_ID}'><i class='fas fa-upload' style='padding-top: 0px;color:blue;'></i></button>`;
                                 var image = product.Product_Image ? "<img src='data:image/jpeg;base64," + product.Product_Image + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>" : "No image";
                                 table.row.add([
                                     product.Product_ID,
@@ -183,6 +224,31 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
         <table id="product_table" class="display" style="width:100%"></table>
         <br><br>
     </div>
+
+    <!-- Modal for Image Upload -->
+    <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadImageModalLabel">Upload Product Image</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="image-upload-form" method="post" action="process_product.php?action=uploadImage" enctype="multipart/form-data">
+                        <input type="hidden" id="Product_ID" name="Product_ID">
+                        <div class="form-group">
+                            <label for="Product_Image">Product Image:</label>
+                            <input type="file" class="form-control-file" id="Product_Image" name="Product_Image" accept="image/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload Image</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php include "includes/footer.php"; ?>
 </body>
 
