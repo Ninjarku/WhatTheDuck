@@ -1,5 +1,6 @@
 <?php 
-    include 'includes/navbar.php';
+    session_start(); 
+    include_once "includes/navbar.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,12 +26,14 @@
 </head>
 <body>
     <?php   
-    function getSelectedCartItem($cart_ids){
+    if (isset($_POST['selectedCartIds'])) {
+        $cart_ids = $_POST['selectedCartIds'];
+        
         $totalprice = 0;
 
         // Create database connection.
         $config = parse_ini_file('/var/www/private/db-config.ini');
-        $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+        $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
         // Check connection
         if ($conn->connect_error) {
@@ -49,19 +52,11 @@
             $stmt->bind_param('i', $cart_ids[$x]);
             $stmt->execute();
             $result = $stmt->get_result();
+            $cartitem = array();
             if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $arrResult[] = $row;  
-                }
+                $cartitem[] = $result->fetch_assoc();
             }
         }
-        return json_encode($arrResult);
-    }
-    if (isset($_POST['selectedCartIds'])) {
-        $cart_ids = $_POST['selectedCartIds'];
-        
-        $cartSelectJson = getSelectedCartItem($cart_ids);
-        $cartitem = json_decode($cartSelectJson, true);
         
         $_SESSION['selectedCartIds'] = $cart_ids;
     ?>
