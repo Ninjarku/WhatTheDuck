@@ -22,6 +22,15 @@ function getDatabaseConnection()
     return $conn;
 }
 
+// Sanitize input
+function sanitize_input($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+    return $data;
+}
+
 // Get all products for sales index
 function getAllProductsSales()
 {
@@ -64,9 +73,6 @@ function addProduct($productData)
         return json_encode($response);
     }
 
-    // Debugging: Check received product data
-    $response["debug"] = "Received product data: " . json_encode($productData);
-
     $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_Name=?");
     $stmt->bind_param("s", $productData["Product_Name"]);
     $stmt->execute();
@@ -82,7 +88,6 @@ function addProduct($productData)
     $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
         $response["message"] = 'Prepare failed: ' . $conn->error;
-        $response["debug"] = 'Prepare failed: ' . $conn->error;
         return json_encode($response);
     }
 
@@ -102,15 +107,10 @@ function addProduct($productData)
         $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
     }
 
-    // Debugging: Output the SQL query
-    $sql_query = "INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES ('$name', '$description', '$image', '$price', '$quantity', '$category', '$available')";
-    $response["debug"] .= " | SQL Query: $sql_query";
-
     $stmt->bind_param("ssdisis", $name, $description, $image, $price, $quantity, $category, $available);
 
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
-        $response["debug"] .= ' | Execute failed: ' . $stmt->error;
         return json_encode($response);
     }
 
@@ -124,7 +124,7 @@ function addProduct($productData)
     return json_encode($response);
 }
 
-// Delete product
+// Delete product function
 function deleteProduct($Product_ID)
 {
     $conn = getDatabaseConnection();
@@ -232,15 +232,6 @@ function editProduct($productData, $files)
     return json_encode($response);
 }
 
-
-// Sanitize input
-function sanitize_input($data)
-{
-    $data = trim($data);
-    $data = stripslashes($data);
-    return $data;
-}
-
 // Handle actions
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
 
@@ -252,7 +243,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($action === 'addProduct') {
         echo addProduct($_POST);
     } elseif ($action === 'editProduct') {
-        echo editProduct($_POST);
+        echo editProduct($_POST, $_FILES);
     } elseif ($action === 'deleteProduct' && isset($_POST['Product_ID'])) {
         echo deleteProduct($_POST['Product_ID']);
     }

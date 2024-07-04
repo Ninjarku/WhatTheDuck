@@ -175,7 +175,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
                         Swal.fire({
                             icon: response.icon,
                             title: response.title,
-                            text: response.message + "\nDebug: " + (response.debug || ""),
+                            text: response.message,
                             showCloseButton: false,
                             showCancelButton: false,
                             confirmButtonText: response.redirect ? 'OK' : 'OK'
@@ -205,11 +205,11 @@ if ($Form_Type == 1 && $action === 'editProduct') {
     <div class="container">
         <div class="profile-content">
             <form id="product-form" method="post" enctype="multipart/form-data"
-                action="process_product.php?action=editProduct">
+                action="process_product.php?action=<?php echo $Form_Type == 1 ? 'editProduct' : 'addProduct'; ?>">
                 <input type="hidden" name="Product_ID" value="<?php echo $product['Product_ID']; ?>">
                 <!-- Other form fields -->
                 <div class="form-container">
-                    <h1>Edit Product</h1>
+                    <h1><?php echo $Form_Type == 1 ? 'Edit Product' : 'Add Product'; ?></h1>
                     <div class="form-group">
                         <label for="Product_Name">Product Name:</label>
                         <input type="text" class="form-control" id="Product_Name" name="Product_Name"
@@ -240,7 +240,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
                             value="1" <?php echo $product['Product_Available'] == 1 ? 'checked' : ''; ?>>
                         <label class="form-check-label" for="Product_Available">Product Available</label>
                     </div>
-                    <button class="btn btn-primary mt-3" type="submit">Update Product</button>
+                    <button class="btn btn-primary mt-3" type="submit"><?php echo $Form_Type == 1 ? 'Update' : 'Add'; ?> Product</button>
                 </div>
                 <div class="image-container">
                     <h3>Product Image</h3>
