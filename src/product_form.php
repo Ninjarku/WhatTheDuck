@@ -43,6 +43,19 @@ if ($Form_Type == 1 && $action === 'editProduct') {
 
 <!DOCTYPE html>
 <html lang="en">
+<style>
+    body,
+    html {
+        font-family: 'Comic Neue', cursive;
+        background-color: #fff5cc;
+        color: black;
+    }
+
+    .container {
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+</style>
 
 <head>
     <meta charset="UTF-8">

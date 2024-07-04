@@ -16,7 +16,13 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
 <!DOCTYPE html>
 <html lang="en">
-
+><style>
+    body, html {
+        font-family: 'Comic Neue', cursive;
+        background-color: #fff5cc;
+        color: black;
+    }
+</style>
 <head>
     <meta charset="UTF-8">
     <title>What The Duck - Sales Admin</title>
