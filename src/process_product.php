@@ -191,8 +191,7 @@ function deleteProduct($Product_ID)
 }
 
 // Upload product image
-function uploadProductImage($productData)
-{
+function uploadProductImage($Product_ID) {
     $conn = getDatabaseConnection();
     global $response;
     if (!$conn) {
@@ -200,15 +199,27 @@ function uploadProductImage($productData)
         return json_encode($response);
     }
 
-    $Product_ID = sanitize_input($productData['Product_ID']);
-
     // Handle image upload
     $image = null;
     if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
-    }
+        $fileType = mime_content_type($_FILES['Product_Image']['tmp_name']);
+        $allowedTypes = ['image/jpeg', 'image/png'];
+        $fileSize = $_FILES['Product_Image']['size'];
+        
+        // Validate file type
+        if (!in_array($fileType, $allowedTypes)) {
+            $response["message"] = 'Invalid file type. Only JPG and PNG are allowed.';
+            return json_encode($response);
+        }
+        
+        // Validate file size
+        if ($fileSize > 5 * 1024 * 1024) {
+            $response["message"] = 'File size must be less than 5MB.';
+            return json_encode($response);
+        }
 
-    if (!$image) {
+        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
+    } else {
         $response["message"] = 'Image upload failed';
         return json_encode($response);
     }
@@ -219,10 +230,7 @@ function uploadProductImage($productData)
         return json_encode($response);
     }
 
-    // Bind image data as a blob
-    $null = NULL;
-    $stmt->bind_param("bi", $null, $Product_ID);
-    $stmt->send_long_data(0, $image);
+    $stmt->bind_param("bi", $image, $Product_ID);
 
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
@@ -235,6 +243,7 @@ function uploadProductImage($productData)
     $response["icon"] = "success";
     $response["title"] = "Image Uploaded";
     $response["message"] = "Product image uploaded successfully";
+    $response["redirect"] = "sales_index.php";
     return json_encode($response);
 }
 

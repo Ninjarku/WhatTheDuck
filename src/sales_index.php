@@ -16,15 +16,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
 <!DOCTYPE html>
 <html lang="en">
-<style>
-    body,
-    html {
-        font-family: 'Comic Neue', cursive;
-        background-color: #fff5cc;
-        color: black;
-    }
-</style>
-
+    
 <head>
     <meta charset="UTF-8">
     <title>What The Duck - Sales Admin</title>
@@ -67,6 +59,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
     <!-- Custom JS for Product Management -->
     <script>
         $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
             // Initialize DataTable
             $('#product_table').DataTable({
                 "iDisplayLength": 5,
@@ -204,9 +197,9 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             table.row.add(['', '', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
                         } else {
                             products.forEach(function (product) {
-                                var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
-                                              <button class='btn btn-upload' data-id='${product.Product_ID}'><i class='fas fa-upload' style='padding-top: 0px;color:blue;'></i></button>
-                                              <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
+                                var action = `<button class='btn btn-edit' data-id='${product.Product_ID}' data-toggle='tooltip' data-placement='top' title='Edit Product'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
+                                              <button class='btn btn-upload' data-id='${product.Product_ID}' data-toggle='tooltip' data-placement='top' title='Upload Image'><i class='fas fa-upload' style='padding-top: 0px;color:blue;'></i></button>
+                                              <button class='btn btn-delete' data-id='${product.Product_ID}' data-toggle='tooltip' data-placement='top' title='Delete Product'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
                                 var image = product.Product_Image ? "<img src='data:image/jpeg;base64," + product.Product_Image + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>" : "No image";
                                 table.row.add([
                                     product.Product_ID,
@@ -220,6 +213,9 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                                     action
                                 ]).draw(false);
                             });
+
+                            // Reinitialize tooltips
+                            $('[data-toggle="tooltip"]').tooltip();
                         }
                     } else {
                         Swal.fire({
@@ -266,7 +262,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                         <div class="form-group">
                             <label for="Product_Image">Product Image:</label>
                             <input type="file" class="form-control-file" id="Product_Image" name="Product_Image"
-                                accept="image/*" required>
+                                accept="image/jpeg, image/png" required>
+                            <small class="form-text text-muted">Only JPG and PNG files are allowed. Max size 5MB.</small>
                         </div>
                         <button type="submit" class="btn btn-primary">Upload Image</button>
                     </form>
