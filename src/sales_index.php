@@ -2,8 +2,9 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-session_start(); // Start the session at the beginning of the file
-// Check if the admin is logged in
+session_start();
+
+// Check if sales admin is logged in
 if ($_SESSION["cust_rol"] !== "Sales Admin") {
     header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!")); // Redirect to login page
     exit();
@@ -12,6 +13,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>WhatTheDuck - Sales Admin</title>
@@ -19,22 +21,18 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
     <!-- START OF THE LINK -->
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <!-- jQuery -->
     <script src="js/jquery-3.5.1.js" type="text/javascript"></script>
     <!--Bootstrap JS-->
-    <script defer
-            src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
-            integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
-            crossorigin="anonymous">
-    </script>
+    <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+        integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
+        </script>
     <!-- DataTables JS -->
     <script defer src="js/datatables.min.js" type="text/javascript"></script>
     <!-- DataTables CSS -->
-    <link href="css/datatables.min.css" rel="stylesheet" type="text/css"/>
+    <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
     <!-- FontAwesome for Icons -->
     <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
     <!-- SweetAlert2 for Popups -->
@@ -49,15 +47,15 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                 "iDisplayLength": 5,
                 "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 columns: [
-                    {title: "Product ID"},
-                    {title: "Product Name"},
-                    {title: "Product Image"},
-                    {title: "Product Description"},
-                    {title: "Price"},
-                    {title: "Quantity"},
-                    {title: "Product Category"},
-                    {title: "Product Available"},
-                    {title: "Actions"}
+                    { title: "Product ID" },
+                    { title: "Product Name" },
+                    { title: "Product Image" },
+                    { title: "Product Description" },
+                    { title: "Price" },
+                    { title: "Quantity" },
+                    { title: "Product Category" },
+                    { title: "Product Available" },
+                    { title: "Actions" }
                 ],
                 "deferRender": true
             });
@@ -117,7 +115,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
             });
         });
 
-               // Function to load product data into the DataTable
+        // Function to load product data into the DataTable
         function loadTableData() {
             var table = $('#product_table').DataTable();
             table.clear().draw();
@@ -136,7 +134,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             products.forEach(function (product) {
                                 var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
                                               <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
-                                              var image = product.Product_Image ? "<img src='data:image/jpeg;base64," + product.Product_Image + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>" : "No image";
+                                var image = product.Product_Image ? "<img src='data:image/jpeg;base64," + product.Product_Image + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>" : "No image";
                                 table.row.add([
                                     product.Product_ID,
                                     product.Product_Name,
@@ -170,11 +168,13 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
     <?php include "includes/navbar.php"; ?>
     <div class="container">
         <h1 class="text-center">Product Management</h1>
-        <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New Product</button>
+        <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
+            Product</button>
         <br><br>
         <table id="product_table" class="display" style="width:100%"></table>
         <br><br>
     </div>
     <?php include "includes/footer.php"; ?>
 </body>
+
 </html>
