@@ -34,6 +34,7 @@ function getAllOrders()
 
     // Get the current user's ID from the session
     $userID = $_SESSION['userid'];
+    console.log($userID);
 
     $stmt = $conn->prepare("
         SELECT 
