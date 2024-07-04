@@ -135,7 +135,7 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
                             } else {
                                 users.forEach(function (user) {
                                     var action = `<button class='btn btn-edit' data-id='${user.User_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
-                                              <button class='btn btn-delete' data-id='${user.User_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
+                                                  <button class='btn btn-delete' data-id='${user.User_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
                                     table.row.add([
                                         user.User_ID,
                                         user.Username,
@@ -145,7 +145,7 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
                                         user.Gender,
                                         user.DOB,
                                         user.User_Type,
-                                        user.Account_Active,
+                                        user.Account_Active ? 'Active' : 'Inactive',
                                         action
                                     ]).draw(false);
                                 });
