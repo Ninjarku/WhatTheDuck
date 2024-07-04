@@ -74,8 +74,8 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
             });
 
             // Edit user button click event
-            $("#user_table").on("click", "#btnEdit", function () {
-                var User_ID = $(this).val();
+            $("#user_table").on("click", ".btnEdit", function () {
+                var User_ID = $(this).val("id");
                 window.location.href = "user_form.php?action=editUser&Form_Type=1&User_ID=" + User_ID; // Redirect to user_form.php for editing the user
             });
 
