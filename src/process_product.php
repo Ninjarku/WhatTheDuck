@@ -159,7 +159,7 @@ function deleteProduct($Product_ID)
     return json_encode($response);
 }
 
-// Edit product
+// Edit product function
 function editProduct($productData)
 {
     $conn = getDatabaseConnection();
@@ -168,35 +168,21 @@ function editProduct($productData)
         $response["message"] = 'Database connection failed';
         return json_encode($response);
     }
-     // Add debug information
-     $response["debug"] = array();
-     $response["debug"]["received_data"] = $productData;
-
-    $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Product_Image = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
-    if (!$stmt) {
-        $response["message"] = 'Prepare failed: ' . $conn->error;
-        return json_encode($response);
-    }
 
     $name = sanitize_input($productData['Product_Name']);
     $description = sanitize_input($productData['Product_Description']);
     $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    if ($price === false) {
+        $response["message"] = 'Invalid price format.';
+        return json_encode($response);
+    }
     $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
 
-    // Add sanitized data to debug information
-    $response["debug"]["sanitized_data"] = array(
-        "name" => $name,
-        "description" => $description,
-        "price" => $price,
-        "quantity" => $quantity,
-        "category" => $category,
-        "available" => $available
-    );
+    $stmt = null;
 
     // Handle image upload
-    $image = null;
     if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
         $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
         $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Product_Image = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
@@ -204,6 +190,11 @@ function editProduct($productData)
     } else {
         $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
         $stmt->bind_param("sdisisi", $name, $description, $price, $quantity, $category, $available, $productData["Product_ID"]);
+    }
+
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
     }
 
     if (!$stmt->execute()) {
