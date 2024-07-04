@@ -84,29 +84,24 @@ if ($Form_Type == 1 && $action === 'editUser') {
 <body>
     <div class="container">
         <h2><?php echo $Form_Type == 1 ? 'Edit User' : 'Add User'; ?></h2>
-        <form id="product-form" method="post"
-            action="process_product.php?action=<?php echo $Form_Type == 1 ? 'editUser' : 'addUser'; ?>">
+        <form id="product-form" method="post" action="process_product.php?action=<?php echo $Form_Type == 1 ? 'editUser' : 'addUser'; ?>">
             <input type="hidden" name="User_ID" value="<?php echo htmlspecialchars($user['User_ID']); ?>">
 
             <div class="form-group">
                 <label for="Username">Username:</label>
-                <input type="text" class="form-control" id="Username" name="Username"
-                    value="<?php echo htmlspecialchars($user['Username']); ?>" required>
+                <input type="text" class="form-control" id="Username" name="Username" value="<?php echo htmlspecialchars($user['Username']); ?>" required>
             </div>
             <div class="form-group">
                 <label for="Email">Email:</label>
-                <input type="email" class="form-control" id="Email" name="Email"
-                    value="<?php echo htmlspecialchars($user['Email']); ?>" required>
+                <input type="email" class="form-control" id="Email" name="Email" value="<?php echo htmlspecialchars($user['Email']); ?>" required>
             </div>
             <div class="form-group">
                 <label for="Mobile_Number">Mobile Number:</label>
-                <input type="text" class="form-control" id="Mobile_Number" name="Mobile_Number" maxlength="8"
-                    value="<?php echo htmlspecialchars($user['Mobile_Number']); ?>" required>
+                <input type="text" class="form-control" id="Mobile_Number" name="Mobile_Number" maxlength="8" value="<?php echo htmlspecialchars($user['Mobile_Number']); ?>" required>
             </div>
             <div class="form-group">
                 <label for="Billing_Address">Billing Address:</label>
-                <input type="text" class="form-control" id="Billing_Address" name="Billing_Address"
-                    value="<?php echo htmlspecialchars($user['Billing_Address']); ?>">
+                <input type="text" class="form-control" id="Billing_Address" name="Billing_Address" value="<?php echo htmlspecialchars($user['Billing_Address']); ?>">
             </div>
             <div class="form-group">
                 <label for="Gender">Gender:</label>
@@ -124,12 +119,9 @@ if ($Form_Type == 1 && $action === 'editUser') {
             <div class="form-group">
                 <label for="User_Type">User Type:</label>
                 <select class="form-control" id="User_Type" name="User_Type" required>
-                    <option value="IT Admin" <?php echo $user['User_Type'] == 'IT Admin' ? 'selected' : ''; ?>>IT Admin
-                    </option>
-                    <option value="Sales Admin" <?php echo $user['User_Type'] == 'Sales Admin' ? 'selected' : ''; ?>>Sales
-                        Admin</option>
-                    <option value="Customer" <?php echo $user['User_Type'] == 'Customer' ? 'selected' : ''; ?>>Customer
-                    </option>
+                    <option value="IT Admin" <?php echo $user['User_Type'] == 'IT Admin' ? 'selected' : ''; ?>>IT Admin</option>
+                    <option value="Sales Admin" <?php echo $user['User_Type'] == 'Sales Admin' ? 'selected' : ''; ?>>Sales Admin</option>
+                    <option value="Customer" <?php echo $user['User_Type'] == 'Customer' ? 'selected' : ''; ?>>Customer</option>
                 </select>
             </div>
             <?php if ($User_ID == 0): // Show password fields only when adding a new user ?>
@@ -139,13 +131,11 @@ if ($Form_Type == 1 && $action === 'editUser') {
                 </div>
             <?php endif; ?>
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="Account_Active" name="Account_Active" value="1"
-                    <?php echo $user['Account_Active'] == 1 ? 'checked' : ''; ?>>
+                <input type="checkbox" class="form-check-input" id="Account_Active" name="Account_Active" value="1" <?php echo $user['Account_Active'] == 1 ? 'checked' : ''; ?>>
                 <label class="form-check-label" for="Account_Active">Account Active</label>
             </div>
 
-            <button type="submit" class="btn btn-primary"><?php echo $Form_Type == 1 ? 'Update' : 'Add'; ?>
-                User</button>
+            <button type="submit" class="btn btn-primary"><?php echo $Form_Type == 1 ? 'Update' : 'Add'; ?>User</button>
         </form>
     </div>
 
@@ -189,7 +179,7 @@ if ($Form_Type == 1 && $action === 'editUser') {
         });
     </script>
 
-    <?php include "includes/footer.php"; ?>
+<?php include "includes/footer.php"; ?>
+    
 </body>
-
 </html>
