@@ -32,6 +32,9 @@ function getAllOrders()
         return json_encode($response);
     }
 
+    // Get the current user's ID from the session
+    $userID = $_SESSION['User_ID'];
+
     $stmt = $conn->prepare("
         SELECT 
             Order_Num, 
@@ -42,14 +45,12 @@ function getAllOrders()
             Billing_Address, 
             Order_Status 
         FROM `Order`
+        WHERE User_ID = ?
         GROUP BY Order_Num, User_ID, Payment_Type, Billing_Address, Order_Status
         ORDER BY Order_Num ASC
     ");
-    if (!$stmt) {
-        $response["message"] = 'Prepare failed: ' . $conn->error;
-        return json_encode($response);
-    }
-
+    
+    $stmt->bind_param("i", $userID);
     $stmt->execute();
     $result = $stmt->get_result();
     $arrResult = [];
