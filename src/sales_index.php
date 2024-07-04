@@ -77,6 +77,13 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                 window.location.href = "product_form.php?action=editProduct&Form_Type=1&Product_ID=" + Product_ID; // Redirect to product_form.php for editing the product
             });
 
+            // Upload image button click event
+            $("#product_table").on("click", ".btn-upload", function () {
+                var Product_ID = $(this).data("id");
+                $("#Product_ID").val(Product_ID); // Set Product_ID in the modal form
+                $("#uploadImageModal").modal("show"); // Show the modal
+            });
+
             // Delete product button click event
             $("#product_table").on("click", ".btn-delete", function () {
                 var Product_ID = $(this).data("id");
@@ -115,13 +122,6 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                         });
                     }
                 });
-            });
-
-            // Upload image button click event
-            $("#product_table").on("click", ".btn-upload", function () {
-                var Product_ID = $(this).data("id");
-                $("#Product_ID").val(Product_ID); // Set Product_ID in the modal form
-                $("#uploadImageModal").modal("show"); // Show the modal
             });
 
             // Handle image upload form submission
@@ -219,14 +219,16 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
     <div class="container">
         <br><br>
         <h1 class="text-center">Product Management</h1>
-        <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New Product</button>
+        <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
+            Product</button>
         <br><br>
         <table id="product_table" class="display" style="width:100%"></table>
         <br><br>
     </div>
 
     <!-- Modal for Image Upload -->
-    <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel" aria-hidden="true">
+    <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -236,11 +238,13 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="image-upload-form" method="post" action="process_product.php?action=uploadImage" enctype="multipart/form-data">
+                    <form id="image-upload-form" method="post" action="process_product.php?action=uploadImage"
+                        enctype="multipart/form-data">
                         <input type="hidden" id="Product_ID" name="Product_ID">
                         <div class="form-group">
                             <label for="Product_Image">Product Image:</label>
-                            <input type="file" class="form-control-file" id="Product_Image" name="Product_Image" accept="image/*" required>
+                            <input type="file" class="form-control-file" id="Product_Image" name="Product_Image"
+                                accept="image/*" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Upload Image</button>
                     </form>

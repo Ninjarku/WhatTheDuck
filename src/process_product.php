@@ -190,6 +190,54 @@ function deleteProduct($Product_ID)
     return json_encode($response);
 }
 
+// Upload product image
+function uploadProductImage($productData)
+{
+    $conn = getDatabaseConnection();
+    global $response;
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
+
+    if (empty($productData['Product_ID'])) {
+        $response["message"] = 'Empty Product ID.';
+        return json_encode($response);
+    }
+
+    // Handle image upload
+    $image = null;
+    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
+    }
+
+    if (!$image) {
+        $response["message"] = 'Image upload failed';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("UPDATE Product SET Product_Image = ? WHERE Product_ID = ?");
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
+
+    $stmt->bind_param("bi", $image, $productData['Product_ID']);
+
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    $response["icon"] = "success";
+    $response["title"] = "Image Uploaded";
+    $response["message"] = "Product image uploaded successfully";
+    return json_encode($response);
+}
+
 
 // Handle actions
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
@@ -205,6 +253,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         echo editProduct($_POST);
     } elseif ($action === 'deleteProduct' && isset($_POST['Product_ID'])) {
         echo deleteProduct($_POST['Product_ID']);
+    } elseif ($action === 'uploadImage' && isset($_POST['Product_ID'])) {
+        echo uploadProductImage($_POST);
     }
 }
 ?>
