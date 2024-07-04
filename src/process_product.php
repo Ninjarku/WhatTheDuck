@@ -200,10 +200,7 @@ function uploadProductImage($productData)
         return json_encode($response);
     }
 
-    if (empty($productData['Product_ID'])) {
-        $response["message"] = 'Empty Product ID.';
-        return json_encode($response);
-    }
+    $Product_ID = sanitize_input($productData['Product_ID']);
 
     // Handle image upload
     $image = null;
@@ -222,7 +219,10 @@ function uploadProductImage($productData)
         return json_encode($response);
     }
 
-    $stmt->bind_param("bi", $image, $productData['Product_ID']);
+    // Bind image data as a blob
+    $null = NULL;
+    $stmt->bind_param("bi", $null, $Product_ID);
+    $stmt->send_long_data(0, $image);
 
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
