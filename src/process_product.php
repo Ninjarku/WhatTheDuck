@@ -223,10 +223,7 @@ function uploadProductImage($Product_ID)
         return json_encode($response);
     }
 
-    // Use bind_param with "b" (blob) type and send_long_data for large objects
-    $null = NULL;
-    $stmt->bind_param("bi", $null, $Product_ID);
-    $stmt->send_long_data(0, $image);
+    $stmt->bind_param("bi", $image, $Product_ID);
 
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
