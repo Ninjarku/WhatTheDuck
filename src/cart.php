@@ -30,7 +30,7 @@ if ($conn->connect_error) {
     if ($result->num_rows > 0) {
         $cartitem = $result->fetch_assoc();
     }
-    
+    print_r($cartitem);
     $stmt->close();
     $conn->close();
 }
