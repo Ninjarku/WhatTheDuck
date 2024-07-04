@@ -191,7 +191,8 @@ function deleteProduct($Product_ID)
 }
 
 // Upload product image
-function uploadProductImage($Product_ID) {
+function uploadProductImage($Product_ID)
+{
     $conn = getDatabaseConnection();
     global $response;
     if (!$conn) {
@@ -199,22 +200,14 @@ function uploadProductImage($Product_ID) {
         return json_encode($response);
     }
 
-    // Handle image upload
-    $image = null;
+    // Validate image file
+    $allowed_types = ['image/jpeg', 'image/png'];
+    $max_size = 5 * 1024 * 1024; // 5MB
     if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $fileType = mime_content_type($_FILES['Product_Image']['tmp_name']);
-        $allowedTypes = ['image/jpeg', 'image/png'];
-        $fileSize = $_FILES['Product_Image']['size'];
-        
-        // Validate file type
-        if (!in_array($fileType, $allowedTypes)) {
-            $response["message"] = 'Invalid file type. Only JPG and PNG are allowed.';
-            return json_encode($response);
-        }
-        
-        // Validate file size
-        if ($fileSize > 5 * 1024 * 1024) {
-            $response["message"] = 'File size must be less than 5MB.';
+        $file_type = $_FILES['Product_Image']['type'];
+        $file_size = $_FILES['Product_Image']['size'];
+        if (!in_array($file_type, $allowed_types) || $file_size > $max_size) {
+            $response["message"] = 'Invalid file type or size. Only JPG and PNG files under 5MB are allowed.';
             return json_encode($response);
         }
 
