@@ -16,13 +16,15 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
 <!DOCTYPE html>
 <html lang="en">
-><style>
-    body, html {
+<style>
+    body,
+    html {
         font-family: 'Comic Neue', cursive;
         background-color: #fff5cc;
         color: black;
     }
 </style>
+
 <head>
     <meta charset="UTF-8">
     <title>What The Duck - Sales Admin</title>
@@ -47,6 +49,20 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
     <!-- SweetAlert2 for Popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- END OF THE LINK -->
+
+    <style>
+        .btn-upload,
+        .btn-edit,
+        .btn-delete {
+            transition: transform 0.2s;
+        }
+
+        .btn-upload:hover,
+        .btn-edit:hover,
+        .btn-delete:hover {
+            transform: scale(1.1);
+        }
+    </style>
 
     <!-- Custom JS for Product Management -->
     <script>
