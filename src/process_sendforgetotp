@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'vendor/autoload.php';
+require './vendor/autoload.php';
 //require '/var/www/html/jwt/jwt_gen_token.php';  // Adjust the path as necessary
 
 use PHPMailer\PHPMailer\PHPMailer;
