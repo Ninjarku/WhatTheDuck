@@ -2,6 +2,8 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+$userRole = isset($_SESSION['cust_rol']) ? $_SESSION['cust_rol'] : null;
 ?>
 <noscript style="color:white;background-color:black;width: 100%;display: block;">This course portal requires JavaScript to verify your identity. Please enable JavaScript to access the course.</noscript>
 <script src="/js/jquery-3.5.1.js" type="text/javascript"></script>
@@ -104,6 +106,19 @@ if (session_status() === PHP_SESSION_NONE) {
             <li class="nav-item">
                 <a class="nav-link" href="AboutUs.php">About Us</a>
             </li>
+            <?php if ($userRole === 'Sales Admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="sales_index.php">Manage Sales</a>
+                </li>
+            <?php elseif ($userRole === 'IT Admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="admin_index.php">Admin Dashboard</a>
+                </li>
+            <?php elseif ($userRole === 'Customer'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="my_orders.php">My Orders</a>
+                </li>
+            <?php endif; ?>
             <?php
             if (isset($_SESSION["cust_login"]) && $_SESSION["cust_login"] == "success") {
                 ?>
@@ -122,12 +137,14 @@ if (session_status() === PHP_SESSION_NONE) {
                 <?php
             }
             ?>
-            <li class="nav-item">
-                <a class="nav-link cart-link" href="cart.php">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="cartinfo d-inline-block"></span>
-                </a>
-            </li>
+            <?php if ($userRole !== 'Sales Admin' && $userRole !== 'IT Admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link cart-link" href="cart.php">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="cartinfo d-inline-block"></span>
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 </nav>
