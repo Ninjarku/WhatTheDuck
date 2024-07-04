@@ -159,7 +159,6 @@ function deleteProduct($Product_ID)
     return json_encode($response);
 }
 
-
 // Edit product function
 function editProduct($productData, $files)
 {
@@ -231,14 +230,6 @@ function editProduct($productData, $files)
     $response["message"] = "Product updated successfully";
     $response["redirect"] = "sales_index.php";
     return json_encode($response);
-}
-
-// Sanitize input function
-function sanitize_input($data)
-{
-    $data = trim($data);
-    $data = stripslashes($data);
-    return $data;
 }
 
 
