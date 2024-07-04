@@ -6,13 +6,18 @@ session_start();
 
 // Check if it admin is logged in
 if ($_SESSION["cust_rol"] !== "IT Admin") {
-    header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!")); // Redirect to login page
-    exit();
+    ?>
+    <script>
+    window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
+    </script>
+    <?php
+    exit(); // Make sure to stop further execution after redirection
 } else {
     include "includes/navbar.php";
+    // Your other code for IT Admin
 }
 ?>
-
+``
 <!DOCTYPE html>
 <html lang="en">
 
