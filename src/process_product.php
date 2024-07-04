@@ -84,8 +84,8 @@ function addProduct($productData)
 
     $name = sanitize_input($productData['Product_Name']);
     $description = sanitize_input($productData['Product_Description']);
-    $price = sanitize_input($productData['Price']);
-    $quantity = sanitize_input($productData['Quantity']);
+    $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT);
+    $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
 
@@ -165,8 +165,8 @@ function editProduct($productData)
 
     $name = sanitize_input($productData['Product_Name']);
     $description = sanitize_input($productData['Product_Description']);
-    $price = sanitize_input($productData['Price']);
-    $quantity = sanitize_input($productData['Quantity']);
+    $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT);
+    $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
 
