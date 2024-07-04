@@ -8,7 +8,7 @@ session_start();
 if ($_SESSION["cust_rol"] !== "IT Admin") {
     ?>
     <script>
-    window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
+        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
     </script>
     <?php
     exit(); // Make sure to stop further execution after redirection
@@ -17,7 +17,7 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
     // Your other code for IT Admin
 }
 ?>
-``
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -83,8 +83,8 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
             });
 
             // Delete user button click event
-            $("#user_table").on("click", "#.btn-delete", function () {
-                var Product_ID = $(this).data("id");
+            $("#user_table").on("click", ".btn-delete", function () {
+                var User_ID = $(this).data("id");
                 Swal.fire({
                     title: 'Are you sure you would like to delete?',
                     text: "You won't be able to revert this!",
@@ -99,8 +99,8 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
                             type: "POST",
                             url: "process_user.php",
                             data: {
-                                action: "deleteProduct",
-                                Product_ID: Product_ID
+                                action: "deleteUser",
+                                User_ID: User_ID
                             },
                             dataType: "json",
                             success: function (response) {
@@ -134,26 +134,28 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
                 cache: false,
                 dataType: "JSON",
                 success: function (response) {
-                    var users = response.data;
-                    if (users.length === 0) {
-                        table.row.add(['', '', '', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
-                    } else {
-                        users.forEach(function (user) {
-                            var action = `<button class='btn btn-edit' data-id='${user.User_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
+                    if (response.icon === 'success') {
+                        var users = response.data;
+                        if (users.length === 0) {
+                            table.row.add(['', '', '', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
+                        } else {
+                            users.forEach(function (user) {
+                                var action = `<button class='btn btn-edit' data-id='${user.User_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
                                           <button class='btn btn-delete' data-id='${user.User_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
-                            table.row.add([
-                                user.User_ID,
-                                user.Username,
-                                user.Email,
-                                user.Mobile_Number,
-                                user.Billing_Address,
-                                user.Gender,
-                                user.DOB,
-                                user.User_Type,
-                                user.Account_Active,
-                                action
-                            ]).draw(false);
-                        });
+                                table.row.add([
+                                    user.User_ID,
+                                    user.Username,
+                                    user.Email,
+                                    user.Mobile_Number,
+                                    user.Billing_Address,
+                                    user.Gender,
+                                    user.DOB,
+                                    user.User_Type,
+                                    user.Account_Active,
+                                    action
+                                ]).draw(false);
+                            });
+                        }
                     } else {
                         Swal.fire({
                             icon: response.icon,
@@ -164,7 +166,7 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
                             confirmButtonText: 'Ok'
                         });
                     }
-            }
+                }
             });
         }
     </script>
