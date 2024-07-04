@@ -134,7 +134,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
         }
     </style>
     <script>
-        $(document).ready(function () {
+       $(document).ready(function () {
     $("#product-form").on("submit", function (event) {
         event.preventDefault();
         var formData = new FormData(this);
@@ -148,7 +148,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
                 Swal.fire({
                     icon: response.icon,
                     title: response.title,
-                    text: response.message + "\n" + (response.debug || ""),
+                    text: response.message + "\nDebug: " + (response.debug || ""),
                     showCloseButton: false,
                     showCancelButton: false,
                     confirmButtonText: response.redirect ? 'OK' : 'OK'

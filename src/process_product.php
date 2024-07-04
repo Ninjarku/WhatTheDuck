@@ -54,7 +54,7 @@ function getAllProductsSales()
     return json_encode(['icon' => 'success', 'data' => $arrResult]);
 }
 
-// Add product function
+// Add product function (modified with logging)
 function addProduct($productData)
 {
     $conn = getDatabaseConnection();
@@ -63,6 +63,9 @@ function addProduct($productData)
         $response["message"] = 'Database connection failed';
         return json_encode($response);
     }
+
+    // Debugging: Check received product data
+    $response["debug"] = "Received product data: " . json_encode($productData);
 
     $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_Name=?");
     $stmt->bind_param("s", $productData["Product_Name"]);
@@ -79,6 +82,7 @@ function addProduct($productData)
     $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
         $response["message"] = 'Prepare failed: ' . $conn->error;
+        $response["debug"] = 'Prepare failed: ' . $conn->error;
         return json_encode($response);
     }
 
@@ -93,8 +97,8 @@ function addProduct($productData)
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
 
-    // Add debug information
-    $response["debug"] = "Parsed values - Name: $name, Description: $description, Price: $price, Quantity: $quantity, Category: $category, Available: $available";
+    // Debugging: Log parsed values
+    $response["debug"] .= " | Parsed values - Name: $name, Description: $description, Price: $price, Quantity: $quantity, Category: $category, Available: $available";
 
     // Handle image upload
     $image = null;
@@ -106,6 +110,7 @@ function addProduct($productData)
 
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
+        $response["debug"] .= ' | Execute failed: ' . $stmt->error;
         return json_encode($response);
     }
 
