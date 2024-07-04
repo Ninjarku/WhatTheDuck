@@ -183,8 +183,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                         } else {
                             products.forEach(function (product) {
                                 var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
-                                              <button class='btn btn-upload' data-id='${product.Product_ID}'><i class='fas fa-upload' style='padding-top: 0px;color:blue;'></i></button>`
-                                              <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>;
+                                              <button class='btn btn-upload' data-id='${product.Product_ID}'><i class='fas fa-upload' style='padding-top: 0px;color:blue;'></i></button>
+                                              <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
                                 var image = product.Product_Image ? "<img src='data:image/jpeg;base64," + product.Product_Image + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>" : "No image";
                                 table.row.add([
                                     product.Product_ID,
