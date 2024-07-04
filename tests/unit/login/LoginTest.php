@@ -1,85 +1,97 @@
-// tests/unit/login/LoginTest.php
-
 <?php
 use PHPUnit\Framework\TestCase;
 
-// Include the login script
-require '/var/www/html/process_custlogin.php';
-
 class LoginTest extends TestCase
 {
-    protected $config;
-    protected $conn;
-
     protected function setUp(): void
     {
-        $this->config = parse_ini_file('/var/www/private/db-config.ini');
-        $this->conn = new mysqli(
-            $this->config['host'],
-            $this->config['username'],
-            $this->config['password'],
-            $this->config['dbname']
-        );
-
-        // Ensure the database connection is established
-        if ($this->conn->connect_error) {
-            die('Connection failed: ' . $this->conn->connect_error);
+        ob_start();  // Start output buffering to prevent headers from being sent early
+        if (!isset($_SESSION)) {
+            $_SESSION = [];
         }
-        echo('db success');
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = [];
     }
 
     protected function tearDown(): void
     {
-        $this->conn->close();
+        ob_end_clean();  // Clean up output buffering
     }
 
-    protected function resetPostData(): void
-    {
-        $_POST = [];
-    }
-
+    /**
+     * @runInSeparateProcess
+     */
     public function testSuccessfulLogin()
     {
-        $this->resetPostData();
-        $_POST['cust_username'] = 'ducktest';
-        $_POST['cust_pass'] = '$d!70@G1`O|p';
+        // Simulate valid user input
+        $_POST = [
+            "cust_username" => "aaaaa",
+            "cust_pass" => "aaaaa"
+        ];
 
-        ob_start();
+        // Include the login processing script
         include '/var/www/html/process_custlogin.php';
-        $response = json_decode(ob_get_clean(), true);
+        
+        // Capture and decode the JSON output from the script
+        $output = ob_get_contents();
+        $response = json_decode($output, true);
 
+        // Assert the response
         $this->assertEquals('success', $response['icon']);
         $this->assertEquals('Login successful!', $response['title']);
-        $this->assertNotEmpty($response['redirect']);
+        $this->assertStringContainsString('Welcome back, aaaaa', $response['message']);
+        $this->assertEquals('index.php', $response['redirect']);
+        
     }
 
-    public function testInvalidLogin()
+    /**
+     * @runInSeparateProcess
+     */
+    public function testLoginWithBlankFields()
     {
-        $this->resetPostData();
-        $_POST['cust_username'] = 'invalid_user';
-        $_POST['cust_pass'] = 'invalid_password';
+        // Simulate empty input
+        $_POST = [
+            "cust_username" => "",
+            "cust_pass" => ""
+        ];
 
-        ob_start();
+        // Include the login processing script
         include '/var/www/html/process_custlogin.php';
-        $response = json_decode(ob_get_clean(), true);
 
-        $this->assertEquals('error', $response['icon']);
-        $this->assertEquals('Login failed!', $response['title']);
-        $this->assertEquals('Invalid username or password.', $response['message']);
-    }
+        // Capture and decode the JSON output from the script
+        $output = ob_get_contents();
+        $response = json_decode($output, true);
 
-    public function testEmptyFields()
-    {
-        $this->resetPostData();
-        $_POST['cust_username'] = '';
-        $_POST['cust_pass'] = '';
-
-        ob_start();
-        include '/var/www/html/process_custlogin.php';
-        $response = json_decode(ob_get_clean(), true);
-
+        // Assert the response
         $this->assertEquals('error', $response['icon']);
         $this->assertEquals('Login failed!', $response['title']);
         $this->assertEquals('Please fill in all required fields.', $response['message']);
+        $this->assertNull($response['redirect']);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testLoginWithIncorrectCredentials()
+    {
+        // Simulate incorrect user input
+        $_POST = [
+            "cust_username" => "wronguser",
+            "cust_pass" => "wrongpass"
+        ];
+
+        // Include the login processing script
+        include '/var/www/html/process_custlogin.php';
+
+        // Capture and decode the JSON output from the script
+        $output = ob_get_contents();
+        $response = json_decode($output, true);
+
+        // Assert the response
+        $this->assertEquals('error', $response['icon']);
+        $this->assertEquals('Login failed!', $response['title']);
+        $this->assertEquals('Invalid username or password.', $response['message']);
+        $this->assertNull($response['redirect']);
     }
 }
+?>
