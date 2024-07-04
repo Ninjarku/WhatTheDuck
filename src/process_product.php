@@ -160,7 +160,6 @@ function deleteProduct($Product_ID)
 }
 
 // Edit product function
-// Edit product function
 function editProduct($productData, $files)
 {
     $conn = getDatabaseConnection();
@@ -170,72 +169,66 @@ function editProduct($productData, $files)
         return json_encode($response);
     }
 
-    $productID = isset($productData['Product_ID']) ? intval($productData['Product_ID']) : null;
-    if (!$productID) {
-        $response["message"] = 'Invalid product ID';
-        return json_encode($response);
-    }
+    $success = true;
+    $errorMsg = "";
 
+    $productID = isset($productData['Product_ID']) ? intval($productData['Product_ID']) : null;
     $name = sanitize_input($productData['Product_Name']);
     $description = sanitize_input($productData['Product_Description']);
     $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT);
     $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
+    $product_image = null;
 
+    // Validate inputs
+    if ($productID === null) {
+        $errorMsg .= "Invalid product ID.<br>";
+        $success = false;
+    }
     if ($price === false) {
-        $response["message"] = 'Invalid price format';
-        return json_encode($response);
+        $errorMsg .= "Invalid price format.<br>";
+        $success = false;
     }
-
     if ($quantity === false) {
-        $response["message"] = 'Invalid quantity format';
-        return json_encode($response);
+        $errorMsg .= "Invalid quantity format.<br>";
+        $success = false;
     }
 
-    $params = [$name, $description, $price, $quantity, $category, $available];
-    $paramTypes = "ssdisi";
-    $query = "UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ?";
-
-    // Handle image upload
-    if (isset($files['Product_Image']) && $files['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $image = file_get_contents($files['Product_Image']['tmp_name']);
-        $query .= ", Product_Image = ?";
-        $params[] = $image;
-        $paramTypes .= "b";
+    // Handle product image upload
+    if ($success && isset($files['Product_Image']) && $files['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $imageData = file_get_contents($files['Product_Image']['tmp_name']);
+        $product_image = $imageData;
     }
 
-    $query .= " WHERE Product_ID = ?";
-    $params[] = $productID;
-    $paramTypes .= "i";
+    // Update product information if validation is successful
+    if ($success) {
+        if ($product_image) {
+            $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Product_Image = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
+            $stmt->bind_param("ssdisisi", $name, $description, $product_image, $price, $quantity, $category, $available, $productID);
+        } else {
+            $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
+            $stmt->bind_param("sdisisi", $name, $description, $price, $quantity, $category, $available, $productID);
+        }
 
-    $stmt = $conn->prepare($query);
-    if (!$stmt) {
-        $response["message"] = 'Prepare failed: ' . $conn->error;
-        return json_encode($response);
+        if ($stmt->execute()) {
+            $response["icon"] = "success";
+            $response["title"] = "Product updated successfully!";
+            $response["message"] = "The product has been updated.";
+            $response["redirect"] = "sales_index.php";
+        } else {
+            $success = false;
+            $errorMsg = "Update failed: " . $stmt->error;
+        }
+        $stmt->close();
     }
 
-    // Bind parameters dynamically
-    $stmt->bind_param($paramTypes, ...$params);
-
-    // Send the image data separately if it is a BLOB
-    if (isset($image)) {
-        $null = NULL;
-        $stmt->send_long_data(array_search($image, $params), $image);
+    // Display error message if update fails
+    if (!$success) {
+        $response["message"] = $errorMsg;
     }
 
-    if (!$stmt->execute()) {
-        $response["message"] = 'Execute failed: ' . $stmt->error;
-        return json_encode($response);
-    }
-
-    $stmt->close();
     $conn->close();
-
-    $response["icon"] = "success";
-    $response["title"] = "Product Updated";
-    $response["message"] = "Product updated successfully";
-    $response["redirect"] = "sales_index.php";
     return json_encode($response);
 }
 
