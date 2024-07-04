@@ -134,7 +134,7 @@ $userRole = isset($_SESSION['cust_rol']) ? $_SESSION['cust_rol'] : null;
                 </li>
             <?php elseif ($userRole === 'Customer'): ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="my_orders.php">My Orders</a>
+                    <a class="nav-link" href="">My Orders</a>
                 </li>
             <?php endif; ?>
             <?php if ($userRole !== 'Sales Admin' && $userRole !== 'IT Admin'): ?>
