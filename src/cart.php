@@ -1,17 +1,39 @@
 <?php 
-include_once 'includes/navbar.php'; 
+session_start(); 
+include_once "includes/navbar.php";
 
 if ($_SESSION["cust_login"] != "success") {
-    echo "<script>
-        window.location.href = 'Login.php';
-    </script>";
+    echo "<script>window.location.href = 'Login.php';</script>";
 }
-     
-include 'process_cart.php';
 
-$cartJson = getCartItemByUserId();
-$cartitem = json_decode($cartJson, true);
+$User_ID = $_SESSION['userid'];
+$config = parse_ini_file('/var/www/private/db-config.ini');
+$conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+if ($conn->connect_error) {
+    error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
+    $urlloc = "error_page.php?error_id=6&error=" . urlencode("Connection failed: " . $conn->connect_error);
+    echo "<script>window.location.href = '".$urlloc."';</script>"; 
+    exit();
+} else {
+    $stmt = $conn->prepare("SELECT c.Cart_ID, c.Product_ID, c.Quantity, c.Price, c.Total_Price, p.Product_Name, p.Product_Image FROM Cart c, Product p WHERE c.Product_ID = p.Product_ID AND User_ID = ?");
+    if (!$stmt) {
+        error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
+        $urlloc = "error_page.php?error_id=6&error=" . urlencode("Prepare failed: " . $conn->connect_error);
+        echo "<script>window.location.href = '".$urlloc."';</script>"; 
+        exit();
+    }
+    $stmt->bind_param("i", $User_ID);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
+    $arrResult = array();
+    if ($result->num_rows > 0) {
+        $cartitem = $result->fetch_assoc();
+    }
+    
+    $stmt->close();
+    $conn->close();
+}
 ?>
 
 <!DOCTYPE html>
