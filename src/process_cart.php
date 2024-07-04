@@ -70,7 +70,7 @@ function getCartItemByUserId() {
             </script>"; 
             exit();
         }
-        $stmt->bind_param("i", $User_ID);
+        $stmt->bind_param("i", "4"); //$User_ID
         $stmt->execute();
         $result = $stmt->get_result();
 

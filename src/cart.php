@@ -40,6 +40,11 @@ $cartitem = json_decode($cartJson, true);
     <script src="js/cart.js" defer></script>
 
     <link rel="stylesheet" href="css/cart.css">
+    <script>
+        $(document).ready(function(){ 
+            console.log("<?php echo $_SESSION['userid'];?>");
+        });
+    </script>
 </head>
 <body>
     <header>
