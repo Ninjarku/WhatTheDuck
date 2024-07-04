@@ -141,8 +141,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                                 table.row.add([
                                     product.Product_ID,
                                     product.Product_Name,
-                                    product.Product_Description,
                                     image,
+                                    product.Product_Description,
                                     product.Price,
                                     product.Quantity,
                                     product.Product_Category,

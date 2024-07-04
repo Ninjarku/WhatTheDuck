@@ -54,7 +54,7 @@ function getAllProductsSales()
     return json_encode(['icon' => 'success', 'data' => $arrResult]);
 }
 
-// Add product function (modified with logging)
+// Add product function
 function addProduct($productData)
 {
     $conn = getDatabaseConnection();
@@ -79,49 +79,49 @@ function addProduct($productData)
 
     $stmt->close();
 
-   $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?, ?)");
-if (!$stmt) {
-    $response["message"] = 'Prepare failed: ' . $conn->error;
-    $response["debug"] = 'Prepare failed: ' . $conn->error;
+    $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        $response["debug"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
+    
+    $name = sanitize_input($productData['Product_Name']);
+    $description = sanitize_input($productData['Product_Description']);
+    $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    if ($price === false) {
+        $response["message"] = 'Invalid price format.';
+        return json_encode($response);
+    }
+    $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
+    $category = sanitize_input($productData['Product_Category']);
+    $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
+    
+    $image = null;
+    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
+    }
+    
+    // Debugging: Output the SQL query
+    $sql_query = "INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES ('$name', '$description', '$image', '$price', '$quantity', '$category', '$available')";
+    $response["debug"] .= " | SQL Query: $sql_query";
+    
+    $stmt->bind_param("ssdisis", $name, $description, $image, $price, $quantity, $category, $available);
+    
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        $response["debug"] .= ' | Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+    
+    $stmt->close();
+    $conn->close();
+    
+    $response["icon"] = "success";
+    $response["title"] = "Product Added";
+    $response["message"] = "Product added successfully";
+    $response["redirect"] = "sales_index.php";
     return json_encode($response);
-}
-
-$name = sanitize_input($productData['Product_Name']);
-$description = sanitize_input($productData['Product_Description']);
-$price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-if ($price === false) {
-    $response["message"] = 'Invalid price format.';
-    return json_encode($response);
-}
-$quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
-$category = sanitize_input($productData['Product_Category']);
-$available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
-
-$image = null;
-if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
-    $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
-}
-
-// Debugging: Output the SQL query
-$sql_query = "INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES ('$name', '$description', '$image', '$price', '$quantity', '$category', '$available')";
-$response["debug"] .= " | SQL Query: $sql_query";
-
-$stmt->bind_param("ssdisis", $name, $description, $image, $price, $quantity, $category, $available);
-
-if (!$stmt->execute()) {
-    $response["message"] = 'Execute failed: ' . $stmt->error;
-    $response["debug"] .= ' | Execute failed: ' . $stmt->error;
-    return json_encode($response);
-}
-
-$stmt->close();
-$conn->close();
-
-$response["icon"] = "success";
-$response["title"] = "Product Added";
-$response["message"] = "Product added successfully";
-$response["redirect"] = "sales_index.php";
-return json_encode($response);
 }
 
 // Delete product
