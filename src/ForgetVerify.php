@@ -43,8 +43,6 @@ include "includes/navbar.php";
     </style>
 </head>
 <body>
-    <?php include "includes/navbar.php"; ?>
-
     <div class="container">
         <div class="otp-card">
             <h1 class="text-center">Verify OTP</h1>
