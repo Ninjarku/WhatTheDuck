@@ -6,7 +6,7 @@ body {
 }
 
 div {
-    display: block;
+    display: inline;
 }
 
 option {
