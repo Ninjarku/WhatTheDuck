@@ -84,8 +84,7 @@ if ($conn->connect_error) {
                     <div id="cartItems">
                         <!-- Cart items will be loaded here -->
                         <?php if (!empty($cartitem)): ?>
-                            <?php foreach ($cartitem as $item):?>
-                            <?php echo $item['Cart_ID']; ?>
+                            <?php foreach ($cartitem as $item):?> 
                             <div class="obj-rows">
                                 <div class="checkbox-all-rows">
                                     <label for="checkbox-<?php echo htmlspecialchars($item['Cart_ID']); ?>" class="visually-hidden">Select:</label>
