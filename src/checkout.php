@@ -43,7 +43,7 @@
         // An array to hold the rows of data
         $rows = array();
         // Loop through each cart ID and retrieve the record from the database
-        
+        $cartitem = array(); 
         for ($x = 0; $x < sizeof($cart_ids); $x++) { 
             $stmt = $conn->prepare("SELECT c.Cart_ID, c.Quantity, c.Price, p.Product_Name, p.Product_Image 
                                 FROM Cart c
@@ -52,7 +52,6 @@
             $stmt->bind_param('i', $cart_ids[$x]);
             $stmt->execute();
             $result = $stmt->get_result();
-            $cartitem = array(); 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $cartitem[] = $row;
