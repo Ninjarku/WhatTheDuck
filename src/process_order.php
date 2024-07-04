@@ -33,7 +33,7 @@ function getAllOrders()
     }
 
     // Get the current user's ID from the session
-    $userID = $_SESSION['User_ID'];
+    $userID = $_SESSION['userid'];
 
     $stmt = $conn->prepare("
         SELECT 
@@ -49,7 +49,7 @@ function getAllOrders()
         GROUP BY Order_Num, User_ID, Payment_Type, Billing_Address, Order_Status
         ORDER BY Order_Num ASC
     ");
-    
+
     $stmt->bind_param("i", $userID);
     $stmt->execute();
     $result = $stmt->get_result();
