@@ -135,42 +135,42 @@ if ($Form_Type == 1 && $action === 'editProduct') {
     </style>
     <script>
         $(document).ready(function () {
-            $("#product-form").on("submit", function (event) {
-                event.preventDefault();
-                var formData = new FormData(this);
-                $.ajax({
-                    type: "POST",
-                    url: $(this).attr("action"),
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        Swal.fire({
-                            icon: response.icon,
-                            title: response.title,
-                            text: response.message,
-                            showCloseButton: false,
-                            showCancelButton: false,
-                            confirmButtonText: response.redirect ? 'OK' : 'OK'
-                        }).then((result) => {
-                            if (result.isConfirmed && response.redirect) {
-                                window.location.href = response.redirect;
-                            }
-                        });
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: 'There was a problem with the request. Please try again.',
-                            showCloseButton: false,
-                            showCancelButton: false,
-                            confirmButtonText: 'OK'
-                        });
+    $("#product-form").on("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        $.ajax({
+            type: "POST",
+            url: $(this).attr("action"),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                Swal.fire({
+                    icon: response.icon,
+                    title: response.title,
+                    text: response.message + "\n" + (response.debug || ""),
+                    showCloseButton: false,
+                    showCancelButton: false,
+                    confirmButtonText: response.redirect ? 'OK' : 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed && response.redirect) {
+                        window.location.href = response.redirect;
                     }
                 });
-            });
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'There was a problem with the request. Please try again.',
+                    showCloseButton: false,
+                    showCancelButton: false,
+                    confirmButtonText: 'OK'
+                });
+            }
         });
+    });
+});
     </script>
 </head>
 <body>

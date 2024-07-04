@@ -54,6 +54,7 @@ function getAllProductsSales()
     return json_encode(['icon' => 'success', 'data' => $arrResult]);
 }
 
+// Add product function
 function addProduct($productData)
 {
     $conn = getDatabaseConnection();
@@ -91,6 +92,9 @@ function addProduct($productData)
     $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
     $category = sanitize_input($productData['Product_Category']);
     $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
+
+    // Add debug information
+    $response["debug"] = "Parsed values - Name: $name, Description: $description, Price: $price, Quantity: $quantity, Category: $category, Available: $available";
 
     // Handle image upload
     $image = null;
