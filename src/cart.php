@@ -61,11 +61,6 @@ if ($conn->connect_error) {
     <script src="js/cart.js" defer></script>
 
     <link rel="stylesheet" href="css/cart.css">
-    <script>
-        $(document).ready(function(){ 
-            console.log("<?php echo $_SESSION['userid'];?>");
-        });
-    </script>
 </head>
 <body>
     <header>
@@ -88,6 +83,7 @@ if ($conn->connect_error) {
                         <!-- Cart items will be loaded here -->
                         <?php if (!empty($cartitem)): ?>
                             <?php foreach ($cartitem as $item):?>
+                            <?php echo $item['Cart_ID']; ?>
                             <div class="obj-rows">
                                 <div class="checkbox-all-rows">
                                     <label for="checkbox-<?php echo htmlspecialchars($item['Cart_ID']); ?>" class="visually-hidden">Select:</label>
