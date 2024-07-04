@@ -223,7 +223,9 @@ function uploadProductImage($Product_ID)
         return json_encode($response);
     }
 
-    $stmt->bind_param("bi", $image, $Product_ID);
+    $null = NULL; // For blob upload
+    $stmt->bind_param("bi", $null, $Product_ID);
+    $stmt->send_long_data(0, $image);
 
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
