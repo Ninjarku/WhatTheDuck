@@ -16,7 +16,15 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
 <!DOCTYPE html>
 <html lang="en">
-    
+<style>
+    body,
+    html {
+        font-family: 'Comic Neue', cursive;
+        background-color: #fff5cc;
+        color: black;
+    }
+</style>
+
 <head>
     <meta charset="UTF-8">
     <title>What The Duck - Sales Admin</title>
@@ -59,7 +67,6 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
     <!-- Custom JS for Product Management -->
     <script>
         $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip();
             // Initialize DataTable
             $('#product_table').DataTable({
                 "iDisplayLength": 5,
@@ -92,93 +99,12 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                 window.location.href = "product_form.php?action=editProduct&Form_Type=1&Product_ID=" + Product_ID; // Redirect to product_form.php for editing the product
             });
 
-           // Upload image button click event
-$("#product_table").on("click", ".btn-upload", function () {
-    var Product_ID = $(this).data("id");
-    $("#Product_ID").val(Product_ID); // Set Product_ID in the modal form
-    $("#uploadImageModal").modal("show"); // Show the modal
-});
-
-// Handle image upload form submission
-$("#image-upload-form").submit(function (event) {
-    event.preventDefault();
-
-    var formData = new FormData(this);
-    var fileInput = $("#Product_Image")[0];
-    var file = fileInput.files[0];
-
-    if (!file) {
-        Swal.fire({
-            icon: 'error',
-            title: 'No File Selected',
-            text: 'Please select an image file to upload.',
-            showCloseButton: false,
-            showCancelButton: false,
-            confirmButtonText: 'OK'
-        });
-        return;
-    }
-
-    var fileType = file.type;
-    var fileSize = file.size;
-
-    if (!['image/jpeg', 'image/png'].includes(fileType)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Invalid File Type',
-            text: 'Only JPG and PNG files are allowed.',
-            showCloseButton: false,
-            showCancelButton: false,
-            confirmButtonText: 'OK'
-        });
-        return;
-    }
-
-    if (fileSize > 5 * 1024 * 1024) {
-        Swal.fire({
-            icon: 'error',
-            title: 'File Too Large',
-            text: 'The file size must be less than 5MB.',
-            showCloseButton: false,
-            showCancelButton: false,
-            confirmButtonText: 'OK'
-        });
-        return;
-    }
-
-    $.ajax({
-        url: $(this).attr("action"),
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            Swal.fire({
-                icon: response.icon,
-                title: response.title,
-                text: response.message,
-                showCloseButton: false,
-                showCancelButton: false,
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $("#uploadImageModal").modal("hide"); // Hide the modal
-                    loadTableData(); // Reload table data
-                }
+            // Upload image button click event
+            $("#product_table").on("click", ".btn-upload", function () {
+                var Product_ID = $(this).data("id");
+                $("#Product_ID").val(Product_ID); // Set Product_ID in the modal form
+                $("#uploadImageModal").modal("show"); // Show the modal
             });
-        },
-        error: function () {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'There was a problem with the request. Please try again.',
-                showCloseButton: false,
-                showCancelButton: false,
-                confirmButtonText: 'OK'
-            });
-        }
-    });
-});
 
             // Delete product button click event
             $("#product_table").on("click", ".btn-delete", function () {
@@ -278,9 +204,9 @@ $("#image-upload-form").submit(function (event) {
                             table.row.add(['', '', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
                         } else {
                             products.forEach(function (product) {
-                                var action = `<button class='btn btn-edit' data-id='${product.Product_ID}' data-toggle='tooltip' data-placement='top' title='Edit Product'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
-                                              <button class='btn btn-upload' data-id='${product.Product_ID}' data-toggle='tooltip' data-placement='top' title='Upload Image'><i class='fas fa-upload' style='padding-top: 0px;color:blue;'></i></button>
-                                              <button class='btn btn-delete' data-id='${product.Product_ID}' data-toggle='tooltip' data-placement='top' title='Delete Product'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
+                                var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
+                                              <button class='btn btn-upload' data-id='${product.Product_ID}'><i class='fas fa-upload' style='padding-top: 0px;color:blue;'></i></button>
+                                              <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
                                 var image = product.Product_Image ? "<img src='data:image/jpeg;base64," + product.Product_Image + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>" : "No image";
                                 table.row.add([
                                     product.Product_ID,
@@ -294,9 +220,6 @@ $("#image-upload-form").submit(function (event) {
                                     action
                                 ]).draw(false);
                             });
-
-                            // Reinitialize tooltips
-                            $('[data-toggle="tooltip"]').tooltip();
                         }
                     } else {
                         Swal.fire({
@@ -343,8 +266,7 @@ $("#image-upload-form").submit(function (event) {
                         <div class="form-group">
                             <label for="Product_Image">Product Image:</label>
                             <input type="file" class="form-control-file" id="Product_Image" name="Product_Image"
-                                accept="image/jpeg, image/png" required>
-                            <small class="form-text text-muted">Only JPG and PNG files are allowed. Max size 5MB.</small>
+                                accept="image/*" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Upload Image</button>
                     </form>

@@ -191,7 +191,7 @@ function deleteProduct($Product_ID)
 }
 
 // Upload product image
-function uploadProductImage($Product_ID)
+function uploadProductImage($productData)
 {
     $conn = getDatabaseConnection();
     global $response;
@@ -200,19 +200,15 @@ function uploadProductImage($Product_ID)
         return json_encode($response);
     }
 
-    // Validate image file
-    $allowed_types = ['image/jpeg', 'image/png'];
-    $max_size = 5 * 1024 * 1024; // 5MB
-    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $file_type = $_FILES['Product_Image']['type'];
-        $file_size = $_FILES['Product_Image']['size'];
-        if (!in_array($file_type, $allowed_types) || $file_size > $max_size) {
-            $response["message"] = 'Invalid file type or size. Only JPG and PNG files under 5MB are allowed.';
-            return json_encode($response);
-        }
+    $Product_ID = sanitize_input($productData['Product_ID']);
 
+    // Handle image upload
+    $image = null;
+    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
         $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
-    } else {
+    }
+
+    if (!$image) {
         $response["message"] = 'Image upload failed';
         return json_encode($response);
     }
@@ -223,7 +219,10 @@ function uploadProductImage($Product_ID)
         return json_encode($response);
     }
 
-    $stmt->bind_param("bi", $image, $Product_ID);
+    // Bind image data as a blob
+    $null = NULL;
+    $stmt->bind_param("bi", $null, $Product_ID);
+    $stmt->send_long_data(0, $image);
 
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
@@ -236,7 +235,6 @@ function uploadProductImage($Product_ID)
     $response["icon"] = "success";
     $response["title"] = "Image Uploaded";
     $response["message"] = "Product image uploaded successfully";
-    $response["redirect"] = "sales_index.php";
     return json_encode($response);
 }
 
