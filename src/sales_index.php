@@ -116,6 +116,12 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                     }
                 });
             });
+
+            // Upload image button click event
+            $("#product_table").on("click", ".btn-upload-image", function () {
+                var Product_ID = $(this).data("id");
+                window.location.href = "product_image_upload.php?Product_ID=" + Product_ID; // Redirect to image upload form
+            });
         });
 
         // Function to load product data into the DataTable
@@ -136,7 +142,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                         } else {
                             products.forEach(function (product) {
                                 var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
-                                              <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>`;
+                                              <button class='btn btn-delete' data-id='${product.Product_ID}'><i class='fas fa-trash' style='padding-top: 0px;color:red;'></i></button>
+                                              <button class='btn btn-upload-image' data-id='${product.Product_ID}'><i class='fas fa-upload' style='padding-top: 0px;color:blue;'></i></button>`;
                                 var image = product.Product_Image ? "<img src='data:image/jpeg;base64," + product.Product_Image + "' alt='Product Image' class='img-thumbnail' style='max-height: 100px;'>" : "No image";
                                 table.row.add([
                                     product.Product_ID,
@@ -171,8 +178,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
     <div class="container">
         <br><br>
         <h1 class="text-center">Product Management</h1>
-        <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
-            Product</button>
+        <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New Product</button>
         <br><br>
         <table id="product_table" class="display" style="width:100%"></table>
         <br><br>

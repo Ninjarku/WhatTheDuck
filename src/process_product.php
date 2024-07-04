@@ -202,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($action === 'addProduct') {
         echo addProduct($_POST);
     } elseif ($action === 'editProduct') {
-        echo editProduct($_POST, $_FILES);
+        echo editProduct($_POST);
     } elseif ($action === 'deleteProduct' && isset($_POST['Product_ID'])) {
         echo deleteProduct($_POST['Product_ID']);
     }
