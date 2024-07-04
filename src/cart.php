@@ -26,9 +26,11 @@ if ($conn->connect_error) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    $cartitem = array();
+    $cartitem = array(); 
     if ($result->num_rows > 0) {
-        $cartitem[] = $result->fetch_assoc();
+        while ($row = $result->fetch_assoc()) {
+            $cartitem[] = $row;
+        }
     }
     $stmt->close();
     $conn->close();
