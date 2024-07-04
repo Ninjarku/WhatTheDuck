@@ -37,7 +37,7 @@ function getAllOrders()
             Order_Num, 
             User_ID, 
             SUM(Quantity) AS Total_Items, 
-            SUM(Quantity * Total_Price) AS Total_Price, 
+            SUM(Total_Price) AS Total_Price, 
             Payment_Type, 
             Billing_Address, 
             Order_Status 
