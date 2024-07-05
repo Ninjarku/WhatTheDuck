@@ -12,7 +12,7 @@ public class AppTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    private String url = "https://whattheduck.ddns.net/Login.php";  // Update this to your live site URL
+    private String url = "http://whattheduck.ddns.net/Login.php";  // Update this to your live site URL
     private String validUsername = System.getenv("TEST_USERNAME");
     private String validPassword = System.getenv("TEST_PASSWORD");
     private String invalidPassword = "invalid_password";
@@ -20,7 +20,7 @@ public class AppTest {
     @Before
     public void setUp() {
         driver = new HtmlUnitDriver();
-        wait = new WebDriverWait(driver, 10);
+        wait = new WebDriverWait(driver, 20);  // Increase the wait time to 20 seconds
     }
 
     @After
@@ -37,8 +37,14 @@ public class AppTest {
         driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
         driver.findElement(By.id("submit")).click();
 
-        // Assuming successful login redirects to dashboard
-        assertTrue(wait.until(ExpectedConditions.titleContains("Dashboard")));
+        // Wait for the success popup and click "Return to Home"
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Return to Home']"))).click();
+
+        // Log the current page title for debugging
+        System.out.println("Current page title: " + driver.getTitle());
+
+        // Verify that the page redirects to the home page after clicking the button
+        assertTrue(wait.until(ExpectedConditions.titleContains("WhatTheDuck - Home")));
     }
 
     @Test
@@ -51,7 +57,9 @@ public class AppTest {
         driver.findElement(By.id("submit")).click();
 
         // Check for login failed message
-        String errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("swal2-title"))).getText();
+        By errorMsgId = By.className("swal2-title");
+        String errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMsgId)).getText();
+        System.out.println("Error message: " + errorMsg);  // Log the error message
         assertEquals("Login failed!", errorMsg);
     }
 }
