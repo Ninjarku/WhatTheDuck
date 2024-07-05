@@ -174,8 +174,8 @@ server {
         return 403;
     }
 
-    # Deny access to Apache .htaccess files
-    location ~ /\.htaccess$ {
+    # Deny access to xml  files
+    location ~ /\.xml$ {
         deny all;
         return 403;
     }
@@ -192,18 +192,104 @@ echo "server {
 	root /var/www/html;
     index index.php index.html index.nginx-debian.html;
     server_name whattheduck.ddns.net;
+    #error_page error_page.php;
+    error_page 403 = /error_page.php;
     
     location / {
-	    try_files \$uri \$uri/ =404;
+        try_files \$uri \$uri/ /index.php?\$query_string;
     }
-    
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
-        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+
+    location ~ \.php\$ {
         include fastcgi_params;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+	    fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
     }
-}" >  ~/nginx/ssl/whattheduck
+	# Deny access to .pem files
+    location ~ \.pem\$ {
+        deny all;
+        return 403;
+    }
+
+    # Deny access to .ini files
+    location ~ \.ini\$ {
+        deny all;
+        return 403;
+    }
+
+    # Deny access to .key files
+    location ~ \.key\$ {
+        deny all;
+        return 403;
+    }
+
+    # Additional security: Deny access to hidden files (starting with .)
+    location ~ /\. {
+        deny all;
+        return 403;
+    }
+
+
+    # Deny access to .conf files
+    location ~ \.conf\$ {
+        deny all;
+        return 403;
+    }
+
+    # Deny access to .env files
+    location ~ \.env\$ {
+        deny all;
+        return 403;
+    }
+
+    # Deny access to version control directories
+    location ~ /\.git {
+        deny all;
+        return 403;
+    }
+
+    location ~ /\.svn {
+        deny all;
+        return 403;
+    }
+
+    location ~ /\.hg {
+        deny all;
+        return 403;
+    }
+
+    # Deny access to backup and temporary files
+    location ~ \.(bak|swp|old|tmp)\$ {
+        deny all;
+        return 403;
+    }
+
+    # Deny access to log files
+    location ~ \.log\$ {
+        deny all;
+        return 403;
+    }
+
+    # Deny access to Composer files
+    location ~ /(composer\.json|composer\.lock)\$ {
+        deny all;
+        return 403;
+    }
+
+    # Deny access to Node.js package files
+    location ~ /(package\.json|package-lock\.json)\$ {
+        deny all;
+        return 403;
+    }
+
+    # Deny access to xml  files
+    location ~ /\.xml\$ {
+        deny all;
+        return 403;
+    }
+     ssl_certificate /etc/letsencrypt/live/whattheduck.ddns.net/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/whattheduck.ddns.net/privkey.pem; # managed by Certbot
+}" >  /etc/nginx/sites-available/whattheduck
 ```
 
 `/etc/nginx/sites-available/whattheduck.ddns.net`
