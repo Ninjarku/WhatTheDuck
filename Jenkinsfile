@@ -85,7 +85,7 @@ pipeline {
     
     post {
         always {
-           junit 'test-results/unitreport.xml'
+           junit '/var/www/html/test-results/unitreport.xml'
            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
        }
         success {
