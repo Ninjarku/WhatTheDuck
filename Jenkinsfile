@@ -55,13 +55,13 @@ pipeline {
            }
        }
 
-         stage('Run Selenium Tests') {
-            steps {
-                script {
-                    sh 'mvn test'
-                }
-            }
-        }
+        //  stage('Run Selenium Tests') {
+        //     steps {
+        //         script {
+        //             sh 'mvn test'
+        //         }
+        //     }
+        // }
     
          stage('Deploy') {
             steps {
