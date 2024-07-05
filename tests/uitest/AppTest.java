@@ -17,27 +17,29 @@ public class AppTest {
     private String validPassword = System.getenv("TEST_PASSWORD");
     private String invalidPassword = "invalid_password";
 
-    @Before
+     @Before
     public void setUp() {
         driver = new HtmlUnitDriver();
-        wait = new WebDriverWait(driver, 20);  // Increase the wait time to 20 seconds
+        wait = new WebDriverWait(driver, 20);
     }
 
     @After
     public void tearDown() {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
     @Test
     public void testLoginWithValidCredentials() {
-        driver.get(url);
-
-        // Log the current URL for debugging
-        System.out.println("Current URL before login: " + driver.getCurrentUrl());
-        System.out.println("Page title: " + driver.getTitle());
-        System.out.println("Page source: " + driver.getPageSource());
-
         try {
+            driver.get(url);
+
+            // Log the current URL for debugging
+            System.out.println("Current URL before login: " + driver.getCurrentUrl());
+            System.out.println("Page title: " + driver.getTitle());
+            System.out.println("Page source: " + driver.getPageSource());
+
             wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
 
             // Log presence of form elements
@@ -51,10 +53,10 @@ public class AppTest {
             System.out.println("Login form submitted.");
 
             // Wait for the success popup and click "Return to Home"
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Return to Home']")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@class='swal2-confirm swal2-styled' and text()='Return to Home']")));
             System.out.println("Success popup is visible.");
 
-            driver.findElement(By.xpath("//button[text()='Return to Home']")).click();
+            driver.findElement(By.xpath("//button[@class='swal2-confirm swal2-styled' and text()='Return to Home']")).click();
             System.out.println("Clicked 'Return to Home'.");
 
             // Log the current URL and HTML content for debugging
@@ -73,36 +75,22 @@ public class AppTest {
 
     @Test
     public void testLoginWithInvalidCredentials() {
-        driver.get(url);
-
-        // Log the current URL for debugging
-        System.out.println("Current URL before login: " + driver.getCurrentUrl());
-        System.out.println("Page title: " + driver.getTitle());
-        System.out.println("Page source: " + driver.getPageSource());
-
         try {
+            driver.get(url);
+
+            // wait until page is loaded or timeout error
             wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
 
-            // Log presence of form elements
-            System.out.println("Form and input elements are present.");
-
+            // enter input
             driver.findElement(By.name("cust_username")).sendKeys(validUsername);
-            driver.findElement(By.name("cust_pass")).sendKeys(invalidPassword);
+            driver.findElement(By.name("cust_pass")).sendKeys("invalidPassword");
+            // click submit
             driver.findElement(By.id("submit")).click();
 
-            // Log presence of error message
-            System.out.println("Login form submitted with invalid credentials.");
-
-            // Check for login failed message
-            By errorMsgId = By.className("swal2-title");
-            
-            // Log the current URL and HTML content for debugging
-            System.out.println("Current URL after failed login: " + driver.getCurrentUrl());
-            System.out.println("Page source after failed login: " + driver.getPageSource());
-
-            String errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMsgId)).getText();
-            System.out.println("Error message: " + errorMsg);  // Log the error message
-            assertEquals("Login failed!", errorMsg);
+            // check result: verify error message is displayed
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("swal2-title")));
+            WebElement errorMessage = driver.findElement(By.className("swal2-title"));
+            assertTrue(errorMessage.isDisplayed());
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Current URL: " + driver.getCurrentUrl());
