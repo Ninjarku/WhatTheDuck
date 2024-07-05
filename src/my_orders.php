@@ -145,7 +145,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                         } else {
                             orders.forEach(function (order) {
                                 var action = `<button class='btn btn-view' data-id='${order.Order_ID}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
-                                if (order.Order_Status === 'Pending') {
+                                if (order.Order_Status === 'Order Placed') {
                                     action += `<button class='btn btn-received' data-id='${order.Order_ID}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
                                 }
                                 var row = [
@@ -157,6 +157,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                                     order.Order_Status,
                                     action
                                 ];
+                                
                                 if (order.Order_Status === 'Order Placed') {
                                     pendingTable.row.add(row).draw(false);
                                 } else if (order.Order_Status === 'Order Received') {

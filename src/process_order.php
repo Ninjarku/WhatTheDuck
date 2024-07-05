@@ -33,8 +33,13 @@ function getAllOrders()
     }
 
     // Get the current user's ID from the session
+    if (!isset($_SESSION['userid'])) {
+        $response["message"] = 'User not logged in';
+        return json_encode($response);
+    }
+
     $userID = $_SESSION['userid'];
-    console.log($userID);
+    error_log("User ID: " . $userID);
 
     $stmt = $conn->prepare("
         SELECT 
@@ -47,9 +52,14 @@ function getAllOrders()
             Order_Status 
         FROM `Order`
         WHERE User_ID = ?
-        GROUP BY Order_Num
+        GROUP BY Order_Num, User_ID, Payment_Type, Billing_Address, Order_Status
         ORDER BY Order_Num ASC
     ");
+    
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
 
     $stmt->bind_param("i", $userID);
     $stmt->execute();
