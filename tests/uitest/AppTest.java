@@ -56,10 +56,10 @@ public class AppTest {
             System.out.println("Login form submitted.");
 
             // Wait for the success popup and click "Return to Home"
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[contains(text(), 'Return to Home')]")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@class='swal2-confirm swal2-styled']")));
             System.out.println("Success popup is visible.");
 
-            driver.findElement(By.xpath("//button[contains(text(), 'Return to Home')]")).click();
+            driver.findElement(By.xpath("//button[@class='swal2-confirm swal2-styled']")).click();
             System.out.println("Clicked 'Return to Home'.");
 
             // Log the current URL and HTML content for debugging
