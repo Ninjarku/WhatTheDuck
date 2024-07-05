@@ -28,31 +28,30 @@ if ($result->num_rows > 0) {
 }
 
 $stmt->close();
-
-// Fetch recommended products
-$recommendedStmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Image, Price FROM Product WHERE Product_ID != ? AND Product_Available = 1 ORDER BY RAND() LIMIT 3");
-if (!$recommendedStmt) {
-    die("Prepare failed: " . $conn->error);
-}
-
-$recommendedStmt->bind_param("i", $Product_ID);
-$recommendedStmt->execute();
-$recommendedResult = $recommendedStmt->get_result();
-$recommendedProducts = [];
-
-if ($recommendedResult->num_rows > 0) {
-    while ($row = $recommendedResult->fetch_assoc()) {
-        $recommendedProducts[] = $row;
-    }
-}
-
-$recommendedStmt->close();
 $conn->close();
 
 if (!$product) {
     die("Product not found.");
 }
+
+// Fetch recommended products
+$conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+$stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Image, Price FROM Product WHERE Product_ID != ? ORDER BY RAND() LIMIT 3");
+$stmt->bind_param("i", $Product_ID);
+$stmt->execute();
+$result = $stmt->get_result();
+$recommended_products = [];
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $recommended_products[] = $row;
+    }
+}
+
+$stmt->close();
+$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -74,173 +73,132 @@ if (!$product) {
         .container {
             margin-top: 20px;
             margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
         }
 
-        .product-image {
-            flex: 1;
-            max-width: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .product-image img {
-            max-width: 100%;
-            border-radius: 10px;
-        }
-
-        .product-details {
-            flex: 1;
-            max-width: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .product-details h2 {
-            font-size: 2.5em;
-            color: #ff6347;
-        }
-
-        .product-details p {
-            font-size: 1.2em;
-            margin-top: 10px;
-        }
-
-        .product-details .price {
-            font-size: 1.8em;
-            color: #28a745;
-            margin: 20px 0;
-        }
-
-        .product-details .btn-buy-now {
-            background-color: #ffcc00;
-            border: none;
-            color: black;
-            padding: 10px 20px;
-            font-size: 1.2em;
-            cursor: pointer;
-        }
-
-        .product-details .btn-buy-now:hover {
-            background-color: #ff6347;
-            color: white;
-        }
-
-        .recommendations {
-            width: 100%;
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .recommendations h2 {
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        .recommended-products {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-
-        .recommended-product {
+        .product-details-card {
             border: 1px solid #ddd;
             border-radius: 10px;
             padding: 20px;
-            margin: 10px;
+            margin: 10px auto;
             background-color: #fff;
-            width: 30%;
-            max-width: 300px;
-            text-align: center;
+            max-width: 800px;
         }
 
-        .recommended-product img {
+        .product-details-card img {
             max-width: 100%;
-            height: 150px;
+            height: auto;
             object-fit: cover;
-            border-radius: 10px;
         }
 
-        .recommended-product h3 {
-            font-size: 1.2em;
+        .product-details-card h2 {
+            font-size: 2em;
             color: #ff6347;
-            margin-top: 10px;
         }
 
-        .recommended-product .price {
+        .product-details-card p {
             font-size: 1.2em;
+        }
+
+        .product-details-card .price {
+            font-size: 1.5em;
             color: #28a745;
-            margin: 10px 0;
         }
 
-        .recommended-product a {
-            display: inline-block;
-            margin-top: 10px;
-            text-decoration: none;
-            color: white;
+        .recommended-products {
+            margin-top: 40px;
+        }
+
+        .recommended-products h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .recommended-product-card {
             background-color: #ffcc00;
-            padding: 10px 20px;
-            border-radius: 5px;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 5px;
         }
 
-        .recommended-product a:hover {
+        .recommended-product-card img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .recommended-product-card h4 {
+            color: #ff6347;
+        }
+
+        .recommended-product-card p {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .recommended-product-card .btn {
+            background-color: #ffcc00;
+            border: none;
+            color: #fff;
+        }
+
+        .recommended-product-card .btn:hover {
             background-color: #ff6347;
+        }
+
+        .navbar {
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px;
+            background-color: #f1f1f1;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="product-image">
+        <div class="product-details-card">
+            <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
             <?php if (!empty($product['Product_Image'])): ?>
                 <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>"
                     alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
             <?php else: ?>
                 <img src="images/default_product.jpg" alt="Default Product Image">
             <?php endif; ?>
-        </div>
-        <div class="product-details">
-            <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
-            <p><?php echo nl2br(htmlspecialchars($product['Product_Description'])); ?></p>
+            <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
             <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
-            <form action="" method="post"> <!-- Add your Add to cart process -->
+            <form action="" method="post"> <!-- Add your add to cart process -->
                 <input type="hidden" name="Product_ID" value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
                 <input type="hidden" name="product_name"
                     value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
                 <input type="hidden" name="product_price" value="<?php echo htmlspecialchars($product['Price']); ?>">
-                <button type="submit" class="btn btn-primary btn-buy-now">Add to Cart</button>
+                <button type="submit" class="btn btn-primary">Add to Cart</button>
             </form>
         </div>
-    </div>
 
-    <div class="recommendations">
-        <h2>You May Also Like</h2>
         <div class="recommended-products">
-            <?php foreach ($recommendedProducts as $recommendedProduct): ?>
-                <div class="recommended-product">
-                    <a href="product_details.php?Product_ID=<?php echo $recommendedProduct['Product_ID']; ?>">
-                        <?php if (!empty($recommendedProduct['Product_Image'])): ?>
-                            <img src="data:image/jpeg;base64,<?php echo base64_encode($recommendedProduct['Product_Image']); ?>"
-                                alt="<?php echo htmlspecialchars($recommendedProduct['Product_Name']); ?>">
+            <h3>You May Also Like</h3>
+            <div class="row justify-content-center">
+                <?php foreach ($recommended_products as $rec_product): ?>
+                    <div class="col-md-3 recommended-product-card">
+                        <?php if (!empty($rec_product['Product_Image'])): ?>
+                            <img src="data:image/jpeg;base64,<?php echo base64_encode($rec_product['Product_Image']); ?>"
+                                alt="<?php echo htmlspecialchars($rec_product['Product_Name']); ?>">
                         <?php else: ?>
                             <img src="images/default_product.jpg" alt="Default Product Image">
                         <?php endif; ?>
-                        <h3><?php echo htmlspecialchars($recommendedProduct['Product_Name']); ?></h3>
-                        <p class="price">$<?php echo htmlspecialchars($recommendedProduct['Price']); ?></p>
-                    </a>
-                    <a href="product_details.php?Product_ID=<?php echo $recommendedProduct['Product_ID']; ?>"
-                        class="btn">View Product</a>
-                </div>
-            <?php endforeach; ?>
+                        <h4><?php echo htmlspecialchars($rec_product['Product_Name']); ?></h4>
+                        <p>$<?php echo htmlspecialchars($rec_product['Price']); ?></p>
+                        <a href="product_details.php?Product_ID=<?php echo $rec_product['Product_ID']; ?>"
+                            class="btn btn-primary">View Product</a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
 
