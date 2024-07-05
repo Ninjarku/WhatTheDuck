@@ -12,7 +12,7 @@ pipeline {
                 git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
             }
         }
-         
+
          stage('Build') {
             steps {
                 script {
