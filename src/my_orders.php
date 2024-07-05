@@ -157,9 +157,9 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                                     order.Order_Status,
                                     action
                                 ];
-                                if (order.Order_Status === 'Pending') {
+                                if (order.Order_Status === 'Order Placed') {
                                     pendingTable.row.add(row).draw(false);
-                                } else if (order.Order_Status === 'Received') {
+                                } else if (order.Order_Status === 'Order Received') {
                                     historyTable.row.add(row).draw(false);
                                 }
                             });
