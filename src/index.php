@@ -44,7 +44,7 @@ $conn->close();
         html {
             height: 100%;
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Comic Neue', cursive;
             background-color: #fff5cc;
         }
 
@@ -134,7 +134,6 @@ $conn->close();
                                     <img src="images/default_product.jpg" alt="Default Product Image">
                                 <?php endif; ?>
                             </a>
-                            <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
                             <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
                             <form action="PaymentPage.php" method="post">
                                 <input type="hidden" name="product_name"
