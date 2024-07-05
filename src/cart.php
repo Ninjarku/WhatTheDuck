@@ -51,7 +51,7 @@ if ($conn->connect_error) {
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous"> 
     <!--jQuery-->
-    <script src="js/jquery-3.5.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <!--Bootstrap JS-->
     <script defer
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
@@ -61,8 +61,39 @@ if ($conn->connect_error) {
     <!-- Load SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/cart.js" defer></script>
-
     <link rel="stylesheet" href="css/cart.css">
+        <script>
+        $(document).ready(function(){
+            $('.plus-btn, .minus-btn').click(function() {
+                var button = $(this);
+                console.log(button);
+                var cartId = button.data('cart-id');
+                var action = button.hasClass('plus-btn') ? 'increase' : 'decrease';
+
+                $.ajax({
+                    type: "GET", 
+                    url: 'process_cart.php?action=update_quantity&cart_id='+cartId+'&quantityaction='+action,
+                    cache: false,
+                    dataType: "JSON", 
+                    success: function(response) {
+                        if (response.success) {
+                            var quantitySpan = button.siblings('.quantity');
+                            var newQuantity = response.new_quantity;
+                            quantitySpan.text(newQuantity); 
+                            $("#qtyamt").html(newQuantity);
+
+                            var newSubtotal = response.new_subtotal;
+                            //update total price 
+                            $('#subtotal-value').text('$' + newSubtotal.toFixed(2));
+                        } else {
+                            Swal.fire('Error', 'Please try again.', 'error');
+                        }
+                    }
+                });
+            });
+        });
+    
+    </script>
 </head>
 <body>
     <header>
@@ -94,7 +125,11 @@ if ($conn->connect_error) {
                                     <img src="data:image/jpeg;base64,<?php echo base64_encode($item['Product_Image']); ?>" alt="<?php echo htmlspecialchars($item['Product_Name']); ?>" class="display-images">
                                     <div class="name-labels"><?php echo htmlspecialchars($item['Product_Name']); ?></div>
                                 </div>
-                                <div class="qty-obj"><?php echo htmlspecialchars($item['Quantity']); ?></div> 
+                                <div class="qty-obj">
+                                    <button type="button" class="qty-btn minus-btn btn btn-secondary" data-cart-id="<?php echo htmlspecialchars($item['Cart_ID']); ?>">-</button>
+                                    <div id="qtyamt"><?php echo htmlspecialchars($item['Quantity']); ?></div> 
+                                    <button type="button" class="qty-btn plus-btn btn btn-secondary" data-cart-id="<?php echo htmlspecialchars($item['Cart_ID']); ?>">+</button>
+                                </div>
                                 <div class="price-obj">$<?php echo htmlspecialchars($item['Price']); ?></div> 
                                 <div class="delete">
                                     <button type="button" class="delete-btn" name="delete" value="<?php echo htmlspecialchars($item['Cart_ID']); ?>" data-price="<?php echo htmlspecialchars($item['Price']); ?>">

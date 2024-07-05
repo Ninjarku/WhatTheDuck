@@ -2,9 +2,20 @@
 //ini_set('display_errors', 1);
 //error_reporting(E_ALL);
 
-if (isset($_GET['action']) && $_GET['action'] == 'deleteCartItem') {
+session_start(); 
+
+// Database connection
+function getDatabaseConnection(){
     $config = parse_ini_file('/var/www/private/db-config.ini');
     $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+    if ($conn->connect_error) {
+        return null;
+    }
+    return $conn;
+}
+
+if (isset($_GET['action']) && $_GET['action'] == 'deleteCartItem') { 
+    $conn = getDatabaseConnection();
 
     $cartId = $_GET['cartid']; // Get the cart ID from the POST data
 
@@ -51,9 +62,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'deleteCartItem') {
 function getCartCount(){
     $User_ID = $_SESSION['userid'];
     // Create database connection.
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'],
-            $config['password'], $config['dbname']);
+    $conn = getDatabaseConnection();
     // Check connection
     if ($conn->connect_error) {
         $errorMsg = "Connection failed: " . $conn->connect_error;
@@ -81,9 +90,7 @@ function updateCartCount(){
     global $cartcount;
     $checksuccess = true;
     $userid = $_SESSION['userid'];
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'],
-            $config['password'], $config['dbname']);
+    $conn = getDatabaseConnection();
     // Check connection
     if ($conn->connect_error) {
         $errorMsg = "Connection failed: " . $conn->connect_error;
@@ -118,8 +125,7 @@ function getSelectedCartItem($cart_ids){
     $totalprice = 0;
 
     // Create database connection.
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+    $conn = getDatabaseConnection();
 
     // Check connection
     if ($conn->connect_error) {
@@ -144,6 +150,60 @@ function getSelectedCartItem($cart_ids){
         }
     }
     return json_encode($arrResult);
+}
+
+if (isset($_GET['action']) && $_GET['action'] == 'update_quantity') {  
+    $User_ID = $_SESSION['userid'];
+    $cart_id = $_GET['cart_id'];
+    $quantityaction = $_GET['quantityaction']; 
+
+    $conn = getDatabaseConnection(); 
+    if ($conn->connect_error) {
+        echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+        exit();
+    }
+
+    $stmt = $conn->prepare("SELECT Quantity, Price FROM Cart WHERE Cart_ID = ? AND User_ID = ?");
+    $stmt->bind_param("ii", $cart_id, $User_ID);
+    
+    $stmt->execute();
+    $stmt->bind_result($quantity, $price);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($quantity !== null) {
+        if ($quantityaction == 'increase') {
+            $newQuantity = $quantity + 1;
+        } elseif ($quantityaction == 'decrease' && $quantity > 1) {
+            $newQuantity = $quantity - 1;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid action']);
+            exit();
+        }
+
+        $newTotalPrice = $newQuantity * $price;
+
+        $stmt2 = $conn->prepare("UPDATE Cart SET Quantity = ?, Total_Price = ? WHERE Cart_ID = ? AND User_ID = ?");
+        $stmt2->bind_param("idii", $newQuantity, $newTotalPrice, $cart_id, $User_ID);
+        $stmt2->execute();  
+        $stmt2->close();
+        
+        // Calculate the new subtotal for the entire cart
+        $stmt3 = $conn->prepare("SELECT SUM(Total_Price) FROM Cart WHERE User_ID = ?");
+        $stmt3->bind_param("i", $User_ID);
+        $stmt3->execute();
+        $stmt3->bind_result($newSubtotal);
+        $stmt3->fetch();
+        $stmt3->close();
+
+        echo json_encode(['success' => true, 'new_quantity' => $newQuantity, 'new_total_price' => $newTotalPrice, 'new_subtotal' => $newSubtotal]);
+        
+    } 
+    else {
+        echo json_encode(['success' => false, 'message' => 'Item not found']);
+    }
+
+    $conn->close();
 }
 
 ?>
