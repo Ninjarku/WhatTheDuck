@@ -12,7 +12,7 @@ public class AppTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    private String url = "http://whattheduck.ddns.net/Login.php";  // Update this to your live site URL
+    private String url = "https://whattheduck.ddns.net/Login.php";  // Update this to your live site URL
     private String validUsername = System.getenv("TEST_USERNAME");
     private String validPassword = System.getenv("TEST_PASSWORD");
     private String invalidPassword = "invalid_password";
