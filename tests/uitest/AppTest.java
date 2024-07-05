@@ -33,7 +33,7 @@ public class AppTest {
     }
 
     @Test
-   public void testLoginWithValidCredentials() {
+public void testLoginWithValidCredentials() {
     driver.get(url);
 
     // Log the current URL for debugging
@@ -75,7 +75,7 @@ public class AppTest {
     }
 }
 
-    @Test
+     @Test
     public void testLoginWithInvalidCredentials() {
         try {
             driver.get(url);
