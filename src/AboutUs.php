@@ -17,8 +17,8 @@
         html, body {
             height: 100%;
             margin: 0;
-            background-color: black;
-            color: white;   
+            background-color: #fff5cc;
+            font-family: 'Comic Neue', cursive;
         }
 
         .page-container {
@@ -75,14 +75,6 @@
                         Our team works tirelessly to ensure that every item meets our high standards of quality and cuteness.
                     </p>
                 </div>
-<!--                <div style="
-                     display: flex;
-                     justify-content: center;
-                     align-items: center;">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7917481712!2d103.85289426476763!3d1.299765862096338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da19baa3872ac7%3A0xa5929c8b44430b35!2sBugis%20Junction!5e0!3m2!1sen!2ssg!4v1680194381637!5m2!1sen!2ssg" 
-                        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Outlet location">
-                    </iframe>
-                </div>-->
             </main>
         </div>
         <?php         

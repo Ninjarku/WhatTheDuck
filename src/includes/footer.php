@@ -63,9 +63,7 @@
         </ul>
         <ul>
             <li><a class="footer-link" href="AboutUs.php">About Us</a></li>
-            <li><a class="footer-link" href="ContactUs.php">Contact Us</a></li>
-            <li><a class="footer-link" href="T&C.php">Terms and Conditions</a></li>
-            <li><a class="footer-link" href="FAQ.php">FAQ</a></li>
+            <li><a class="footer-link" href="MyAccount.php">My Account</a></li>
         </ul>
     </div>
     <div class="footer-col col-12 col-md-3 col-lg-6">
@@ -74,7 +72,7 @@
         </ul>
         <ul>
             <li>
-                200 Victoria Street, Bugis Junction, #05-12, 188021
+                11 New Punggol Road, Singapore 828616
             </li>
             <li>
                 <span>Operating Hours (Daily &amp; most public holidays)</span>
@@ -83,10 +81,7 @@
                 <span>
                     <i aria-hidden="true" class="far fa-clock"></i>
                 </span>
-                <span>11am - 11pm</span>
-            </li>
-            <li>
-                <span><small>Last game starts at 9:30pm</small></span>
+                <span>10am - 10pm</span>
             </li>
         </ul>
     </div>
