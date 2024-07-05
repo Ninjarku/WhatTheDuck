@@ -16,7 +16,7 @@ public class AppTest {
     private String url = "https://whattheduck.ddns.net/Login.php";
     private String validUsername = System.getenv("TEST_USERNAME");
     private String validPassword = System.getenv("TEST_PASSWORD");
-    private String invalidUsername = "invalidUsername";
+    private String invalidUsername = "invaliduser";
     private String invalidPassword = "invalidPassword";
 
     @Before
@@ -33,7 +33,7 @@ public class AppTest {
     }
 
     @Test
-public void testLoginWithValidCredentials() {
+   public void testLoginWithValidCredentials() {
     driver.get(url);
 
     // Log the current URL for debugging
@@ -75,7 +75,7 @@ public void testLoginWithValidCredentials() {
     }
 }
 
-     @Test
+    @Test
     public void testLoginWithInvalidCredentials() {
         try {
             driver.get(url);
