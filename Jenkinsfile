@@ -49,18 +49,6 @@ pipeline {
                script {
 
                     sh 'docker exec -i php-docker ./vendor/bin/phpunit --log-junit /var/www/html/test-results/unitreport.xml -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
-                     //  sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
-                     // Verify that the report file was created inside the container
-                    sh 'docker exec -i php-docker ls -l /var/www/html/test-results'
-                    
-                    // Copy the test results from the Docker container to the Jenkins workspace
-                    sh 'docker cp php-docker:/var/www/html/test-results/unitreport.xml test-results/unitreport.xml'
-                    
-                    // Verify that the report file was copied to the Jenkins workspace
-                    sh 'ls -l test-results'
-                    
-                    // Remove the test results from the Docker container
-                    sh 'docker exec -i php-docker rm /var/www/html/test-results/unitreport.xml'
                
                }
               // }
@@ -96,7 +84,7 @@ pipeline {
     
     post {
         always {
-           junit '/var/www/html/test-results/unitreport.xml'
+          // junit '/var/www/html/test-results/unitreport.xml'
            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
        }
         success {
