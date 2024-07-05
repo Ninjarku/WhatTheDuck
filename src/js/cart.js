@@ -11,6 +11,7 @@ deleteButtons.forEach(button => {
   });
 });
 
+
 function deleteEntry(button) {
   // Send an AJAX request to the PHP script
   var cartid = button.value;
@@ -97,54 +98,3 @@ function validateAndSubmitForm(event) {
     }
   }
 }
-
-
-//This is for updating total and subtotal
-
-// Get the checkbox elements
-const checkboxes = document.querySelectorAll('.cart-checkbox');
-
-// Get the subtotal and total price elements
-const subtotalEl = document.getElementById('subtotal-value');
-const totalEl = document.getElementById('total-value');
-
-// Set the initial subtotal value
-let subtotal = 0;
-
-// Add an event listener to each checkbox
-checkboxes.forEach((checkbox) => {
-  checkbox.addEventListener('change', () => {
-    var subtotalElement = document.getElementById('subtotal-value');
-    var elContent = subtotalElement.innerHTML;
-    // If the checkbox is checked, add the price to the subtotal
-    if (checkbox.checked) {
-      const price = parseFloat(checkbox.closest('.obj-rows').querySelector('.price-obj').textContent.replace('$', ''));
-      subtotal += price;
-    }
-    // If the checkbox is unchecked, subtract the price from the subtotal
-    else {
-      const price = parseFloat(checkbox.closest('.obj-rows').querySelector('.price-obj').textContent.replace('$', ''));
-      if (elContent !== "$0.00"){
-        subtotal -= price;
-      }
-      if (subtotal <= 0){
-          subtotal = 0;
-      }
-    }
-
-    // Get the text content of the div element 
-    var checkoutBtn = document.getElementById("checkout-btn"); 
-    // Disable the button if subtotal and total are 0
-    if (subtotal === 0) {
-      checkoutBtn.disabled = true; 
-    } else {
-      checkoutBtn.disabled = false; 
-    }
-
-    // Update the subtotal and total price elements
-    subtotalEl.textContent = '$' + subtotal.toFixed(2); 
-  });
-});
-
-
-

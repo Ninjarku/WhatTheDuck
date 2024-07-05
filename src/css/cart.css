@@ -74,6 +74,9 @@ option:disabled {
 }
 
 #qty-hdr{
+    width: 18%;
+}
+#uprice-hdr{
     width: 15%;
 }
 #price-hdr{
@@ -88,11 +91,14 @@ option:disabled {
     width: 15%;
 }
 
+.uprice-obj {
+    width: 15%;
+}
 .price-obj {
-    width: 10%;
+    width: 15%;
 }
 .qty-obj {
-    width: 25%;
+    width: 18%;
 }
 
 .time-obj{

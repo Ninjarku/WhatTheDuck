@@ -74,7 +74,7 @@
                         <div class="checkbox-all-rows"></div>
                         <div id="room-hdr">Item</div>
                         <div id="qty-hdr">Quantity</div>  
-                        <div id="price-hdr">Price</div> 
+                        <div id="price-hdr">Unit Price</div> 
                     </div>
 
                     <?php 

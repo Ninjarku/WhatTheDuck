@@ -64,9 +64,24 @@ if ($conn->connect_error) {
     <link rel="stylesheet" href="css/cart.css">
         <script>
         $(document).ready(function(){
+            function updateSubtotal() {
+                let subtotal = 0;
+                $('.cart-checkbox:checked').each(function() {
+                    const cartId = $(this).val();
+                    const quantity = parseFloat($('#qtyamt-' + cartId).text());
+                    const price = parseFloat($('#uprice-obj-' + cartId).text().substring(1)); // Remove $ and convert to float
+                    subtotal += quantity * price;
+                });
+                $('#subtotal-value').text('$' + subtotal.toFixed(2));
+                $('#checkout-btn').prop('disabled', subtotal === 0); // Enable/disable checkout button based on subtotal
+            }
+
+            $('.cart-checkbox, .qty-btn').on('change click', function() {
+                updateSubtotal();
+            });
+            
             $('.plus-btn, .minus-btn').click(function() {
-                var button = $(this);
-                console.log(button);
+                var button = $(this); 
                 var cartId = button.data('cart-id');
                 var action = button.hasClass('plus-btn') ? 'increase' : 'decrease';
 
@@ -80,17 +95,26 @@ if ($conn->connect_error) {
                             var quantitySpan = button.siblings('.quantity');
                             var newQuantity = response.new_quantity;
                             quantitySpan.text(newQuantity); 
-                            $("#qtyamt").html(newQuantity);
+                            $("#qtyamt-"+cartId).html(newQuantity);
 
+                            var newtotal = response.new_total_price;
                             var newSubtotal = response.new_subtotal;
                             //update total price 
+                            $('#price-obj-'+cartId).text('$' + newtotal.toFixed(2));
                             $('#subtotal-value').text('$' + newSubtotal.toFixed(2));
+                            updateSubtotal(); // Recalculate subtotal
                         } else {
                             Swal.fire('Error', 'Please try again.', 'error');
                         }
                     }
                 });
             });
+            
+            $('.cart-checkbox').change(function() {
+                updateSubtotal();
+            });
+
+            updateSubtotal(); // Initial calculation
         });
     
     </script>
@@ -109,7 +133,8 @@ if ($conn->connect_error) {
                         <div class="checkbox-all-rows"></div>
                         <div id="room-hdr">Item</div>
                         <div id="qty-hdr">Quantity</div>  
-                        <div id="price-hdr">Price</div> 
+                        <div id="uprice-hdr">Unit Price</div> 
+                        <div id="price-hdr">Total Price</div> 
                     </div>
 
                     <div id="cartItems">
@@ -127,12 +152,13 @@ if ($conn->connect_error) {
                                 </div>
                                 <div class="qty-obj">
                                     <button type="button" class="qty-btn minus-btn btn btn-secondary" data-cart-id="<?php echo htmlspecialchars($item['Cart_ID']); ?>">-</button>
-                                    <div id="qtyamt"><?php echo htmlspecialchars($item['Quantity']); ?></div> 
+                                    <div id="qtyamt-<?php echo htmlspecialchars($item['Cart_ID']); ?>" ><?php echo htmlspecialchars($item['Quantity']); ?></div> 
                                     <button type="button" class="qty-btn plus-btn btn btn-secondary" data-cart-id="<?php echo htmlspecialchars($item['Cart_ID']); ?>">+</button>
                                 </div>
-                                <div class="price-obj">$<?php echo htmlspecialchars($item['Price']); ?></div> 
+                                <div class="uprice-obj" id="uprice-obj-<?php echo htmlspecialchars($item['Cart_ID']); ?>">$<?php echo htmlspecialchars($item['Price']); ?></div> 
+                                <div class="price-obj" id="price-obj-<?php echo htmlspecialchars($item['Cart_ID']); ?>">$<?php echo htmlspecialchars($item['Total_Price']); ?></div> 
                                 <div class="delete">
-                                    <button type="button" class="delete-btn" name="delete" value="<?php echo htmlspecialchars($item['Cart_ID']); ?>" data-price="<?php echo htmlspecialchars($item['Price']); ?>">
+                                    <button type="button" class="delete-btn" name="delete" value="<?php echo htmlspecialchars($item['Cart_ID']); ?>" data-price="<?php echo htmlspecialchars($item['Total_Price']); ?>">
                                         Delete
                                     </button>
                                 </div>
@@ -174,4 +200,4 @@ if ($conn->connect_error) {
 <noscript>
     <p>This course portal requires JavaScript to verify your identity. Please enable JavaScript to access the course.</p>
 </noscript>
-</html>
+</html>s
