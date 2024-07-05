@@ -50,11 +50,7 @@ pipeline {
 
                     sh 'docker exec -i php-docker ./vendor/bin/phpunit --log-junit /var/www/html/test-results/unitreport.xml -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
                      //  sh 'phpunit --log-junit logs/unitreport.xml -c phpunit.xml tests'
-                    // Copy the test results from the Docker container to the Jenkins workspace
-                    sh 'docker cp php-docker:/var/www/html/test-results/unitreport.xml test-results/unitreport.xml'
-                    // Removing test results from Docker container
-                    sh 'docker exec -i php-docker rm /var/www/html/test-results/unitreport.xml'
-
+               
                }
               // }
            }
