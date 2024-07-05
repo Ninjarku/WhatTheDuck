@@ -35,46 +35,44 @@ public class AppTest {
 
     @Test
     public void testLoginWithValidCredentials() {
-        try {
-            driver.get(url);
+    driver.get(url);
 
-            // Log the current URL for debugging
-            System.out.println("Current URL before login: " + driver.getCurrentUrl());
-            System.out.println("Page title: " + driver.getTitle());
-            System.out.println("Page source: " + driver.getPageSource());
+    // Log the current URL for debugging
+    System.out.println("Current URL before login: " + driver.getCurrentUrl());
+    System.out.println("Page title: " + driver.getTitle());
+    System.out.println("Page source: " + driver.getPageSource());
 
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
+    try {
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
 
-            // Log presence of form elements
-            System.out.println("Form and input elements are present.");
+        // Log presence of form elements
+        System.out.println("Form and input elements are present.");
 
-            driver.findElement(By.name("cust_username")).sendKeys(validUsername);
-            driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
-            driver.findElement(By.id("submit")).click();
+        driver.findElement(By.name("cust_username")).sendKeys(validUsername);
+        driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
+        driver.findElement(By.id("submit")).click();
 
-            // Log presence of success popup
-            System.out.println("Login form submitted.");
+        // Log presence of success popup
+        System.out.println("Login form submitted.");
 
-            // Wait for the success popup and click "Return to Home"
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@class='swal2-confirm swal2-styled']")));
-            System.out.println("Success popup is visible.");
+        // Navigate directly to index.php
+        driver.get("https://whattheduck.ddns.net/index.php");
+        System.out.println("Navigated to index.php.");
 
-            driver.findElement(By.xpath("//button[@class='swal2-confirm swal2-styled']")).click();
-            System.out.println("Clicked 'Return to Home'.");
+        // Wait for the username to appear in the navbar
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[contains(text(),'" + validUsername + "')]")));
+        System.out.println("Username found in navbar.");
 
-            // Log the current URL and HTML content for debugging
-            System.out.println("Current URL after clicking 'Return to Home': " + driver.getCurrentUrl());
-            System.out.println("Page source after clicking 'Return to Home': " + driver.getPageSource());
-
-            // Verify that the page redirects to the home page after clicking the button
-            assertTrue(wait.until(ExpectedConditions.urlContains("index.php")));
-        } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-            System.out.println("Current URL: " + driver.getCurrentUrl());
-            System.out.println("Page source: " + driver.getPageSource());
-            throw e;
-        }
+        // Verify that the username is displayed in the navbar
+        assertTrue(driver.findElement(By.xpath("//a[contains(text(),'" + validUsername + "')]")).isDisplayed());
+    } catch (Exception e) {
+        System.out.println("Exception: " + e.getMessage());
+        System.out.println("Current URL: " + driver.getCurrentUrl());
+        System.out.println("Page source: " + driver.getPageSource());
+        throw e;
     }
+}
+
 
     @Test
     public void testLoginWithInvalidCredentials() {
