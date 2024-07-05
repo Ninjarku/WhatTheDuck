@@ -58,7 +58,7 @@ pipeline {
          stage('Run Selenium Tests') {
             steps {
                 script {
-                    sh 'mvn test -f tests/uitest'
+                    sh 'mvn test'
                 }
             }
         }
