@@ -101,22 +101,22 @@ $userRole = isset($_SESSION['cust_rol']) ? $_SESSION['cust_rol'] : null;
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/index.php">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="AboutUs.php">About Us</a>
+                <a class="nav-link" href="/AboutUs.php">About Us</a>
             </li>
             <?php if ($userRole === 'Sales Admin'): ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="sales_index.php">Manage Sales</a>
+                    <a class="nav-link" href="/sales_index.php">Manage Sales</a>
                 </li>
             <?php elseif ($userRole === 'IT Admin'): ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="admin_index.php">Admin Dashboard</a>
+                    <a class="nav-link" href="/admin_index.php">Admin Dashboard</a>
                 </li>
             <?php elseif ($userRole === 'Customer'): ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="my_orders.php">My Orders</a>
+                    <a class="nav-link" href="/my_orders.php">My Orders</a>
                 </li>
             <?php endif; ?>
             <?php
@@ -129,10 +129,10 @@ $userRole = isset($_SESSION['cust_rol']) ? $_SESSION['cust_rol'] : null;
             } else {
                 ?>
                 <li class="nav-item">
-                    <a class="nav-link login-link" href="Login.php">Login</a>
+                    <a class="nav-link login-link" href="/Login.php">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link login-link" href="Signup.php">Sign Up</a>
+                    <a class="nav-link login-link" href="/Signup.php">Sign Up</a>
                 </li>
                 <?php
             }
@@ -151,8 +151,8 @@ $userRole = isset($_SESSION['cust_rol']) ? $_SESSION['cust_rol'] : null;
 
 <div id="AccountSidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <a href="MyAccount.php">My Account</a>
-    <a href="process_custlogout.php">Logout</a>
+    <a href="/MyAccount.php">My Account</a>
+    <a href="/process_custlogout.php">Logout</a>
 </div>
 <script>
     function openNav() {
