@@ -134,6 +134,7 @@ $conn->close();
                                     <img src="images/default_product.jpg" alt="Default Product Image">
                                 <?php endif; ?>
                             </a>
+                            <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
                             <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
                             <form action="PaymentPage.php" method="post">
                                 <input type="hidden" name="product_name"
