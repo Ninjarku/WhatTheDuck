@@ -66,7 +66,7 @@ $conn->close();
         html {
             height: 100%;
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Comic Neue', cursive;
             background-color: #fff5cc;
         }
 
@@ -122,11 +122,12 @@ $conn->close();
         }
 
         .recommended-product-card {
-            background-color: #ffcc00;
+            background-color: #fff;
             text-align: center;
             padding: 20px;
             border-radius: 10px;
             margin: 5px;
+            border: 1px solid #ddd;
         }
 
         .recommended-product-card img {
@@ -200,13 +201,15 @@ $conn->close();
             <div class="row justify-content-center">
                 <?php foreach ($recommended_products as $rec_product): ?>
                     <div class="col-md-3 recommended-product-card">
-                        <?php if (!empty($rec_product['Product_Image'])): ?>
-                            <img src="data:image/jpeg;base64,<?php echo base64_encode($rec_product['Product_Image']); ?>"
-                                alt="<?php echo htmlspecialchars($rec_product['Product_Name']); ?>">
-                        <?php else: ?>
-                            <img src="images/default_product.jpg" alt="Default Product Image">
-                        <?php endif; ?>
-                        <h4><?php echo htmlspecialchars($rec_product['Product_Name']); ?></h4>
+                        <a href="product_details.php?Product_ID=<?php echo $rec_product['Product_ID']; ?>">
+                            <?php if (!empty($rec_product['Product_Image'])): ?>
+                                <img src="data:image/jpeg;base64,<?php echo base64_encode($rec_product['Product_Image']); ?>"
+                                    alt="<?php echo htmlspecialchars($rec_product['Product_Name']); ?>">
+                            <?php else: ?>
+                                <img src="images/default_product.jpg" alt="Default Product Image">
+                            <?php endif; ?>
+                            <h4><?php echo htmlspecialchars($rec_product['Product_Name']); ?></h4>
+                        </a>
                         <p>$<?php echo htmlspecialchars($rec_product['Price']); ?></p>
                         <a href="product_details.php?Product_ID=<?php echo $rec_product['Product_ID']; ?>"
                             class="btn btn-primary">View Product</a>
