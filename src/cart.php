@@ -159,7 +159,7 @@ if ($conn->connect_error) {
                                 <div class="price-obj" id="price-obj-<?php echo htmlspecialchars($item['Cart_ID']); ?>">$<?php echo htmlspecialchars($item['Total_Price']); ?></div> 
                                 <div class="delete">
                                     <button type="button" class="delete-btn" name="delete" value="<?php echo htmlspecialchars($item['Cart_ID']); ?>" data-price="<?php echo htmlspecialchars($item['Total_Price']); ?>">
-                                        Delete
+                                        <i class="fas fa-trash" style="padding-top: 0px;color:red;" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </div>
