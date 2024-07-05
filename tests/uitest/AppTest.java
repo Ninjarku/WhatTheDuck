@@ -20,7 +20,7 @@ public class AppTest {
     private String invalidUsername = "invaliduser";
     private String invalidPassword = "invalidPassword";
 
-      @Before
+   @Before
     public void setUp() {
         driver = new HtmlUnitDriver();
         wait = new WebDriverWait(driver, 30); // Increased the timeout
@@ -56,10 +56,10 @@ public class AppTest {
             System.out.println("Login form submitted.");
 
             // Wait for the success popup and click "Return to Home"
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='swal2-actions']//button[@class='swal2-confirm swal2-styled']")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("button.swal2-confirm.swal2-styled")));
             System.out.println("Success popup is visible.");
 
-            driver.findElement(By.xpath("//div[@class='swal2-actions']//button[@class='swal2-confirm swal2-styled']")).click();
+            driver.findElement(By.cssSelector("button.swal2-confirm.swal2-styled")).click();
             System.out.println("Clicked 'Return to Home'.");
 
             // Log the current URL and HTML content for debugging
