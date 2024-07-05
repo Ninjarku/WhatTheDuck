@@ -31,49 +31,67 @@ public class AppTest {
     @Test
     public void testLoginWithValidCredentials() {
         driver.get(url);
-        
+
         // Log the current URL for debugging
         System.out.println("Current URL before login: " + driver.getCurrentUrl());
-        
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
+        System.out.println("Page title: " + driver.getTitle());
+        System.out.println("Page source: " + driver.getPageSource());
 
-        driver.findElement(By.name("cust_username")).sendKeys(validUsername);
-        driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
-        driver.findElement(By.id("submit")).click();
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.id("cust-login")));
 
-        // Wait for the success popup and click "Return to Home"
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Return to Home']"))).click();
+            driver.findElement(By.name("cust_username")).sendKeys(validUsername);
+            driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
+            driver.findElement(By.id("submit")).click();
 
-        // Log the current URL and HTML content for debugging
-        System.out.println("Current URL after clicking 'Return to Home': " + driver.getCurrentUrl());
-        System.out.println("Page source after clicking 'Return to Home': " + driver.getPageSource());
+            // Wait for the success popup and click "Return to Home"
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Return to Home']"))).click();
 
-        // Verify that the page redirects to the home page after clicking the button
-        assertTrue(wait.until(ExpectedConditions.urlContains("index.php")));
+            // Log the current URL and HTML content for debugging
+            System.out.println("Current URL after clicking 'Return to Home': " + driver.getCurrentUrl());
+            System.out.println("Page source after clicking 'Return to Home': " + driver.getPageSource());
+
+            // Verify that the page redirects to the home page after clicking the button
+            assertTrue(wait.until(ExpectedConditions.urlContains("index.php")));
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Current URL: " + driver.getCurrentUrl());
+            System.out.println("Page source: " + driver.getPageSource());
+            throw e;
+        }
     }
 
     @Test
     public void testLoginWithInvalidCredentials() {
         driver.get(url);
-        
+
         // Log the current URL for debugging
         System.out.println("Current URL before login: " + driver.getCurrentUrl());
+        System.out.println("Page title: " + driver.getTitle());
+        System.out.println("Page source: " + driver.getPageSource());
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.id("cust-login")));
 
-        driver.findElement(By.name("cust_username")).sendKeys(validUsername);
-        driver.findElement(By.name("cust_pass")).sendKeys(invalidPassword);
-        driver.findElement(By.id("submit")).click();
+            driver.findElement(By.name("cust_username")).sendKeys(validUsername);
+            driver.findElement(By.name("cust_pass")).sendKeys(invalidPassword);
+            driver.findElement(By.id("submit")).click();
 
-        // Check for login failed message
-        By errorMsgId = By.className("swal2-title");
-        
-        // Log the current URL and HTML content for debugging
-        System.out.println("Current URL after failed login: " + driver.getCurrentUrl());
-        System.out.println("Page source after failed login: " + driver.getPageSource());
+            // Check for login failed message
+            By errorMsgId = By.className("swal2-title");
 
-        String errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMsgId)).getText();
-        System.out.println("Error message: " + errorMsg);  // Log the error message
-        assertEquals("Login failed!", errorMsg);
+            // Log the current URL and HTML content for debugging
+            System.out.println("Current URL after failed login: " + driver.getCurrentUrl());
+            System.out.println("Page source after failed login: " + driver.getPageSource());
+
+            String errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMsgId)).getText();
+            System.out.println("Error message: " + errorMsg);  // Log the error message
+            assertEquals("Login failed!", errorMsg);
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Current URL: " + driver.getCurrentUrl());
+            System.out.println("Page source: " + driver.getPageSource());
+            throw e;
+        }
     }
 }
