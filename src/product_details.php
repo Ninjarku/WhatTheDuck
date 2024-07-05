@@ -12,20 +12,15 @@ if ($conn->connect_error) {
 }
 
 // Fetch product details
-$Product_ID = isset($_GET['Product_ID']) ? intval($_GET['Product_ID']) : 0;
-$stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category FROM Product WHERE Product_ID = ?");
+$productID = isset($_GET['product_id']) ? intval($_GET['product_id']) : 0;
+$stmt = $conn->prepare("SELECT * FROM Product WHERE Product_ID = ?");
 if (!$stmt) {
     die("Prepare failed: " . $conn->error);
 }
-
-$stmt->bind_param("i", $Product_ID);
+$stmt->bind_param("i", $productID);
 $stmt->execute();
 $result = $stmt->get_result();
-$product = null;
-
-if ($result->num_rows > 0) {
-    $product = $result->fetch_assoc();
-}
+$product = $result->fetch_assoc();
 
 $stmt->close();
 $conn->close();
@@ -34,13 +29,14 @@ if (!$product) {
     die("Product not found.");
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($product['Product_Name']); ?> - WhatTheDuck</title>
+    <title><?php echo htmlspecialchars($product['Product_Name']); ?> - Product Details</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <style>
@@ -48,75 +44,84 @@ if (!$product) {
         html {
             height: 100%;
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Comic Neue', cursive;
             background-color: #fff5cc;
         }
 
         .container {
             margin-top: 20px;
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
         }
 
-        .product-details-card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 10px auto;
-            background-color: #fff;
-            max-width: 800px;
+        .product-image {
+            max-width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .product-details-card img {
+        .product-image img {
             max-width: 100%;
-            height: auto;
-            object-fit: cover;
+            border-radius: 10px;
         }
 
-        .product-details-card h2 {
-            font-size: 2em;
+        .product-details {
+            max-width: 45%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-details h1 {
+            font-size: 2.5em;
             color: #ff6347;
         }
 
-        .product-details-card p {
+        .product-details p {
             font-size: 1.2em;
         }
 
-        .product-details-card .price {
-            font-size: 1.5em;
+        .product-details .price {
+            font-size: 1.8em;
             color: #28a745;
+            margin: 20px 0;
         }
 
-        .navbar {
-            margin-bottom: 20px;
+        .product-details .btn-buy-now {
+            background-color: #ffcc00;
+            border: none;
+            color: black;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
         }
 
-        .footer {
-            margin-top: 20px;
-            text-align: center;
-            padding: 10px;
-            background-color: #f1f1f1;
+        .product-details .btn-buy-now:hover {
+            background-color: #ff6347;
+            color: white;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="product-details-card">
-            <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
+        <div class="product-image">
             <?php if (!empty($product['Product_Image'])): ?>
                 <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>"
                     alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
             <?php else: ?>
                 <img src="images/default_product.jpg" alt="Default Product Image">
             <?php endif; ?>
-            <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
+        </div>
+        <div class="product-details">
+            <h1><?php echo htmlspecialchars($product['Product_Name']); ?></h1>
+            <p><?php echo nl2br(htmlspecialchars($product['Product_Description'])); ?></p>
             <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
-            <form action="" method="post"> <!-- Add your add to cart process -->
-                <input type="hidden" name="Product_ID" value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
-                <input type="hidden" name="product_name"
-                    value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
-                <input type="hidden" name="product_price" value="<?php echo htmlspecialchars($product['Price']); ?>">
-                <button type="submit" class="btn btn-primary">Add to Cart</button>
+            <form action="cart.php" method="post">
+                <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
+                <button type="submit" class="btn btn-primary btn-buy-now">Add to Cart</button>
             </form>
         </div>
     </div>
