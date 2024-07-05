@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="/var/www/html/vendor/autoreload.php"
+<phpunit bootstrap="/var/www/html/vendor/autoload.php"
          colors="true"
          stopOnFailure="false">
     <testsuites>
