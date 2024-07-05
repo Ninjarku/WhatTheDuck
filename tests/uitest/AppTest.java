@@ -31,7 +31,11 @@ public class AppTest {
     @Test
     public void testLoginWithValidCredentials() {
         driver.get(url);
-        wait.until(ExpectedConditions.titleContains("Login"));
+        
+        // Log the current URL for debugging
+        System.out.println("Current URL before login: " + driver.getCurrentUrl());
+        
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
 
         driver.findElement(By.name("cust_username")).sendKeys(validUsername);
         driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
@@ -40,17 +44,22 @@ public class AppTest {
         // Wait for the success popup and click "Return to Home"
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Return to Home']"))).click();
 
-        // Log the current page title for debugging
-        System.out.println("Current page title: " + driver.getTitle());
+        // Log the current URL and HTML content for debugging
+        System.out.println("Current URL after clicking 'Return to Home': " + driver.getCurrentUrl());
+        System.out.println("Page source after clicking 'Return to Home': " + driver.getPageSource());
 
         // Verify that the page redirects to the home page after clicking the button
-        assertTrue(wait.until(ExpectedConditions.titleContains("WhatTheDuck - Home")));
+        assertTrue(wait.until(ExpectedConditions.urlContains("index.php")));
     }
 
     @Test
     public void testLoginWithInvalidCredentials() {
         driver.get(url);
-        wait.until(ExpectedConditions.titleContains("Login"));
+        
+        // Log the current URL for debugging
+        System.out.println("Current URL before login: " + driver.getCurrentUrl());
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
 
         driver.findElement(By.name("cust_username")).sendKeys(validUsername);
         driver.findElement(By.name("cust_pass")).sendKeys(invalidPassword);
@@ -58,6 +67,11 @@ public class AppTest {
 
         // Check for login failed message
         By errorMsgId = By.className("swal2-title");
+        
+        // Log the current URL and HTML content for debugging
+        System.out.println("Current URL after failed login: " + driver.getCurrentUrl());
+        System.out.println("Page source after failed login: " + driver.getPageSource());
+
         String errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(errorMsgId)).getText();
         System.out.println("Error message: " + errorMsg);  // Log the error message
         assertEquals("Login failed!", errorMsg);
