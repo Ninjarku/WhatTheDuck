@@ -75,31 +75,39 @@ $conn->close();
             margin-bottom: 20px;
         }
 
-        .product-details-card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 10px auto;
-            background-color: #fff;
-            max-width: 800px;
+        .product-details-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .product-details-card img {
+        .product-details-image {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .product-details-image img {
             max-width: 100%;
             height: auto;
             object-fit: cover;
         }
 
-        .product-details-card h2 {
+        .product-details-info {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .product-details-info h2 {
             font-size: 2em;
             color: #ff6347;
         }
 
-        .product-details-card p {
+        .product-details-info p {
             font-size: 1.2em;
         }
 
-        .product-details-card .price {
+        .product-details-info .price {
             font-size: 1.5em;
             color: #28a745;
         }
@@ -162,23 +170,29 @@ $conn->close();
 
 <body>
     <div class="container">
-        <div class="product-details-card">
-            <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
-            <?php if (!empty($product['Product_Image'])): ?>
-                <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>"
-                    alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
-            <?php else: ?>
-                <img src="images/default_product.jpg" alt="Default Product Image">
-            <?php endif; ?>
-            <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
-            <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
-            <form action="" method="post"> <!-- Add your add to cart process -->
-                <input type="hidden" name="Product_ID" value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
-                <input type="hidden" name="product_name"
-                    value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
-                <input type="hidden" name="product_price" value="<?php echo htmlspecialchars($product['Price']); ?>">
-                <button type="submit" class="btn btn-primary">Add to Cart</button>
-            </form>
+        <div class="product-details-container">
+            <div class="product-details-image">
+                <?php if (!empty($product['Product_Image'])): ?>
+                    <img src="data:image/jpeg;base64,<?php echo base64_encode($product['Product_Image']); ?>"
+                        alt="<?php echo htmlspecialchars($product['Product_Name']); ?>">
+                <?php else: ?>
+                    <img src="images/default_product.jpg" alt="Default Product Image">
+                <?php endif; ?>
+            </div>
+            <div class="product-details-info">
+                <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
+                <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
+                <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
+                <form action="" method="post"> <!-- Add your add to cart process -->
+                    <input type="hidden" name="Product_ID"
+                        value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
+                    <input type="hidden" name="product_name"
+                        value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
+                    <input type="hidden" name="product_price"
+                        value="<?php echo htmlspecialchars($product['Price']); ?>">
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+            </div>
         </div>
 
         <div class="recommended-products">
