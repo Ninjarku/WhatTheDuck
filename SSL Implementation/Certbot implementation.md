@@ -16,11 +16,12 @@ sudo certbot certonly --nginx
 sudo certbot renew --dry-run
 ```
 
-
+Enter docker shell and run these
 ```bash
 apt install python3-certbot-nginx
 certbot --nginx
-certbot certonly --nginx
+# certbot certonly --nginx
 
+#The cert should be placed here
 /etc/letsencrypt/live/whattheduck.ddns.net/fullchain.pem
 ```
