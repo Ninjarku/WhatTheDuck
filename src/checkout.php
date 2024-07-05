@@ -64,8 +64,7 @@
     <header>
         <h1 class="visually-hidden">Checkout</h1>        
     </header>
-    <!-- change action to payment.php -->
-    <form action="payment.php" method="post" id="cartForm">
+    <form action="PaymentPage.php" method="post" id="cartForm">
         <div class="container my-3 main-container">
             <main>
                 <div class="container left-container">
