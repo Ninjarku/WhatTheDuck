@@ -47,7 +47,7 @@ function getAllOrders()
             Order_Status 
         FROM `Order`
         WHERE User_ID = ?
-        GROUP BY Order_Num, User_ID, Payment_Type, Billing_Address, Order_Status
+        GROUP BY Order_Num
         ORDER BY Order_Num ASC
     ");
 
