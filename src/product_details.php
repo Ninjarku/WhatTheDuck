@@ -28,6 +28,25 @@ if ($result->num_rows > 0) {
 }
 
 $stmt->close();
+
+// Fetch recommended products
+$recommendedStmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Image, Price FROM Product WHERE Product_ID != ? AND Product_Available = 1 ORDER BY RAND() LIMIT 3");
+if (!$recommendedStmt) {
+    die("Prepare failed: " . $conn->error);
+}
+
+$recommendedStmt->bind_param("i", $Product_ID);
+$recommendedStmt->execute();
+$recommendedResult = $recommendedStmt->get_result();
+$recommendedProducts = [];
+
+if ($recommendedResult->num_rows > 0) {
+    while ($row = $recommendedResult->fetch_assoc()) {
+        $recommendedProducts[] = $row;
+    }
+}
+
+$recommendedStmt->close();
 $conn->close();
 
 if (!$product) {
@@ -115,6 +134,67 @@ if (!$product) {
             background-color: #ff6347;
             color: white;
         }
+
+        .recommendations {
+            width: 100%;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .recommendations h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .recommended-products {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .recommended-product {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+            background-color: #fff;
+            width: 30%;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .recommended-product img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .recommended-product h3 {
+            font-size: 1.2em;
+            color: #ff6347;
+            margin-top: 10px;
+        }
+
+        .recommended-product .price {
+            font-size: 1.2em;
+            color: #28a745;
+            margin: 10px 0;
+        }
+
+        .recommended-product a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: white;
+            background-color: #ffcc00;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .recommended-product a:hover {
+            background-color: #ff6347;
+        }
     </style>
 </head>
 
@@ -139,6 +219,28 @@ if (!$product) {
                 <input type="hidden" name="product_price" value="<?php echo htmlspecialchars($product['Price']); ?>">
                 <button type="submit" class="btn btn-primary btn-buy-now">Add to Cart</button>
             </form>
+        </div>
+    </div>
+
+    <div class="recommendations">
+        <h2>You May Also Like</h2>
+        <div class="recommended-products">
+            <?php foreach ($recommendedProducts as $recommendedProduct): ?>
+                <div class="recommended-product">
+                    <a href="product_details.php?Product_ID=<?php echo $recommendedProduct['Product_ID']; ?>">
+                        <?php if (!empty($recommendedProduct['Product_Image'])): ?>
+                            <img src="data:image/jpeg;base64,<?php echo base64_encode($recommendedProduct['Product_Image']); ?>"
+                                alt="<?php echo htmlspecialchars($recommendedProduct['Product_Name']); ?>">
+                        <?php else: ?>
+                            <img src="images/default_product.jpg" alt="Default Product Image">
+                        <?php endif; ?>
+                        <h3><?php echo htmlspecialchars($recommendedProduct['Product_Name']); ?></h3>
+                        <p class="price">$<?php echo htmlspecialchars($recommendedProduct['Price']); ?></p>
+                    </a>
+                    <a href="product_details.php?Product_ID=<?php echo $recommendedProduct['Product_ID']; ?>"
+                        class="btn">View Product</a>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
