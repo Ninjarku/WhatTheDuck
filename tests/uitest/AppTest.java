@@ -38,7 +38,7 @@ public class AppTest {
         System.out.println("Page source: " + driver.getPageSource());
 
         try {
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.id("cust-login")));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
 
             // Log presence of form elements
             System.out.println("Form and input elements are present.");
@@ -81,7 +81,7 @@ public class AppTest {
         System.out.println("Page source: " + driver.getPageSource());
 
         try {
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.id("cust-login")));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
 
             // Log presence of form elements
             System.out.println("Form and input elements are present.");
