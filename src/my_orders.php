@@ -97,53 +97,52 @@ if ($_SESSION["cust_rol"] !== "Customer") {
 
             // Load table data on page load
             loadTableData();
-        });
 
-        /// View order details
-        $("#pending_table, #history_table").on("click", ".btn-view", function () {
-            var Order_Num = $(this).data("id");
-            window.location.href = "order_details.php?Order_Num=" + Order_Num;
-        });
+            /// View order details
+            $("#pending_table, #history_table").on("click", ".btn-view", function () {
+                var Order_Num = $(this).data("id");
+                window.location.href = "order_details.php?Order_Num=" + Order_Num;
+            });
 
-        // Set order status to received
-        $("#pending_table").on("click", ".btn-received", function () {
-            
-            var Order_Num = $(this).data("id");
-            console.log(Order_Num);
-            Swal.fire({
-                title: 'Are you sure you received this order?',
-                text: "You won't be to do a refund!",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, I received it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: "POST",
-                        url: "process_order.php",
-                        data: {
-                            action: "markAsReceived",
-                            Order_Num: Order_Num
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            Swal.fire({
-                                icon: response.icon,
-                                title: response.title,
-                                text: response.message,
-                                showCloseButton: false,
-                                showCancelButton: false,
-                                confirmButtonText: 'Ok'
-                            }).then(() => {
-                                if (response.icon === 'success') {
-                                    loadTableData(); // Reload table data after update
-                                }
-                            });
-                        }
-                    });
-                }
+            // Set order status to received
+            $("#pending_table").on("click", ".btn-received", function () {
+                var Order_Num = $(this).data("id");
+                console.log(Order_Num);
+                Swal.fire({
+                    title: 'Are you sure you received this order?',
+                    text: "You won't be to do a refund!",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, I received it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "process_order.php",
+                            data: {
+                                action: "markAsReceived",
+                                Order_Num: Order_Num
+                            },
+                            dataType: "json",
+                            success: function (response) {
+                                Swal.fire({
+                                    icon: response.icon,
+                                    title: response.title,
+                                    text: response.message,
+                                    showCloseButton: false,
+                                    showCancelButton: false,
+                                    confirmButtonText: 'Ok'
+                                }).then(() => {
+                                    if (response.icon === 'success') {
+                                        loadTableData(); // Reload table data after update
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             });
         });
 
