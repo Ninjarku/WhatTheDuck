@@ -7,8 +7,7 @@ use Predis\Client;
 
 $redis = new Client([
     'scheme' => 'tcp',
-    // 'host'   => 'localhost', // either this or redis
-    'host'   => 'redis', // either this or redis
+    'host'   => 'redis', 
     'port'   => 6379,
 ]);
 
@@ -18,7 +17,7 @@ function verifyOTP($email, $entered_otp) {
     if ($correct_otp === false) {
         return "OTP has expired or does not exist.";
     } elseif ($correct_otp === $entered_otp) {
-        return "OTP is correct.";
+        return header("Location: ResetPassword.php");
     } else {
         return "Incorrect OTP. Please try again.";
     }
