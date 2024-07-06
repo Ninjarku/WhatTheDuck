@@ -22,7 +22,7 @@ include "includes/navbar.php";
         .container {
             margin-top: 20px;
         }
-        .otp-card {
+        /* .otp-card {
             border: 1px solid #ddd;
             border-radius: 10px;
             text-align: center;
@@ -30,7 +30,7 @@ include "includes/navbar.php";
             margin: 10px auto;
             background-color: #fff;
             max-width: 400px;
-        }
+        } */
         .navbar {
             margin-bottom: 20px;
         }
