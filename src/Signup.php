@@ -20,11 +20,10 @@ include 'includes/navbar.php';
         integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
+    <script src="js/zxcvbn.js"></script>
     <style>
         .form-group {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             margin-bottom: 20px;
         }
 
@@ -34,10 +33,7 @@ include 'includes/navbar.php';
         }
 
         label {
-            flex: 1;
-            margin-right: 10px;
             color: black;
-            text-align: right;
         }
 
         body,
@@ -45,7 +41,6 @@ include 'includes/navbar.php';
         h1,
         p,
         a,
-        .form-group,
         .btn {
             color: black;
         }
@@ -151,8 +146,8 @@ include 'includes/navbar.php';
                                     placeholder="Enter password">
                                 <span class="toggle-password"><i class="fas fa-eye"></i></span>
                             </div>
+                            <div id="password-strength"></div>
                         </div>
-                        <div id="password-strength" class="form-group"></div>
                         <div class="form-group">
                             <label for="signup_pwdconfirm">Confirm Password:</label>
                             <input class="form-control" type="password" id="signup_pwdconfirm" required
@@ -168,8 +163,6 @@ include 'includes/navbar.php';
         </div>
     </div>
     <?php include 'includes/footer.php'; ?>
-    <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
-    <script src="js/zxcvbn.js"></script>
     <script>
         $(document).ready(function () {
             $('#signup_pwd').on('input', function () {
@@ -195,7 +188,7 @@ include 'includes/navbar.php';
                         break;
                 }
 
-                $('#password-strength').text('Strength: ' + strengthText + '. ');
+                $('#password-strength').text('Strength: ' + strengthText + '. ' + feedback);
             });
 
             $('.toggle-password').on('click', function () {
