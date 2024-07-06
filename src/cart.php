@@ -204,4 +204,4 @@ if ($conn->connect_error) {
 <noscript>
     <p>This course portal requires JavaScript to verify your identity. Please enable JavaScript to access the course.</p>
 </noscript>
-</html>s
+</html>
