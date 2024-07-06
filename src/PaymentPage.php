@@ -22,6 +22,8 @@ include 'includes/navbar.php';
     <style>
         body,
         html {
+            font-family: 'Comic Neue', cursive;
+            background-color: #fff5cc;
             height: 100%;
             margin: 0;
             background-color: #fff5cc;
