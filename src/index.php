@@ -62,7 +62,7 @@ $conn->close();
             background-color: #fff;
             width: 100%;
             max-width: 300px;
-            height: 500px;
+            height: 350px;
             /* Adjusted height to accommodate price */
             display: flex;
             flex-direction: column;
@@ -102,7 +102,7 @@ $conn->close();
         }
 
         .btn-add-to-cart {
-            margin-top: 10px;
+            margin-top: auto;
         }
 
         .product-link {
