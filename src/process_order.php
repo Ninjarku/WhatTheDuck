@@ -22,6 +22,54 @@ function getDatabaseConnection()
     return $conn;
 }
 
+function getAllOrders(){
+    $conn = getDatabaseConnection();
+    global $response;
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
+
+    $pendingOrdersQuery = "
+        SELECT 
+            Order_Num,
+            SUM(Quantity) AS Number_of_Items,
+            ROUND(SUM(Total_Price), 2) AS Total_Amount,
+            Payment_Type, 
+            Billing_Address, 
+            Order_Status 
+        FROM `Order`
+        WHERE Order_Status IN ('Order Placed', 'Order Shipped')
+        GROUP BY Order_Num, Payment_Type, Billing_Address, Order_Status
+        ORDER BY Order_Num ASC;
+    ";
+
+    $historyOrdersQuery = "
+        SELECT 
+            Order_Num,
+            SUM(Quantity) AS Number_of_Items,
+            ROUND(SUM(Total_Price), 2) AS Total_Amount,
+            Payment_Type, 
+            Billing_Address, 
+            Order_Status 
+        FROM `Order`
+        WHERE Order_Status = 'Order Received'
+        GROUP BY Order_Num, Payment_Type, Billing_Address, Order_Status
+        ORDER BY Order_Num ASC;
+    ";
+
+    $pendingOrders = getOrders($conn, $pendingOrdersQuery);
+    $historyOrders = getOrders($conn, $historyOrdersQuery);
+
+    $conn->close();
+
+    return json_encode([
+        'icon' => 'success',
+        'pendingOrders' => $pendingOrders,
+        'historyOrders' => $historyOrders
+    ]);
+}
+
 function getOrdersByUserID()
 {
     $conn = getDatabaseConnection();
@@ -137,8 +185,8 @@ function markAsReceived($Order_Num)
     return json_encode($response);
 }
 
-// Edit order (for example, update order details)
-function editOrder($orderData)
+// Mark order as shipped
+function markAsShipped($Order_Num)
 {
     $conn = getDatabaseConnection();
     global $response;
@@ -147,23 +195,18 @@ function editOrder($orderData)
         return json_encode($response);
     }
 
-    $stmt = $conn->prepare("UPDATE `Order` SET User_ID = ?, Product_ID = ?, Quantity = ?, Total_Price = ?, Payment_Type = ?, Billing_Address = ?, Order_Status = ? WHERE Order_Num = ?");
+    if (empty($Order_Num)) {
+        $response["message"] = 'Empty Order Number.';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("UPDATE `Order` SET Order_Status = 'Order Shipped' WHERE Order_Num = ?");
     if (!$stmt) {
         $response["message"] = 'Prepare failed: ' . $conn->error;
         return json_encode($response);
     }
 
-    $userID = filter_var($orderData['User_ID'], FILTER_VALIDATE_INT);
-    $productID = filter_var($orderData['Product_ID'], FILTER_VALIDATE_INT);
-    $quantity = filter_var($orderData['Quantity'], FILTER_VALIDATE_INT);
-    $totalPrice = filter_var($orderData['Total_Price'], FILTER_VALIDATE_FLOAT);
-    $paymentType = sanitize_input($orderData['Payment_Type']);
-    $billingAddress = sanitize_input($orderData['Billing_Address']);
-    $orderStatus = sanitize_input($orderData['Order_Status']);
-    $orderNum = sanitize_input($orderData['Order_Num']);
-
-    $stmt->bind_param("iiidssss", $userID, $productID, $quantity, $totalPrice, $paymentType, $billingAddress, $orderStatus, $orderNum);
-
+    $stmt->bind_param("s", $Order_Num);
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
         return json_encode($response);
@@ -171,11 +214,9 @@ function editOrder($orderData)
 
     $stmt->close();
     $conn->close();
-
     $response["icon"] = "success";
-    $response["title"] = "Order Updated";
-    $response["message"] = "Order updated successfully";
-    $response["redirect"] = "order_management.php";
+    $response["title"] = "Order Status Updated";
+    $response["message"] = "The order status has been updated to Order Shipped.";
     return json_encode($response);
 }
 
@@ -193,6 +234,15 @@ $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($action === 'getOrdersByUserID') {
         echo getOrdersByUserID();
+    } elseif($action === 'getAllOrders'){
+        echo getAllOrders();
+    }elseif ($action === 'viewOrderDetails' && isset($_GET['Order_Num'])) {
+        $orderNum = intval($_GET['Order_Num']);
+        $orderDetails = viewOrderDetails($orderNum);
+        echo json_encode([
+            'icon' => 'success',
+            'orderDetails' => $orderDetails
+        ]);
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'markAsReceived' && isset($_POST['Order_Num'])) {
