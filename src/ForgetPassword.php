@@ -22,7 +22,7 @@ include "includes/navbar.php";
         .container {
             margin-top: 20px;
         }
-        .forget-password-card {
+        /* .forget-password-card {
             border: 1px solid #ddd;
             border-radius: 10px;
             text-align: center;
@@ -30,7 +30,7 @@ include "includes/navbar.php";
             margin: 10px auto;
             background-color: #fff;
             max-width: 400px;
-        }
+        } */
         .navbar {
             margin-bottom: 20px;
         }
@@ -47,7 +47,7 @@ include "includes/navbar.php";
         <h1 class="text-center">Forget Password</h1>
         <div class="forget-password-card">
             <h2>Reset Your Password</h2>
-            <p>Please enter your email address to receive a password reset link.</p>
+            <p>Please enter your email address to receive a password reset otp.</p>
             <form action="process_sendforgetotp.php" method="post">
                 <div class="form-group">
                     <label for="email">Email address:</label>

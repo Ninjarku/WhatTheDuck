@@ -184,7 +184,7 @@ include "includes/navbar.php";
                         <h2>My Account</h2>
                         <nav class="nav flex-column">
                             <a class="nav-link active" href="#">Profile</a>
-                            <a class="nav-link" href="ForgetPasssword.php">Change Password</a>
+                            <a class="nav-link" href="ForgetPassword.php">Change Password</a>
                         </nav>
                     </div>
                 </div>
