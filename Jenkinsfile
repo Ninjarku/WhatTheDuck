@@ -92,8 +92,6 @@ pipeline {
                                                 removePrefix: 'src' // Remove src prefix
                                             )
                                         ],
-                                        usePromotionTimestamp: false,
-                                        useWorkspaceInPromotion: false,
                                         verbose: true
                                     )
                                 ]
