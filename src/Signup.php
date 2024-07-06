@@ -301,16 +301,16 @@ include 'includes/navbar.php';
                 });
             });
 
-            $("#signup_pwd").on("input", function () {
-                const password = $(this).val();
-                checkPasswords(password);
-            });
+                $("#signup_pwd").on("input", function () {
+                    const password = $(this).val();
+                    checkPasswords(password);
+                });
 
-            $("#signup_pwdconfirm").on("input", function () {
-                const password = $("#signup_pwd").val();
-                checkPasswords(password);
-            });
-                
+                $("#signup_pwdconfirm").on("input", function () {
+                    const password = $("#signup_pwd").val();
+                    checkPasswords(password);
+                });
+                    
         });
     </script>
 </body>

@@ -247,25 +247,25 @@ include 'includes/navbar.php';
                 cardValidation();
             });
 
-            $("#submitBtn").on("submit", function (event) {
-                event.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "process_payment.php",
-                    data: $(this).serialize(),
-                    success: function (response) {
-                        if (response.redirect) {
-                            window.location.href = response.redirect;
-                        }
-                        else {
-                            Swal.fire({
-                            icon: response.icon,
-                            html: response.message,
-                            })
-                        }
-                    }   
-                });
-            });
+            // $("#submitBtn").on("submit", function (event) {
+            //     event.preventDefault();
+            //     $.ajax({
+            //         type: "POST",
+            //         url: "process_payment.php",
+            //         data: $(this).serialize(),
+            //         success: function (response) {
+            //             if (response.redirect) {
+            //                 window.location.href = response.redirect;
+            //             }
+            //             else {
+            //                 Swal.fire({
+            //                 icon: response.icon,
+            //                 html: response.message,
+            //                 })
+            //             }
+            //         }   
+            //     });
+            // });
         });
     </script>
 </body>
