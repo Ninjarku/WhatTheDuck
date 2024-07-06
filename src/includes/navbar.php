@@ -110,6 +110,9 @@ $userRole = isset($_SESSION['cust_rol']) ? $_SESSION['cust_rol'] : null;
                 <li class="nav-item">
                     <a class="nav-link" href="/sales_index.php">Manage Sales</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sales_order.php">Manage Orders</a>
+                </li>
             <?php elseif ($userRole === 'IT Admin'): ?>
                 <li class="nav-item">
                     <a class="nav-link" href="/admin_index.php">Admin Dashboard</a>
