@@ -146,7 +146,7 @@ $conn->close();
             margin-bottom: 10px;
         }
 
-        .recommended-product-card .btn {
+        .recommended-product-card {
             background-color: #ffcc00;
             border: none;
             color: #fff;
