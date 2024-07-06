@@ -43,7 +43,7 @@ function getOrdersByUserID()
         SELECT 
             Order_Num AS Order_ID,
             SUM(Quantity) AS Number_of_Items,
-            ROUND(SUM(Total_Price), 2) AS Total_Amount,
+            SUM(Total_Price) AS Total_Amount,
             Payment_Type, 
             Billing_Address, 
             Order_Status 
@@ -57,7 +57,7 @@ function getOrdersByUserID()
         SELECT 
             Order_Num AS Order_ID,
             SUM(Quantity) AS Number_of_Items,
-            ROUND(SUM(Total_Price), 2) AS Total_Amount,
+            SUM(Total_Price) AS Total_Amount,
             Payment_Type, 
             Billing_Address, 
             Order_Status 
