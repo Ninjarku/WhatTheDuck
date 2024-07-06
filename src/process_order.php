@@ -58,8 +58,8 @@ function getAllOrders(){
         ORDER BY Order_Num ASC;
     ";
 
-    $pendingOrders = getOrders($conn, $pendingOrdersQuery);
-    $historyOrders = getOrders($conn, $historyOrdersQuery);
+    $pendingOrders = runOrderQuery($conn, $pendingOrdersQuery);
+    $historyOrders = runOrderQuery($conn, $historyOrdersQuery);
 
     $conn->close();
 
@@ -115,8 +115,8 @@ function getOrdersByUserID()
         ORDER BY Order_Num ASC;
     ";
 
-    $pendingOrders = getOrders($conn, $pendingOrdersQuery, $userID);
-    $historyOrders = getOrders($conn, $historyOrdersQuery, $userID);
+    $pendingOrders = runOrderQuerywUserID($conn, $pendingOrdersQuery, $userID);
+    $historyOrders = runOrderQuerywUserID($conn, $historyOrdersQuery, $userID);
 
     $conn->close();
 
@@ -127,16 +127,44 @@ function getOrdersByUserID()
     ]);
 }
 
-function getOrders($conn, $query, $userID)
+function runOrderQuerywUserID($conn, $query, $userID)
 {
     $stmt = $conn->prepare($query);
-
     if (!$stmt) {
         return 'Prepare failed: ' . $conn->error;
     }
 
     $stmt->bind_param("i", $userID);
-    $stmt->execute();
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+    
+    $result = $stmt->get_result();
+    $arrResult = [];
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $arrResult[] = $row;
+        }
+    }
+
+    $stmt->close();
+    return $arrResult;
+}
+
+function runOrderQuery($conn, $query)
+{
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+        return 'Prepare failed: ' . $conn->error;
+    }
+
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+
     $result = $stmt->get_result();
     $arrResult = [];
 
