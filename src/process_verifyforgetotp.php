@@ -20,7 +20,7 @@ function verifyOTP($email, $entered_otp) {
     } elseif ($correct_otp === $entered_otp) {
         return "OTP is correct.";
     } else {
-        return "Incorrect OTP. Please try again. $correct_otp";
+        return "Incorrect OTP. Please try again.";
     }
 }
 
