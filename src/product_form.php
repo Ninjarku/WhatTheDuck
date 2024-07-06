@@ -1,8 +1,14 @@
 <?php
 session_start();
 include 'includes/navbar.php';
+
+// Check if sales admin is logged in
 if ($_SESSION["cust_rol"] !== "Sales Admin") {
-    header("Location: error_page.php?error_id=0&error=" . urlencode("Please login!!"));
+    ?>
+    <script>
+        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
+    </script>
+    <?php
     exit();
 }
 

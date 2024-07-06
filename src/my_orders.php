@@ -101,13 +101,12 @@ if ($_SESSION["cust_rol"] !== "Customer") {
             /// View order details
             $("#pending_table, #history_table").on("click", ".btn-view", function () {
                 var Order_Num = $(this).data("id");
-                window.location.href = "order_details.php?Order_Num=" + Order_Num;
+                window.location.href = "order_details.php?action=viewOrderDetails&Order_Num=" + Order_Num;
             });
 
             // Set order status to received
             $("#pending_table").on("click", ".btn-received", function () {
                 var Order_Num = $(this).data("id");
-                console.log(Order_Num);
                 Swal.fire({
                     title: 'Are you sure you received this order?',
                     text: "You won't be to do a refund!",
