@@ -71,7 +71,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                 "iDisplayLength": 5,
                 "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 columns: [
-                    { title: "Order No," },
+                    { title: "Order No." },
                     { title: "Number of Items" },
                     { title: "Total Amount" },
                     { title: "Payment Type" },
@@ -105,23 +105,23 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
             });
 
             // Set order status to received
-            $("#pending_table").on("click", ".btn-received", function () {
+            $("#pending_table").on("click", ".btn-shipped", function () {
                 var Order_Num = $(this).data("id");
                 Swal.fire({
-                    title: 'Are you sure you received this order?',
-                    text: "You won't be to do a refund!",
+                    title: 'Are you sure you approve this order?',
+                    text: "You won't be to revert this action!",
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, I received it!'
+                    confirmButtonText: 'Yes, I shipped it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
                             type: "POST",
                             url: "process_order.php",
                             data: {
-                                action: "markAsReceived",
+                                action: "markAsShipped",
                                 Order_Num: Order_Num
                             },
                             dataType: "json",
@@ -166,9 +166,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             pendingTable.row.add(['', '', '', '', '', '', '']).draw(false); // If no data, add empty row
                         } else {
                             pendingOrders.forEach(function (order) {
-                                var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
-                                if (order.Order_Status === 'Order Shipped') {
-                                    action += `<button class='btn btn-received' data-id='${order.Order_Num}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
+                                var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>
+                                              <button class='btn btn-shipped' data-id='${order.Order_Num}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
                                 }
                                 var row = [
                                     order.Order_Num,
@@ -218,7 +217,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 <body>
     <div class="container">
         <div class="table-content">
-            <h1 class="text-center">Purchase Order List</h1>
+            <h1 class="text-center">Order List</h1>
             <br><br>
             <h2>Pending Orders</h2>
             <table id="pending_table" class="display" style="width:100%"></table>
