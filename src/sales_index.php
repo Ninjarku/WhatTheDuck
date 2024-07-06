@@ -78,16 +78,18 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
             border: none;
             color: black;
         }
+
         .btn-primary:hover {
             background-color: #ff6347;
             color: white;
         }
 
-        #iconPlus {
+        .icon-hover {
             color: black;
+            transition: color 0.3s ease;
         }
-        
-        #iconPlus:hover {
+
+        .icon-hover:hover {
             color: white;
         }
     </style>
@@ -270,7 +272,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
     <div class="container">
         <div class="table-content">
             <h1 class="text-center">Product Management</h1>
-            <button id="btnAddNew" class="btn btn-primary"><i id="iconPlus" class='fas fa-plus'></i> Add New
+            <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus icon-hover' style="color:black;"></i>
+                Add New
                 Product</button>
             <br><br>
             <table id="product_table" class="display" style="width:100%"></table>
