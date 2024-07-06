@@ -159,10 +159,10 @@ $conn->close();
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <a href="myAccount.php" class="btn-close">Close</a>
+                <a href="my_orders.php" class="btn-close">Close</a>
             <?php else: ?>
                 <p>Order not found.</p>
-                <a href="myAccount.php" class="btn-close">Close</a>
+                <a href="'error_page.php?error_id=0&error=' + encodeURIComponent('Order Not Found!!');" class="btn-close">Close</a>
             <?php endif; ?>
         </div>
     </div>
