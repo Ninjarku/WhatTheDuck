@@ -23,7 +23,7 @@ pipeline {
             }
         }
          
-        stage('Code Quality Check via SonarQube') {
+        stage('Static Code Analysis with SonarQube') {
             steps {
                 script {
                     def scannerHome = tool 'SonarQube';
@@ -34,7 +34,7 @@ pipeline {
             }
         }
          
-        stage('OWASP Dependency-Check Vulnerabilities') {
+        stage('Security Analysis with OWASP Dependency-Check Plugin') {
              steps {
                 withCredentials([string(credentialsId: 'nvd_api_key', variable: 'nvd_api_key')]) {
                     dependencyCheck additionalArguments: "--scan src --format HTML --format XML --nvdApiKey ${env.nvd_api_key}", odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
@@ -45,7 +45,7 @@ pipeline {
 
           
 
-          stage('PHPUnit Test') {
+          stage('Unit Testing with PHPUnit') {
            steps {
                 // withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
                script {
