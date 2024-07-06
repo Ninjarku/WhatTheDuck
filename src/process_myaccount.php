@@ -2,10 +2,6 @@
 session_start();
 header('Content-Type: application/json');
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 $response = array(
     "icon" => "error",
     "title" => "Profile update failed!",
@@ -62,10 +58,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
     }
 
-    // Handle profile image upload
-    if ($success && isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
-        $imageData = file_get_contents($_FILES['profile_image']['tmp_name']);
-        $profile_image = $imageData;
+     // Handle profile image upload with validation
+     if ($success && isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
+        $allowed_types = ['image/jpeg', 'image/png'];
+        $max_size = 1 * 1024 * 1024; // 1MB
+        $file_type = $_FILES['profile_image']['type'];
+        $file_size = $_FILES['profile_image']['size'];
+
+        if (!in_array($file_type, $allowed_types)) {
+            $errorMsg .= 'Invalid file type. Only JPG and PNG files are allowed.';
+            $success = false;
+        }
+
+        if ($file_size > $max_size) {
+            $errorMsg .= 'File size too large. Maximum allowed size is 1MB.';
+            $success = false;
+        }
+
+        if ($success) {
+            $imageData = file_get_contents($_FILES['profile_image']['tmp_name']);
+            $profile_image = $imageData;
+        }
     }
 
     // Update user information if validation is successful
