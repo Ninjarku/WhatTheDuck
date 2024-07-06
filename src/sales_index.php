@@ -16,14 +16,6 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
 <!DOCTYPE html>
 <html lang="en">
-<style>
-    body,
-    html {
-        font-family: 'Comic Neue', cursive;
-        background-color: #fff5cc;
-        color: black;
-    }
-</style>
 
 <head>
     <meta charset="UTF-8">
@@ -48,9 +40,30 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
     <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
     <!-- SweetAlert2 for Popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- END OF THE LINK -->
-
+    <!-- Styling for Table -->
     <style>
+        body,
+        html {
+            font-family: 'Comic Neue', cursive;
+            background-color: #fff5cc;
+            color: black;
+        }
+
+        .table-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
         .btn-upload,
         .btn-edit,
         .btn-delete {
@@ -63,6 +76,7 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
             transform: scale(1.1);
         }
     </style>
+    <!-- END OF THE LINK -->
 
     <!-- Custom JS for Product Management -->
     <script>
