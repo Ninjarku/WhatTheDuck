@@ -62,7 +62,7 @@ $conn->close();
             background-color: #fff;
             width: 100%;
             max-width: 300px;
-            height: 350px;
+            height: 450px;
             /* Adjusted height to accommodate price */
             display: flex;
             flex-direction: column;
