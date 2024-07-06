@@ -14,14 +14,6 @@ pipeline {
                 git(url: 'https://github.com/Ninjarku/WhatTheDuck', branch: 'main', credentialsId: 'juan-pound-fish')
             }
         }
-
-         stage('Build') {
-            steps {
-                script {
-                    sh 'composer install'
-                }
-            }
-        }
          
         stage('Static Code Analysis with SonarQube') {
             steps {
