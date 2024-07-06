@@ -3,7 +3,7 @@ session_start();
 include "includes/navbar.php";
 
 // Check if customer is logged in
-if ($_SESSION["cust_rol"] !== "Customer") {
+if (!isset($_SESSION["cust_rol"]) || ($_SESSION["cust_rol"] !== "Customer" && $_SESSION["cust_rol"] !== "Sales Admin")) {
     ?>
     <script>
         window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
