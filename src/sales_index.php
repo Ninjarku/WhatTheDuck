@@ -298,6 +298,8 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                                 <label for="Product_Image">Product Image:</label>
                                 <input type="file" class="form-control-file" id="Product_Image" name="Product_Image"
                                     accept="image/*" required>
+                                <small class="form-text text-muted">Only JPG and PNG files are allowed. Max size
+                                    5MB.</small>
                             </div>
                             <button type="submit" class="btn btn-primary">Upload Image</button>
                         </form>
