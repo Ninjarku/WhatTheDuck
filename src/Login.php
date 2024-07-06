@@ -1,9 +1,7 @@
 <?php
 session_start();
 
-// Check if the user is logged in
-if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
-    // Redirect to the login page
+if (isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
     header("Location: index.php");
     exit();
 }
