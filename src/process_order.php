@@ -103,7 +103,7 @@ function getOrders($conn, $query, $userID)
 }
 
 // Mark order as received
-function markAsReceived($orderNum)
+function markAsReceived($Order_Num)
 {
     $conn = getDatabaseConnection();
     global $response;
@@ -112,18 +112,18 @@ function markAsReceived($orderNum)
         return json_encode($response);
     }
 
-    if (empty($orderNum)) {
+    if (empty($Order_Num)) {
         $response["message"] = 'Empty Order Number.';
         return json_encode($response);
     }
 
-    $stmt = $conn->prepare("UPDATE `Order` SET Order_Status = 'Received' WHERE Order_Num = ?");
+    $stmt = $conn->prepare("UPDATE `Order` SET Order_Status = 'Order Received' WHERE Order_Num = ?");
     if (!$stmt) {
         $response["message"] = 'Prepare failed: ' . $conn->error;
         return json_encode($response);
     }
 
-    $stmt->bind_param("s", $orderNum);
+    $stmt->bind_param("s", $Order_Num);
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
         return json_encode($response);
