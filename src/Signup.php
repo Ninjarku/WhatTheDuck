@@ -29,7 +29,7 @@ include 'includes/navbar.php';
         }
 
         .form-control {
-            width: 233px;
+            width: 100%;
             box-sizing: border-box;
         }
 
@@ -89,6 +89,7 @@ include 'includes/navbar.php';
             position: relative;
             display: flex;
             align-items: center;
+            width: 100%;
         }
 
         .password-container input {
@@ -102,9 +103,9 @@ include 'includes/navbar.php';
         }
 
         #password-strength {
-            margin-left: 10px;
-            flex: 1;
+            margin-top: 5px;
             color: black;
+            text-align: left;
         }
     </style>
 </head>
@@ -149,8 +150,8 @@ include 'includes/navbar.php';
                                     placeholder="Enter password">
                                 <span class="toggle-password"><i class="fas fa-eye"></i></span>
                             </div>
-                            <div id="password-strength"></div>
                         </div>
+                        <div id="password-strength" class="form-group"></div>
                         <div class="form-group">
                             <label for="signup_pwdconfirm">Confirm Password:</label>
                             <input class="form-control" type="password" id="signup_pwdconfirm" required
