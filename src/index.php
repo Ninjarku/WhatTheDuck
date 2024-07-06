@@ -101,7 +101,7 @@ $conn->close();
             background-color: #f1f1f1;
         }
 
-        .btn-buy-now {
+        .btn-add-to-cart {
             margin-top: auto;
         }
 
@@ -134,14 +134,13 @@ $conn->close();
                                     <img src="images/default_product.jpg" alt="Default Product Image">
                                 <?php endif; ?>
                             </a>
-                            <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
                             <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
                             <form action="PaymentPage.php" method="post">
                                 <input type="hidden" name="product_name"
                                     value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
                                 <input type="hidden" name="product_price"
                                     value="<?php echo htmlspecialchars($product['Price']); ?>">
-                                <button type="submit" class="btn btn-primary btn-buy-now">Buy Now</button>
+                                <button type="submit" class="btn btn-primary btn-buy-now">Add To Cart </button>
                             </form>
                         </div>
                     </div>
