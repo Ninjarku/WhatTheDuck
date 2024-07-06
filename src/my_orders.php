@@ -107,7 +107,9 @@ if ($_SESSION["cust_rol"] !== "Customer") {
 
         // Set order status to received
         $("#pending_table").on("click", ".btn-received", function () {
+            
             var Order_Num = $(this).data("id");
+            console.log(Order_Num);
             Swal.fire({
                 title: 'Are you sure you received this order?',
                 text: "You won't be to do a refund!",
