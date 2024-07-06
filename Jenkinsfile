@@ -56,17 +56,6 @@ pipeline {
               // }
            }
        }
-
-        //  stage('Run Selenium Tests') {
-        //     steps {
-        //          withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
-        //         script {
-        //             sh 'export PATH=$PATH:/usr/local/bin'
-        //             sh 'mvn test'
-        //         }
-        //          }
-        //     }
-        // }
     
          stage('Deploy') {
             steps {
