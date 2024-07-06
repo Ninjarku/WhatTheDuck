@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'vendor/autoload.php';  // Make sure this autoloads Predis or your Redis client library
+use Predis\Client;
 
 // Assume Redis client setup
 $redis = new Client([
