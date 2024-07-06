@@ -126,7 +126,6 @@ public class AppTest {
             driver.findElement(By.name("signup_pwdconfirm")).sendKeys(validPassword);
             driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-            // Wait for success message or redirection
             wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[text()='Go to Login']")));
 
             WebElement successButton = driver.findElement(By.xpath("//button[text()='Go to Login']"));
@@ -149,7 +148,8 @@ public class AppTest {
             driver.findElement(By.name("signup_pwdconfirm")).sendKeys(validPassword);
             driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.className("swal2-title")));
+            WebElement emailField = driver.findElement(By.name("signup_email"));
+            assertTrue(emailField.getAttribute("validationMessage").contains("Please fill out this field."));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -169,7 +169,8 @@ public class AppTest {
             driver.findElement(By.name("signup_pwdconfirm")).sendKeys("mismatch");
             driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.className("swal2-title")));
+            WebElement emailField = driver.findElement(By.name("signup_email"));
+            assertTrue(emailField.getAttribute("validationMessage").contains("Please enter an email address."));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -189,7 +190,8 @@ public class AppTest {
             driver.findElement(By.name("signup_pwdconfirm")).sendKeys("differentPassword");
             driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.className("swal2-title")));
+            WebElement passwordField = driver.findElement(By.name("signup_pwdconfirm"));
+            assertTrue(passwordField.getAttribute("validationMessage").contains("Please enter the same password as above."));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
