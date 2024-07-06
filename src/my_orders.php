@@ -146,7 +146,9 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                         } else {
                             pendingOrders.forEach(function (order) {
                                 var action = `<button class='btn btn-view' data-id='${order.Order_ID}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
-                                action += `<button class='btn btn-received' data-id='${order.Order_ID}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
+                                if (order.Order_Status === 'Order Shipped') {
+                                    action += `<button class='btn btn-received' data-id='${order.Order_ID}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
+                                }
                                 var row = [
                                     order.Order_ID,
                                     order.Number_of_Items,
