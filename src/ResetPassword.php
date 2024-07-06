@@ -43,7 +43,7 @@ include "includes/navbar.php";
     <div class="container">
         <div class="password-card">
             <h1 class="text-center">Reset Your Password</h1>
-            <form action="reset_password.php" method="post">
+            <form action="process_resetpassword.php" method="post">
                 <div class="form-group">
                     <label for="newPassword">New Password:</label>
                     <input type="password" class="form-control" id="newPassword" name="newPassword" required>
