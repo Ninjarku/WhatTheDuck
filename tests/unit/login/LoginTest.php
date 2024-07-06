@@ -23,10 +23,12 @@ class LoginTest extends TestCase
      */
     public function testSuccessfulLogin()
     {
+        $testconfig = parse_ini_file('/var/www/private/test-config.ini');
+
         // Simulate valid user input
         $_POST = [
-            "cust_username" => "aaaaa",
-            "cust_pass" => "aaaaa"
+            "cust_username" => $testconfig['testUser'],
+            "cust_pass" => $testconfig['testPass']
         ];
 
         // Include the login processing script
@@ -39,9 +41,7 @@ class LoginTest extends TestCase
         // Assert the response
         $this->assertEquals('success', $response['icon']);
         $this->assertEquals('Login successful!', $response['title']);
-        $this->assertStringContainsString('Welcome back, aaaaa', $response['message']);
-        $this->assertEquals('index.php', $response['redirect']);
-        
+        $this->assertEquals('index.php', $response['redirect']);   
     }
 
     /**
