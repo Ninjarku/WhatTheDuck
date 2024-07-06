@@ -143,7 +143,7 @@ include 'includes/navbar.php';
         </div>
     </div>
     <?php include 'includes/footer.php'; ?>
-    <script src="js/zxcvbn.js"></script>
+    <script src="/js/zxcvbn.js"></script>
     <script>
         $(document).ready(function () {
             $('#signup_pwd').on('input', function () {
