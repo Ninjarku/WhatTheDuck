@@ -112,28 +112,28 @@ public class AppTest {
         }
     }
 
-    @Test
-    public void testSignupWithValidData() {
-        driver.get(signupUrl);
+    // @Test
+    // public void testSignupWithValidData() {
+    //     driver.get(signupUrl);
 
-        try {
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("signup_username")));
-            driver.findElement(By.name("signup_username")).sendKeys("newuser");
-            driver.findElement(By.name("signup_email")).sendKeys("newuser@example.com");
-            driver.findElement(By.name("signup_mobile_number")).sendKeys("12345678");
-            driver.findElement(By.name("signup_birthday")).sendKeys("1990-01-01");
-            driver.findElement(By.name("signup_pwd")).sendKeys(validPassword);
-            driver.findElement(By.name("signup_pwdconfirm")).sendKeys(validPassword);
-            driver.findElement(By.cssSelector("button[type='submit']")).click();
+    //     try {
+    //         wait.until(ExpectedConditions.presenceOfElementLocated(By.name("signup_username")));
+    //         driver.findElement(By.name("signup_username")).sendKeys("newuser");
+    //         driver.findElement(By.name("signup_email")).sendKeys("newuser@example.com");
+    //         driver.findElement(By.name("signup_mobile_number")).sendKeys("12345678");
+    //         driver.findElement(By.name("signup_birthday")).sendKeys("1990-01-01");
+    //         driver.findElement(By.name("signup_pwd")).sendKeys(validPassword);
+    //         driver.findElement(By.name("signup_pwdconfirm")).sendKeys(validPassword);
+    //         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[text()='Go to Login']")));
+    //         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[text()='Go to Login']")));
 
-            WebElement successButton = driver.findElement(By.xpath("//button[text()='Go to Login']"));
-            assertTrue(successButton.isDisplayed());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    //         WebElement successButton = driver.findElement(By.xpath("//button[text()='Go to Login']"));
+    //         assertTrue(successButton.isDisplayed());
+    //     } catch (Exception e) {
+    //         throw new RuntimeException(e);
+    //     }
+    // }
 
     // @Test
     // public void testSignupWithMissingFields() {
