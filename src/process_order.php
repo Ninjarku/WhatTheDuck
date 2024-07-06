@@ -133,7 +133,7 @@ function markAsReceived($Order_Num)
     $conn->close();
     $response["icon"] = "success";
     $response["title"] = "Order Status Updated";
-    $response["message"] = "The order status has been updated to Received.";
+    $response["message"] = "The order status has been updated to Order Received.";
     return json_encode($response);
 }
 

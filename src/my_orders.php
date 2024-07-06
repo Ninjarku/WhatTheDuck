@@ -120,7 +120,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
-                        url: "process_orders.php",
+                        url: "process_order.php",
                         data: {
                             action: "markAsReceived",
                             Order_Num: Order_Num
