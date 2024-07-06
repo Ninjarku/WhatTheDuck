@@ -216,15 +216,11 @@ include 'includes/navbar.php';
             function checkBothPasswords() {
                 var pwd = $("#signup_pwd").val();
                 var pwdconfirm = $("#signup_pwdconfirm").val();
-                console.log(pwd);
-                console.log(pwdconfirm);
                 if (pwd == pwdconfirm) {
-                    console.log("Hit");
                     $('#confirmPasswordWarning').hide();
                     return true
                 }
                 else {
-                    console.log("Hat");
                     $('#confirmPasswordWarning').show();
                     return false
                 }
