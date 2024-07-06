@@ -1,10 +1,14 @@
 <?php
 session_start();
-require './vendor/autoload.php';
-//require '/var/www/html/jwt/jwt_gen_token.php';  // Adjust the path as necessary
+require 'vendor/autoload.php';
+use Predis\Client;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+$redis = new Client([
+    'scheme' => 'tcp',
+    // 'host'   => 'localhost', // either this or redis
+    'host'   => 'redis', // either this or redis
+    'port'   => 6379,
+]);
 
 function sanitizeInput($data) {
     $data = trim($data);
@@ -15,6 +19,11 @@ function sanitizeInput($data) {
 
 function generateOTP($length = 6) {
     return substr(str_shuffle(str_repeat($x='0123456789', ceil($length/strlen($x)) )),1,$length);
+}
+
+function storeOTP($email, $otp, $expiry = 300) { // 300 seconds = 5 minutes
+    global $redis;
+    $redis->set("otp:$email", $otp, 'ex', $expiry);
 }
 
 function sendOTP($email, $otp) {
@@ -46,7 +55,9 @@ function sendOTP($email, $otp) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
-    $email = sanitizeInput($_POST['email']); // Sanitize email input
+    $email = sanitizeInput($_POST['email']);
+    $otp = generateOTP();
+    storeOTP($email, $otp);
 
     // Database connection setup
     $config = parse_ini_file('/var/www/private/db-config.ini');
