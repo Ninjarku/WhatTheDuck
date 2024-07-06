@@ -58,8 +58,8 @@ function sendOTP($email, $otp) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     $email = sanitizeInput($_POST['email']);
-    $otp = generateOTP();
-    storeOTP($email, $otp);
+    //$otp = generateOTP();
+    //storeOTP($email, $otp);
 
     // Database connection setup
     $config = parse_ini_file('/var/www/private/db-config.ini');
@@ -75,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
         if ($result->num_rows > 0) {
             $otp = generateOTP();
+            storeOTP($email, $otp);
             $timeNow = time(); // Get current timestamp
 
             if (sendOTP($email, $otp)) {
