@@ -261,7 +261,6 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 <body>
     <div class="container">
         <div class="table-content">
-            <br><br>
             <h1 class="text-center">Product Management</h1>
             <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
                 Product</button>

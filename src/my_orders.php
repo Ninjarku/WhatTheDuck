@@ -218,7 +218,6 @@ if ($_SESSION["cust_rol"] !== "Customer") {
 <body>
     <div class="container">
         <div class="table-content">
-            <br><br>
             <h1 class="text-center">Purchase Order List</h1>
             <br><br>
             <h2>Pending Orders</h2>

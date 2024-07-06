@@ -201,7 +201,6 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
 <body>
     <div class="container">
         <div class="table-content">
-            <br><br>
             <h1 class="text-center">User Management</h1>
             <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
                 User</button>
