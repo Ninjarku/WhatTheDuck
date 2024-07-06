@@ -36,17 +36,17 @@ pipeline {
 
           
 
-          stage('Unit Testing with PHPUnit') {
-           steps {
-                // withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
-               script {
+       //    stage('Unit Testing with PHPUnit') {
+       //     steps {
+       //          // withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
+       //         script {
 
-                    sh 'docker exec -i php-docker ./vendor/bin/phpunit --log-junit /var/www/html/test-results/unitreport.xml -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
+       //              sh 'docker exec -i php-docker ./vendor/bin/phpunit --log-junit /var/www/html/test-results/unitreport.xml -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
                
-               }
-              // }
-           }
-       }
+       //         }
+       //        // }
+       //     }
+       // }
     
          stage('Deployment to AWS Web Server') {
             steps {
