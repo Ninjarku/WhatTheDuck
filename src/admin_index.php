@@ -60,12 +60,22 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
             margin-bottom: 50px;
         }
 
-        .icon-hover {
+        .btn-primary {
+            background-color: #ffcc00;
+            border: none;
             color: black;
-            transition: color 0.3s ease;
         }
 
-        .icon-hover:hover {
+        .btn-primary:hover {
+            background-color: #ff6347;
+            color: white;
+        }
+
+        .icon-hover {
+            color: black;
+        }
+
+        .btn-primary:hover .icon-hover {
             color: white;
         }
     </style>

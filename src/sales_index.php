@@ -86,7 +86,6 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
         .icon-hover {
             color: black;
-            transition: color 0.3s ease; /* Smooth transition effect */
         }
 
         .btn-primary:hover .icon-hover {
