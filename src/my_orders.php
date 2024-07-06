@@ -150,7 +150,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                                 var row = [
                                     order.Order_ID,
                                     order.Number_of_Items,
-                                    order.Total_Amount,
+                                    "$" + order.Total_Amount,
                                     order.Payment_Type,
                                     order.Billing_Address,
                                     order.Order_Status,
@@ -168,7 +168,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                                 var row = [
                                     order.Order_ID,
                                     order.Number_of_Items,
-                                    order.Total_Amount,
+                                    "$" + order.Total_Amount,
                                     order.Payment_Type,
                                     order.Billing_Address,
                                     action

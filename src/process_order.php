@@ -191,8 +191,8 @@ function sanitize_input($data)
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if ($action === 'getAllOrders') {
-        echo getAllOrders();
+    if ($action === 'getOrdersByUserID') {
+        echo getOrdersByUserID();
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'markAsReceived' && isset($_POST['Order_Num'])) {
