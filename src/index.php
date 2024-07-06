@@ -102,7 +102,7 @@ $conn->close();
         }
 
         .btn-add-to-cart {
-            margin-top: auto;
+            margin-top: 10px;
         }
 
         .product-link {
