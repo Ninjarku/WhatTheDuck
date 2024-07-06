@@ -101,13 +101,13 @@ if ($_SESSION["cust_rol"] !== "Customer") {
 
         /// View order details
         $("#pending_table, #history_table").on("click", ".btn-view", function () {
-            var order_id = $(this).data("id");
-            window.location.href = "order_details.php?Order_ID=" + order_id;
+            var Order_Num = $(this).data("id");
+            window.location.href = "order_details.php?Order_Num=" + Order_Num;
         });
 
         // Set order status to received
         $("#pending_table").on("click", ".btn-received", function () {
-            var Order_ID = $(this).data("id");
+            var Order_Num = $(this).data("id");
             Swal.fire({
                 title: 'Are you sure you received this order?',
                 text: "You won't be to do a refund!",
@@ -123,7 +123,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                         url: "process_orders.php",
                         data: {
                             action: "markAsReceived",
-                            Order_ID: Order_ID
+                            Order_Num: Order_Num
                         },
                         dataType: "json",
                         success: function (response) {
@@ -166,9 +166,9 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                             pendingTable.row.add(['', '', '', '', '', '', '']).draw(false); // If no data, add empty row
                         } else {
                             pendingOrders.forEach(function (order) {
-                                var action = `<button class='btn btn-view' data-id='${order.Order_ID}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
+                                var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
                                 if (order.Order_Status === 'Order Shipped') {
-                                    action += `<button class='btn btn-received' data-id='${order.Order_ID}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
+                                    action += `<button class='btn btn-received' data-id='${order.Order_Num}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
                                 }
                                 var row = [
                                     order.Order_Num,
@@ -187,9 +187,9 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                             historyTable.row.add(['', '', '', '', '', '']).draw(false); // If no data, add empty row
                         } else {
                             historyOrders.forEach(function (order) {
-                                var action = `<button class='btn btn-view' data-id='${order.Order_ID}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
+                                var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
                                 var row = [
-                                    order.Order_ID,
+                                    order.Order_Num,
                                     order.Number_of_Items,
                                     "$" + order.Total_Amount,
                                     order.Payment_Type,
