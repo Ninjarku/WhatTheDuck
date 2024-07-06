@@ -9,6 +9,8 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
     </script>
     <?php
     exit();
+} else {
+    include "includes/navbar.php";
 }
 ?>
 <!DOCTYPE html>
@@ -62,7 +64,7 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
         }
     </style>
     <!-- END OF THE LINK -->
-     
+
     <!-- Custom JS for User Management -->
     <script>
         $(document).ready(function () {
@@ -191,15 +193,16 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
 
 <body>
     <div class="container">
-        <?php include "includes/navbar.php"; ?>
-        <br><br>
-        <h1 class="text-center">User Management</h1>
-        <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
-            User</button>
-        <br><br>
-        <table id="user_table" class="display" style="width:100%">
-        </table>
-        <br><br>
+        <div class="table-content">
+            <br><br>
+            <h1 class="text-center">User Management</h1>
+            <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
+                User</button>
+            <br><br>
+            <table id="user_table" class="display" style="width:100%">
+            </table>
+            <br><br>
+        </div>
     </div>
     <?php include "includes/footer.php"; ?>
 </body>

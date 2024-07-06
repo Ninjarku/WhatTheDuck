@@ -253,42 +253,43 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
 
 <body>
     <div class="container">
-        <br><br>
-        <h1 class="text-center">Product Management</h1>
-        <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
-            Product</button>
-        <br><br>
-        <table id="product_table" class="display" style="width:100%"></table>
-        <br><br>
-    </div>
+        <div class="table-content">
+            <br><br>
+            <h1 class="text-center">Product Management</h1>
+            <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
+                Product</button>
+            <br><br>
+            <table id="product_table" class="display" style="width:100%"></table>
+            <br><br>
+        </div>
 
-    <!-- Modal for Image Upload -->
-    <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog" aria-labelledby="uploadImageModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadImageModalLabel">Upload Product Image</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="image-upload-form" method="post" action="process_product.php?action=uploadImage"
-                        enctype="multipart/form-data">
-                        <input type="hidden" id="Product_ID" name="Product_ID">
-                        <div class="form-group">
-                            <label for="Product_Image">Product Image:</label>
-                            <input type="file" class="form-control-file" id="Product_Image" name="Product_Image"
-                                accept="image/*" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Upload Image</button>
-                    </form>
+        <!-- Modal for Image Upload -->
+        <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog"
+            aria-labelledby="uploadImageModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadImageModalLabel">Upload Product Image</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="image-upload-form" method="post" action="process_product.php?action=uploadImage"
+                            enctype="multipart/form-data">
+                            <input type="hidden" id="Product_ID" name="Product_ID">
+                            <div class="form-group">
+                                <label for="Product_Image">Product Image:</label>
+                                <input type="file" class="form-control-file" id="Product_Image" name="Product_Image"
+                                    accept="image/*" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Upload Image</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <?php include "includes/footer.php"; ?>
 </body>
 
