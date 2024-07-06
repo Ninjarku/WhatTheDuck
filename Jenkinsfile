@@ -57,7 +57,7 @@ pipeline {
            }
        }
     
-         stage('Deploy') {
+         stage('Deployment to AWS Web Server') {
             steps {
                 script {
                     sshPublisher(
