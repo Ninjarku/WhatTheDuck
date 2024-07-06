@@ -202,10 +202,27 @@ function uploadProductImage($productData)
 
     $Product_ID = sanitize_input($productData['Product_ID']);
 
-    // Handle image upload
-    $image = null;
+    // Validate image file
+    $allowed_types = ['image/jpeg', 'image/png'];
+    $max_size = 5 * 1024 * 1024; // 5MB
     if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $file_type = $_FILES['Product_Image']['type'];
+        $file_size = $_FILES['Product_Image']['size'];
+
+        if (!in_array($file_type, $allowed_types)) {
+            $response["message"] = 'Invalid file type. Only JPG and PNG files are allowed.';
+            return json_encode($response);
+        }
+
+        if ($file_size > $max_size) {
+            $response["message"] = 'File size too large. Maximum allowed size is 5MB.';
+            return json_encode($response);
+        }
+
         $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
+    } else {
+        $response["message"] = 'Image upload failed';
+        return json_encode($response);
     }
 
     if (!$image) {
@@ -237,6 +254,7 @@ function uploadProductImage($productData)
     $response["message"] = "Product image uploaded successfully";
     return json_encode($response);
 }
+
 
 
 // Handle actions
