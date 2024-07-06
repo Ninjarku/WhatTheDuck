@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
+if (isset($_SESSION["cust_login"]) && $_SESSION["cust_login"] == "success") {
     header("Location: index.php");
     exit();
 }
