@@ -4,6 +4,8 @@ pipeline {
      environment {
         TEST_USERNAME = credentials('UserTest')
         TEST_PASSWORD = credentials('UserTest')
+        CHROME_BIN = "/usr/bin/google-chrome"
+        CHROMEDRIVER_BIN = "/usr/local/bin/chromedriver"
     }
 
     stages {
@@ -59,6 +61,7 @@ pipeline {
             steps {
                  withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
                 script {
+                    sh 'export PATH=$PATH:/usr/local/bin'
                     sh 'mvn test'
                 }
                  }
