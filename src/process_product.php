@@ -204,7 +204,7 @@ function uploadProductImage($productData)
 
     // Validate image file
     $allowed_types = ['image/jpeg', 'image/png'];
-    $max_size = 1 * 1024;
+    $max_size = 1 * 1024 * 1024;
     if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
         $file_type = $_FILES['Product_Image']['type'];
         $file_size = $_FILES['Product_Image']['size'];
