@@ -15,7 +15,8 @@ public class AppTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
-    private String url = "https://whattheduck.ddns.net/Login.php";
+    private String loginUrl = "https://whattheduck.ddns.net/Login.php";
+    private String signupUrl = "https://whattheduck.ddns.net/Signup.php";
     private String validUsername = System.getenv("TEST_USERNAME");
     private String validPassword = System.getenv("TEST_PASSWORD");
     private String invalidUsername = "invaliduser";
@@ -45,7 +46,7 @@ public class AppTest {
 
     @Test
     public void testLoginWithValidCredentials() {
-        driver.get(url);
+        driver.get(loginUrl);
 
         // Log the current URL for debugging
         System.out.println("Current URL before login: " + driver.getCurrentUrl());
@@ -90,7 +91,7 @@ public class AppTest {
     @Test
     public void testLoginWithInvalidCredentials() {
         try {
-            driver.get(url);
+            driver.get(loginUrl);
 
             // Log the current URL for debugging
             System.out.println("Current URL before login: " + driver.getCurrentUrl());
@@ -126,7 +127,7 @@ public class AppTest {
     @Test
     public void testLoginWithValidUsernameAndInvalidPassword() {
         try {
-            driver.get(url);
+            driver.get(loginUrl);
 
             // Log the current URL for debugging
             System.out.println("Current URL before login: " + driver.getCurrentUrl());
@@ -162,7 +163,7 @@ public class AppTest {
     @Test
     public void testLoginWithInvalidUsernameAndValidPassword() {
         try {
-            driver.get(url);
+            driver.get(loginUrl);
 
             // Log the current URL for debugging
             System.out.println("Current URL before login: " + driver.getCurrentUrl());
@@ -187,6 +188,68 @@ public class AppTest {
             // Wait for the error popup
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("swal2-title")));
             System.out.println("Error popup is visible.");
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Current URL: " + driver.getCurrentUrl());
+            System.out.println("Page source: " + driver.getPageSource());
+            throw e;
+            
+         @Test
+    public void testSignupWithValidData() {
+        driver.get(signupUrl);
+
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
+
+            // Fill in the signup form with valid data
+            driver.findElement(By.name("cust_username")).sendKeys("newuser");
+            driver.findElement(By.name("cust_email")).sendKeys("newuser@example.com");
+            driver.findElement(By.name("cust_mobile")).sendKeys("1234567890");
+            driver.findElement(By.name("cust_dob")).sendKeys("01011990");
+            driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
+            driver.findElement(By.name("cust_confirm_pass")).sendKeys(validPassword);
+            driver.findElement(By.id("submit")).click();
+
+            // Wait for success message or redirection
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.className("success-message")));
+
+            // Verify success
+            WebElement successMessage = driver.findElement(By.className("success-message"));
+            assertTrue(successMessage.isDisplayed());
+            System.out.println("Signup success message is displayed.");
+
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Current URL: " + driver.getCurrentUrl());
+            System.out.println("Page source: " + driver.getPageSource());
+            throw e;
+        }
+    }
+
+    @Test
+    public void testSignupWithInvalidData() {
+        driver.get(signupUrl);
+
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
+
+            // Fill in the signup form with invalid data
+            driver.findElement(By.name("cust_username")).sendKeys("newuser");
+            driver.findElement(By.name("cust_email")).sendKeys("invalid-email");
+            driver.findElement(By.name("cust_mobile")).sendKeys("invalid-mobile");
+            driver.findElement(By.name("cust_dob")).sendKeys("invalid-date");
+            driver.findElement(By.name("cust_pass")).sendKeys("short");
+            driver.findElement(By.name("cust_confirm_pass")).sendKeys("mismatch");
+            driver.findElement(By.id("submit")).click();
+
+            // Wait for error message
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.className("error-message")));
+
+            // Verify error
+            WebElement errorMessage = driver.findElement(By.className("error-message"));
+            assertTrue(errorMessage.isDisplayed());
+            System.out.println("Signup error message is displayed.");
+
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Current URL: " + driver.getCurrentUrl());
