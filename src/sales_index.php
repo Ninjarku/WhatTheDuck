@@ -264,6 +264,36 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                 }
             });
         }
+
+        document.getElementById('image-upload-form').addEventListener('submit', function (event) {
+            const fileInput = document.getElementById('Product_Image');
+            const file = fileInput.files[0];
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const errorElement = document.getElementById('file-error');
+
+            if (file) {
+                if (!allowedTypes.includes(file.type)) {
+                    event.preventDefault();
+                    errorElement.textContent = 'Invalid file type. Only JPG and PNG files are allowed.';
+                    errorElement.style.display = 'block';
+                    return;
+                }
+                if (file.size > maxSize) {
+                    event.preventDefault();
+                    errorElement.textContent = 'File size too large. Maximum allowed size is 5MB.';
+                    errorElement.style.display = 'block';
+                    return;
+                }
+            } else {
+                event.preventDefault();
+                errorElement.textContent = 'Please select a file.';
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            errorElement.style.display = 'none'; // Hide error message if validation passes
+        });
     </script>
 </head>
 
@@ -297,9 +327,10 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             <div class="form-group">
                                 <label for="Product_Image">Product Image:</label>
                                 <input type="file" class="form-control-file" id="Product_Image" name="Product_Image"
-                                    accept="image/*" required>
+                                    accept="image/jpeg, image/png" required>
                                 <small class="form-text text-muted">Only JPG and PNG files are allowed. Max size
                                     5MB.</small>
+                                <small id="file-error" class="form-text text-danger" style="display: none;"></small>
                             </div>
                             <button type="submit" class="btn btn-primary">Upload Image</button>
                         </form>
