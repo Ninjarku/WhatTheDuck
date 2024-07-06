@@ -40,6 +40,56 @@ if ($_SESSION["cust_rol"] !== "Customer") {
     <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
     <!-- SweetAlert2 for Popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Styling for Table -->
+    <style>
+        body,
+        html {
+            font-family: 'Comic Neue', cursive;
+            background-color: #fff5cc;
+            color: black;
+        }
+
+        .navbar {
+            background-color: #ffcc00;
+        }
+
+        .navbar-brand img {
+            border-radius: 50%;
+        }
+
+        .nav-item .nav-link,
+        .login-link,
+        .cart-link {
+            color: black !important;
+            font-weight: bold;
+            display: inline-block;
+            padding: 10px 15px;
+        }
+
+        .nav-item .nav-link:hover,
+        .login-link:hover,
+        .cart-link:hover {
+            color: #fff !important;
+            background-color: #ff6347;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .table-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+    </style>
     <!-- END OF THE LINK -->
 
     <!-- Custom JS for Order Management -->
@@ -196,15 +246,17 @@ if ($_SESSION["cust_rol"] !== "Customer") {
 
 <body>
     <div class="container">
-        <br><br>
-        <h1 class="text-center">Purchase Order List</h1>
-        <br><br>
-        <h2>Pending Orders</h2>
-        <table id="pending_table" class="display" style="width:100%"></table>
-        <br><br>
-        <h2>Order History</h2>
-        <table id="history_table" class="display" style="width:100%"></table>
-        <br><br>
+        <div class="table-content">
+            <br><br>
+            <h1 class="text-center">Purchase Order List</h1>
+            <br><br>
+            <h2>Pending Orders</h2>
+            <table id="pending_table" class="display" style="width:100%"></table>
+            <br><br>
+            <h2>Order History</h2>
+            <table id="history_table" class="display" style="width:100%"></table>
+            <br><br>
+        </div>
     </div>
     <?php include "includes/footer.php"; ?>
 </body>
