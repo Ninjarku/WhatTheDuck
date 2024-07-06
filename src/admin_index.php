@@ -60,13 +60,11 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
             margin-bottom: 50px;
         }
 
-        .btn-primary {
-            background-color: #ffcc00;
-            border: none;
+        #iconPlus {
             color: black;
         }
-        .btn-primary:hover {
-            background-color: #ff6347;
+        
+        #iconPlus:hover {
             color: white;
         }
     </style>
@@ -202,7 +200,7 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
     <div class="container">
         <div class="table-content">
             <h1 class="text-center">User Management</h1>
-            <button id="btnAddNew" class="btn btn-primary"><i class='fas fa-plus' style="color:white;"></i> Add New
+            <button id="btnAddNew" class="btn btn-primary"><i id="iconPlus" class='fas fa-plus'></i> Add New
                 User</button>
             <br><br>
             <table id="user_table" class="display" style="width:100%">
