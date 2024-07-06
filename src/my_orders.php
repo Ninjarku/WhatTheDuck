@@ -71,7 +71,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                 "iDisplayLength": 5,
                 "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 columns: [
-                    { title: "Order ID" },
+                    { title: "Order No," },
                     { title: "Number of Items" },
                     { title: "Total Amount" },
                     { title: "Payment Type" },
@@ -86,7 +86,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                 "iDisplayLength": 5,
                 "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
                 columns: [
-                    { title: "Order ID" },
+                    { title: "Order No." },
                     { title: "Number of Items" },
                     { title: "Total Amount" },
                     { title: "Payment Type" },
@@ -171,7 +171,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                                     action += `<button class='btn btn-received' data-id='${order.Order_ID}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
                                 }
                                 var row = [
-                                    order.Order_ID,
+                                    order.Order_Num,
                                     order.Number_of_Items,
                                     "$" + order.Total_Amount,
                                     order.Payment_Type,

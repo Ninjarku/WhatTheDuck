@@ -41,7 +41,7 @@ function getOrdersByUserID()
 
     $pendingOrdersQuery = "
         SELECT 
-            Order_Num AS Order_ID,
+            Order_Num,
             SUM(Quantity) AS Number_of_Items,
             ROUND(SUM(Total_Price), 2) AS Total_Amount,
             Payment_Type, 
@@ -55,7 +55,7 @@ function getOrdersByUserID()
 
     $historyOrdersQuery = "
         SELECT 
-            Order_Num AS Order_ID,
+            Order_Num,
             SUM(Quantity) AS Number_of_Items,
             ROUND(SUM(Total_Price), 2) AS Total_Amount,
             Payment_Type, 
