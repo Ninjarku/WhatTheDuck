@@ -43,7 +43,7 @@ function getAllOrders()
         SELECT 
             Order_Num AS Order_ID,
             SUM(Quantity) AS Number_of_Items,
-            SUM(Total_Price) AS Total_Amount,
+            ROUND(SUM(Total_Price), 2) AS Total_Amount,
             Payment_Type, 
             Billing_Address, 
             Order_Status 
@@ -57,7 +57,7 @@ function getAllOrders()
         SELECT 
             Order_Num AS Order_ID,
             SUM(Quantity) AS Number_of_Items,
-            SUM(Total_Price) AS Total_Amount,
+            ROUND(SUM(Total_Price), 2) AS Total_Amount,
             Payment_Type, 
             Billing_Address, 
             Order_Status 
@@ -73,7 +73,7 @@ function getAllOrders()
     $conn->close();
 
     return json_encode([
-        'icon' => 'success', 
+        'icon' => 'success',
         'pendingOrders' => $pendingOrders,
         'historyOrders' => $historyOrders
     ]);
