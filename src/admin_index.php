@@ -59,6 +59,16 @@ if ($_SESSION["cust_rol"] !== "IT Admin") {
             margin-top: 50px;
             margin-bottom: 50px;
         }
+
+        .btn-primary {
+            background-color: #ffcc00;
+            border: none;
+            color: black;
+        }
+        .btn-primary:hover {
+            background-color: #ff6347;
+            color: white;
+        }
     </style>
     <!-- END OF THE LINK -->
 

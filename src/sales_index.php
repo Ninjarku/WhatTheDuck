@@ -72,6 +72,16 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
         .btn-delete:hover {
             transform: scale(1.1);
         }
+
+        .btn-primary {
+            background-color: #ffcc00;
+            border: none;
+            color: black;
+        }
+        .btn-primary:hover {
+            background-color: #ff6347;
+            color: white;
+        }
     </style>
     <!-- END OF THE LINK -->
 
