@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
+    // Redirect to the login page
+    header("Location: index.php");
+    exit();
+}
 include 'includes/navbar.php';
 ?>
 <!DOCTYPE html>
