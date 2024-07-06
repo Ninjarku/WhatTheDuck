@@ -14,6 +14,7 @@ class SignupTest extends TestCase
     
         // Load database configuration
         $this->config = parse_ini_file('/var/www/private/db-config.ini');
+
         // Establish a database connection
         $this->conn = new mysqli(
             $this->config['host'],
@@ -33,26 +34,42 @@ class SignupTest extends TestCase
     
     protected function tearDown(): void
     {
+        $testconfig = parse_ini_file('/var/www/private/test-config.ini');
+        $username = $testconfig['testSignUser'];
+        
         if ($this->conn) {
-            $this->conn->query("DELETE FROM User WHERE Email = 'user@example.com'");
+    
+            $stmt = $this->conn->prepare("DELETE FROM User WHERE Username = ?");
+            if ($stmt) {
+                $stmt->bind_param("s", $username);
+                $stmt->execute();
+                $stmt->close();
+            } else {
+                echo "Error preparing statement: " . $this->conn->error;
+            }
+    
             $this->conn->close();
         }
     
+        // Clean up session and output buffer
         session_destroy();
         ob_end_clean();
     }
+
     /**
      * @runInSeparateProcess
      */
     public function testSuccessfulSignup()
     {
+        $testconfig = parse_ini_file('/var/www/private/test-config.ini');
+        
         $_POST = [
-            "signup_mobile_number" => "12345678",
-            "signup_email" => "user@example.com",
-            "signup_birthday" => "1990-01-01",
-            "signup_username" => "newuser",
-            "signup_pwd" => "password123",
-            "signup_pwdconfirm" => "password123",
+            "signup_mobile_number" => $testconfig['testSignMobile'],
+            "signup_email" => $testconfig['testSignEmail'],
+            "signup_birthday" => $testconfig['testSignBday'],
+            "signup_username" => $testconfig['testSignUser'],
+            "signup_pwd" => $testconfig['testSignPass'],
+            "signup_pwdconfirm" => $testconfig['testSignPass'],
             "agree" => "on"
         ];
 
