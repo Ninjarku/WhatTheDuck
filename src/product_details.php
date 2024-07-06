@@ -147,7 +147,6 @@ $conn->close();
         }
 
         .recommended-product-card {
-            background-color: #ffcc00;
             border: none;
             color: #fff;
         }
