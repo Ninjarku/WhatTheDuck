@@ -135,6 +135,7 @@ $conn->close();
                                 <?php endif; ?>
                             </a>
                             <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
+                            <!-- Add to cart button -->
                             <form action="PaymentPage.php" method="post">
                                 <input type="hidden" name="product_name"
                                     value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
