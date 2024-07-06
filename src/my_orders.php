@@ -49,32 +49,6 @@ if ($_SESSION["cust_rol"] !== "Customer") {
             color: black;
         }
 
-        .navbar {
-            background-color: #ffcc00;
-        }
-
-        .navbar-brand img {
-            border-radius: 50%;
-        }
-
-        .nav-item .nav-link,
-        .login-link,
-        .cart-link {
-            color: black !important;
-            font-weight: bold;
-            display: inline-block;
-            padding: 10px 15px;
-        }
-
-        .nav-item .nav-link:hover,
-        .login-link:hover,
-        .cart-link:hover {
-            color: #fff !important;
-            background-color: #ff6347;
-            border-radius: 5px;
-            transition: background-color 0.3s ease-in-out;
-        }
-
         .table-content {
             background-color: white;
             padding: 20px;
@@ -82,7 +56,6 @@ if ($_SESSION["cust_rol"] !== "Customer") {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
         }
 
         .container {
