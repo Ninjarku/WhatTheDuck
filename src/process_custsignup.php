@@ -28,7 +28,7 @@ function hasRepetitiveCharacters($pwd) {
 }
 
 function isPasswordInWordlist($pwd) {
-    $wordlistFile = 'pwd_list/list.txt';
+    $wordlistFile = 'pwd_list\list.txt';
 
     $wordlist = file($wordlistFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     
