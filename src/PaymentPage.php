@@ -2,10 +2,15 @@
 session_start();
 
 // Check if the user is logged in
-if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
-    // Redirect to the login page
-    header("Location: Login.php");
-    exit();
+// if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
+//     // Redirect to the login page
+//     header("Location: Login.php");
+//     exit();
+// }
+
+if (isset($_POST['selectedCartIds'])) {
+    $cart_ids = $_POST['selectedCartIds'];
+    $_SESSION['selectedCartIds'] = $cart_ids;
 }
 
 include 'includes/navbar.php';
@@ -47,6 +52,10 @@ include 'includes/navbar.php';
         .footer {
             margin-bottom: 20px;
         }
+
+        #submitBtn:disabled {
+            background-color: #8a8a8a;
+        }
     </style>
 </head>
 
@@ -62,7 +71,7 @@ include 'includes/navbar.php';
                     </div>
                     <div class="form-group col-md-6">
                         <label for="phoneNumber">Phone Number:</label>
-                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" pattern="\d{8}" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -72,7 +81,7 @@ include 'includes/navbar.php';
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="postalCode">Postal Code:</label>
-                        <input type="text" class="form-control" id="postalCode" name="postalCode" required>
+                        <input type="text" class="form-control" id="postalCode" name="postalCode" pattern="\d{6}" required>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="unitNo">Unit No (Optional):</label>
@@ -90,28 +99,32 @@ include 'includes/navbar.php';
                 <div id="cardDetails" style="display: none;">
                     <div class="form-group">
                         <label for="cardName">Name on Card</label>
-                        <input type="text" class="form-control" id="cardNumber" name="cardName"
+                        <input type="text" class="form-control" id="cardName" name="cardName"
                             placeholder="Enter name on card">
                     </div>
                     <div class="form-group">
                         <label for="cardNumber">Card Number:</label>
                         <input type="text" class="form-control" id="cardNumber" name="cardNumber" pattern="\d{16}"
                             placeholder="Enter 16-digit card number">
+                        <small id="cardNumberError" class="form-text text-danger" style="display: none;"></small>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="expiryDate">Expiry Date:</label>
                             <input type="text" class="form-control" id="expiryDate" name="expiryDate"
                                 pattern="\d{2}/\d{2}" placeholder="MM/YY">
+                            <small id="expiryDateError" class="form-text text-danger" style="display: none;"></small>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="cvv">CVV:</label>
                             <input type="text" class="form-control" id="cvv" name="cvv" pattern="\d{3}"
                                 placeholder="Enter 3-digit CVV">
+                            <small id="cvvError" class="form-text text-danger" style="display: none;"></small>
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Pay Now</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Pay Now</button>
+                <small id="cardPrompt" class="form-text text-danger" style="display: none;"></small>
             </form>
         </div>
     </div>
@@ -127,10 +140,111 @@ include 'includes/navbar.php';
         $(document).ready(function () {
             $('#paymentMethod').change(function () {
                 if ($(this).val() === 'card') {
+                    $('#cardPrompt').text('Please fill in your card details correctly.').show();
+                    $('#submitBtn').prop('disabled', true);
                     $('#cardDetails').show();
+                    $('#cardName').prop("required", true);
+                    $('#cardNumber').prop("required", true);
+                    $('#expiryDate').prop("required", true);
+                    $('#cvv').prop("required", true);
                 } else {
+                    $('#cardPrompt').hide();
+                    $('#submitBtn').prop('disabled', false);
                     $('#cardDetails').hide();
+                    $('#cardName').prop("required", false);
+                    $('#cardName').val('');
+                    $('#cardNumber').prop("required", false);
+                    $('#cardNumber').val('');
+                    $('#expiryDate').prop("required", false);
+                    $('#expiryDate').val('');
+                    $('#cvv').prop("required", false);
+                    $('#cvv').val('');
                 }
+            });
+
+            function isDigits(str) {
+                    return /^\d+$/.test(str);
+                }
+
+            function validateExpiryDate() {
+                    const expiryDate = $('#expiryDate').val();
+                    const expiryDateError = $('#expiryDateError');
+                    const regex = /^(\d{2})\/(\d{2})$/;
+                    
+                    if (!regex.test(expiryDate)) {
+                        expiryDateError.text('Invalid format. Use MM/YY.').show();
+                        return false;
+                    }
+                    
+                    const [, month, year] = expiryDate.match(regex);
+                    const currentYear = new Date().getFullYear() % 100; // Get last two digits of the current year
+                    const currentMonth = new Date().getMonth() + 1; // Months are 0-based
+
+                    if (month < 1 || month > 12) {
+                        expiryDateError.text('Invalid month. Use MM between 01 and 12.').show();
+                        return false;
+                    }
+
+                    if (year < currentYear || (year == currentYear && month < currentMonth)) {
+                        expiryDateError.text('The card have expired.').show();
+                        return false;
+                    }
+
+                    expiryDateError.hide();
+                    return true;
+                }
+
+            function validateCardNumber(){
+                const cardNumber = $('#cardNumber').val();
+                const cardNumberError = $('#cardNumberError');
+
+                if (cardNumber.length != 16 || !isDigits(cardNumber)) {
+                    cardNumberError.text('Invalid format. Card number consists of 16 digits').show();
+                    return false;
+                }
+
+                cardNumberError.hide();
+                return true;
+            }
+
+            function validateCVV() {
+                const cvv = $('#cvv').val();
+                const cvvError = $('#cvvError');
+
+                if (cvv.length != 3 || !isDigits(cvv)) {
+                    cvvError.text('Invalid format. CVV consists of 3 digits').show();
+                    return false;
+                }
+
+                cvvError.hide();
+                return true;
+            }
+            
+            function cardValidation(){
+                var expiryBool = validateExpiryDate();
+                var numberBool = validateCardNumber();
+                var cvvBool = validateCVV();
+                if (expiryBool && numberBool && cvvBool) {
+                    $('#cardPrompt').hide();
+                    $('#submitBtn').prop('disabled', false);
+                }
+                
+                else {
+                    $('#cardPrompt').text('Please fill in your card details correctly.').show();
+                    $('#submitBtn').prop('disabled', true);
+                }
+            }
+
+            $('#expiryDate').on('input', function () {
+                cardValidation();
+            });
+
+            $('#cardNumber').on('input', function () {
+                cardValidation();
+            });
+
+            $('#cvv').on('input', function () {
+                cardValidation();
             });
         });
     </script>

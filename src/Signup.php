@@ -55,6 +55,10 @@ include 'includes/navbar.php';
             background-color: #ff6347;
             color: white;
         }
+        .btn:disabled {
+            background-color: #8a8a8a;
+            color: white;
+        }
 
         a {
             color: blue;
@@ -80,6 +84,17 @@ include 'includes/navbar.php';
             margin-top: 50px;
             margin-bottom: 50px;
         }
+            .passwordWarning{
+                color: red;
+                text-align: center;
+            }
+            .passwordWarningGroup {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 5px;
+                flex-direction: column;
+            }
 
         .password-container {
             position: relative;
@@ -153,8 +168,19 @@ include 'includes/navbar.php';
                             <input class="form-control" type="password" id="signup_pwdconfirm" required
                                 name="signup_pwdconfirm" placeholder="Confirm password">
                         </div>
+                            <div class="passwordWarning">
+                                <small id="passwordLengthWarning" class="passwordWarningGroup" style="display: none;">
+                                    Password must be at least 12 characters long.
+                                </small>
+                                <small id="passwordComplexityWarning" class="passwordWarningGroup" style="display: none;">
+                                    Password must comprise of uppercase, lowercase, and numbers.
+                                </small>
+                                <small id="confirmPasswordWarning" class="passwordWarningGroup" style="display: none;">
+                                    Passwords do not match.
+                                </small>
+                            </div>
                         <div class="form-group">
-                            <button class="btn btn-primary" style="width: 100%;" type="submit">Submit</button>
+                            <button class="btn btn-primary" style="width: 100%;" type="submit" id="signup_btn" disabled>Submit</button>
                         </div>
                     </form>
                 </div>
@@ -164,6 +190,59 @@ include 'includes/navbar.php';
     </div>
     <?php include 'includes/footer.php'; ?>
     <script>
+            function checkPasswordLength(password) {
+                if (password.length >= 12 && password.length <= 128) {
+                    $('#passwordLengthWarning').hide();
+                    return true
+                }
+                else {
+                    $('#passwordLengthWarning').show();
+                    return false
+                }
+            }
+
+            function checkPasswordComplexity(password) {
+                const complexityRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+                if (complexityRegex.test(password)) {
+                    $('#passwordComplexityWarning').hide();
+                    return true
+                }
+                else {
+                    $('#passwordComplexityWarning').show();
+                    return false
+                }
+            }
+            
+            function checkBothPasswords() {
+                var pwd = $("#signup_pwd").val();
+                var pwdconfirm = $("#signup_pwdconfirm").val();
+                console.log(pwd);
+                console.log(pwdconfirm);
+                if (pwd == pwdconfirm) {
+                    console.log("Hit");
+                    $('#confirmPasswordWarning').hide();
+                    return true
+                }
+                else {
+                    console.log("Hat");
+                    $('#confirmPasswordWarning').show();
+                    return false
+                }
+            }
+
+            function checkPasswords(password) {
+                var lengthBool = checkPasswordLength(password);
+                var complexityBool = checkPasswordComplexity(password);
+                var confirmPasswordBool = checkBothPasswords();
+                if (lengthBool && complexityBool && confirmPasswordBool) {
+                    $('#signup_btn').prop('disabled', false);
+                }
+
+                else {
+                    $('#signup_btn').prop('disabled', true);
+                }
+            }
+
         $(document).ready(function () {
             $('#signup_pwd').on('input', function () {
                 var password = $(this).val();
@@ -213,7 +292,7 @@ include 'includes/navbar.php';
                         Swal.fire({
                             icon: response.icon,
                             title: response.title,
-                            text: response.message,
+                            html: response.message,
                             showCloseButton: false,
                             showCancelButton: false,
                             confirmButtonText: response.redirect ? 'Go to Login' : 'Return to Signup'
@@ -222,9 +301,20 @@ include 'includes/navbar.php';
                                 window.location.href = response.redirect;
                             }
                         });
-                    }
+                    }   
                 });
             });
+
+                $("#signup_pwd").on("input", function () {
+                    const password = $(this).val();
+                    checkPasswords(password);
+                });
+
+                $("#signup_pwdconfirm").on("input", function () {
+                    const password = $("#signup_pwd").val();
+                    checkPasswords(password);
+                });
+                
         });
     </script>
 </body>

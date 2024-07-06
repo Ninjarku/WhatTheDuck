@@ -9,6 +9,32 @@ function sanitize_input($data) {
     return $data;
 }
 
+function password_complexity($pwd){
+    $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/';
+    if (preg_match($pattern, $pwd)) {
+        return true; 
+    } else {
+        return false; 
+    }
+}
+
+function hasRepetitiveCharacters($pwd) {
+    $pattern = '/(.)\1{2}/'; 
+    if (preg_match($pattern, $pwd)) {
+        return true; 
+    } else {
+        return false; 
+    }
+}
+
+function isPasswordInWordlist($pwd) {
+    $wordlistFile = 'pwd_list\list.txt';
+
+    $wordlist = file($wordlistFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    
+    return in_array($pwd, $wordlist);
+}
+
 $response = array(
     "icon" => "error",
     "title" => "Signup failed!",
@@ -30,24 +56,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = sanitize_input($_POST["signup_username"]);
         $pwd = sanitize_input($_POST["signup_pwd"]);
         $pwd_confirm = sanitize_input($_POST["signup_pwdconfirm"]);
-        $agree = sanitize_input($_POST["agree"]);
+        #$agree = sanitize_input($_POST["agree"]);
         $user_type = 'Customer';
 
         if (!filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS)) {
-            $response["message"] = "Invalid username format.";
+            $response["message"] .= "<br/>Invalid username format.";
             $success = false;
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $response["message"] = "Invalid email format.";
+            $response["message"] .= "<br/>Invalid email format.";
             $success = false;
         }
         if (!preg_match("/^[0-9]{8}$/", $mobile)) {
-            $response["message"] = "Invalid mobile number format. Please enter exactly 8 digits.";
+            $response["message"] .= "<br/>Invalid mobile number format. Please enter exactly 8 digits.";
             $success = false;
         }
         if ($pwd !== $pwd_confirm) {
-            $response["message"] = "Passwords do not match.";
+            $response["message"] .= "<br/>Passwords do not match.";
             $success = false;
+        }
+        else {
+            # Check password policy only if passwords match
+            # Password length
+            if (strlen($pwd) < 12 && strlen($pwd) > 128) {
+                $response["message"] .= "<br/>Passwords must be between 12 to 128 characters in length.";
+                $success = false;
+            }
+            else {
+                # Alphanumerical
+                if (!password_complexity($pwd)) {
+                    $response["message"] .= "<br/>Passwords must contain uppercase, lowercase, and numbers.";
+                    $success = false;
+                }
+                else {
+                    # Repetitive characters
+                    if (hasRepetitiveCharacters($pwd)) {
+                        $response["message"] .= "<br/>Passwords must not contain more than two repetitive characters";
+                        $success = false;
+                    }
+                    # Check against wordlist
+                    if (isPasswordInWordlist($pwd)) {
+                        $response["message"] .= "<br/>Your chosen password may have been compromised in previous security breaches. <br/>Please choose a new password.";
+                        $success = false;
+                    }
+                }
+            }
         }
     }
 
