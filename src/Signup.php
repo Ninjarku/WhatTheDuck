@@ -84,6 +84,28 @@ include 'includes/navbar.php';
             margin-top: 50px;
             margin-bottom: 50px;
         }
+
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-container input {
+            flex: 1;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        #password-strength {
+            margin-left: 10px;
+            flex: 1;
+            color: black;
+        }
     </style>
 </head>
 
@@ -93,7 +115,6 @@ include 'includes/navbar.php';
             <div class="col-12 col-md-6 col-lg-5 col-xl-5">
                 <h1>Sign Up</h1>
                 <?php
-                session_start();
                 if (isset($_SESSION['signup_error'])) {
                     echo '<p>' . $_SESSION['signup_error'] . '</p>';
                     unset($_SESSION['signup_error']);
@@ -123,9 +144,11 @@ include 'includes/navbar.php';
                         </div>
                         <div class="form-group">
                             <label for="signup_pwd">Password:</label>
-                            <input class="form-control" type="password" id="signup_pwd" required name="signup_pwd"
-                                placeholder="Enter password">
-                            <button type="button" id="show-password" class="btn btn-secondary">Show Password</button>
+                            <div class="password-container">
+                                <input class="form-control" type="password" id="signup_pwd" required name="signup_pwd"
+                                    placeholder="Enter password">
+                                <span class="toggle-password"><i class="fas fa-eye"></i></span>
+                            </div>
                             <div id="password-strength"></div>
                         </div>
                         <div class="form-group">
@@ -143,7 +166,8 @@ include 'includes/navbar.php';
         </div>
     </div>
     <?php include 'includes/footer.php'; ?>
-    <script src="/js/zxcvbn.js"></script>
+    <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
+    <script src="js/zxcvbn.js"></script>
     <script>
         $(document).ready(function () {
             $('#signup_pwd').on('input', function () {
@@ -172,15 +196,15 @@ include 'includes/navbar.php';
                 $('#password-strength').text('Strength: ' + strengthText + '. ' + feedback);
             });
 
-            $('#show-password').on('click', function () {
+            $('.toggle-password').on('click', function () {
                 var passwordField = $('#signup_pwd');
                 var passwordFieldType = passwordField.attr('type');
                 if (passwordFieldType === 'password') {
                     passwordField.attr('type', 'text');
-                    $(this).text('Hide Password');
+                    $(this).html('<i class="fas fa-eye-slash"></i>');
                 } else {
                     passwordField.attr('type', 'password');
-                    $(this).text('Show Password');
+                    $(this).html('<i class="fas fa-eye"></i>');
                 }
             });
 
