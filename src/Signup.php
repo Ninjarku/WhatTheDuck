@@ -37,6 +37,7 @@ include 'includes/navbar.php';
             flex: 1;
             margin-right: 10px;
             color: black;
+            text-align: right;
         }
 
         body,
@@ -194,7 +195,7 @@ include 'includes/navbar.php';
                         break;
                 }
 
-                $('#password-strength').text('Strength: ' + strengthText + '. ' + feedback);
+                $('#password-strength').text('Strength: ' + strengthText + '. ');
             });
 
             $('.toggle-password').on('click', function () {
