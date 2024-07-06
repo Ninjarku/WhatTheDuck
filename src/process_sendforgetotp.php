@@ -2,6 +2,8 @@
 session_start();
 require 'vendor/autoload.php';
 use Predis\Client;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 $redis = new Client([
     'scheme' => 'tcp',
