@@ -22,7 +22,7 @@ function getDatabaseConnection()
     return $conn;
 }
 
-function getAllOrders()
+function getOrdersByUserID()
 {
     $conn = getDatabaseConnection();
     global $response;

@@ -133,7 +133,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
 
             $.ajax({
                 type: "GET",
-                url: "process_order.php?action=getAllOrders", // Fetch all products from process_product.php
+                url: "process_order.php?action=getOrdersByUserID", // Fetch all products from process_product.php
                 cache: false,
                 dataType: "json",
                 success: function (response) {
