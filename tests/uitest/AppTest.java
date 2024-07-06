@@ -86,7 +86,6 @@ public class AppTest {
             throw e;
         }
     }
-  
 
     @Test
     public void testLoginWithInvalidCredentials() {
@@ -193,8 +192,10 @@ public class AppTest {
             System.out.println("Current URL: " + driver.getCurrentUrl());
             System.out.println("Page source: " + driver.getPageSource());
             throw e;
-            
-         @Test
+        }
+    }
+
+    @Test
     public void testSignupWithValidData() {
         driver.get(signupUrl);
 
@@ -227,6 +228,37 @@ public class AppTest {
     }
 
     @Test
+    public void testSignupWithMissingFields() {
+        driver.get(signupUrl);
+
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
+
+            // Fill in the signup form with missing data (leave email empty)
+            driver.findElement(By.name("cust_username")).sendKeys("newuser");
+            driver.findElement(By.name("cust_mobile")).sendKeys("1234567890");
+            driver.findElement(By.name("cust_dob")).sendKeys("01011990");
+            driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
+            driver.findElement(By.name("cust_confirm_pass")).sendKeys(validPassword);
+            driver.findElement(By.id("submit")).click();
+
+            // Wait for error message
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.className("error-message")));
+
+            // Verify error
+            WebElement errorMessage = driver.findElement(By.className("error-message"));
+            assertTrue(errorMessage.isDisplayed());
+            System.out.println("Signup error message is displayed.");
+
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Current URL: " + driver.getCurrentUrl());
+            System.out.println("Page source: " + driver.getPageSource());
+            throw e;
+        }
+    }
+
+    @Test
     public void testSignupWithInvalidData() {
         driver.get(signupUrl);
 
@@ -240,6 +272,38 @@ public class AppTest {
             driver.findElement(By.name("cust_dob")).sendKeys("invalid-date");
             driver.findElement(By.name("cust_pass")).sendKeys("short");
             driver.findElement(By.name("cust_confirm_pass")).sendKeys("mismatch");
+            driver.findElement(By.id("submit")).click();
+
+            // Wait for error message
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.className("error-message")));
+
+            // Verify error
+            WebElement errorMessage = driver.findElement(By.className("error-message"));
+            assertTrue(errorMessage.isDisplayed());
+            System.out.println("Signup error message is displayed.");
+
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Current URL: " + driver.getCurrentUrl());
+            System.out.println("Page source: " + driver.getPageSource());
+            throw e;
+        }
+    }
+
+    @Test
+    public void testSignupWithMismatchedPasswords() {
+        driver.get(signupUrl);
+
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
+
+            // Fill in the signup form with mismatched passwords
+            driver.findElement(By.name("cust_username")).sendKeys("newuser");
+            driver.findElement(By.name("cust_email")).sendKeys("newuser@example.com");
+            driver.findElement(By.name("cust_mobile")).sendKeys("1234567890");
+            driver.findElement(By.name("cust_dob")).sendKeys("01011990");
+            driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
+            driver.findElement(By.name("cust_confirm_pass")).sendKeys("differentPassword");
             driver.findElement(By.id("submit")).click();
 
             // Wait for error message
