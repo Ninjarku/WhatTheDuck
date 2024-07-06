@@ -22,7 +22,6 @@ function getDatabaseConnection()
     return $conn;
 }
 
-// Get all orders with aggregated totals
 function getAllOrders()
 {
     $conn = getDatabaseConnection();
@@ -32,7 +31,6 @@ function getAllOrders()
         return json_encode($response);
     }
 
-    // Get the current user's ID from the session
     if (!isset($_SESSION['userid'])) {
         $response["message"] = 'User not logged in';
         return json_encode($response);
@@ -41,24 +39,52 @@ function getAllOrders()
     $userID = $_SESSION['userid'];
     error_log("User ID: " . $userID);
 
-    $stmt = $conn->prepare("
+    $pendingOrdersQuery = "
         SELECT 
-            Order_Num, 
-            User_ID, 
-            SUM(Quantity) AS Total_Items, 
-            SUM(Total_Price) AS Total_Price, 
+            Order_Num AS Order_ID,
+            SUM(Quantity) AS Number_of_Items,
+            SUM(Total_Price) AS Total_Amount,
             Payment_Type, 
             Billing_Address, 
             Order_Status 
         FROM `Order`
-        WHERE User_ID = ?
-        GROUP BY Order_Num, User_ID, Payment_Type, Billing_Address, Order_Status
-        ORDER BY Order_Num ASC
-    ");
-    
+        WHERE User_ID = ? AND Order_Status IN ('Order Placed', 'Order Shipped')
+        GROUP BY Order_Num, Payment_Type, Billing_Address, Order_Status
+        ORDER BY Order_Num ASC;
+    ";
+
+    $historyOrdersQuery = "
+        SELECT 
+            Order_Num AS Order_ID,
+            SUM(Quantity) AS Number_of_Items,
+            SUM(Total_Price) AS Total_Amount,
+            Payment_Type, 
+            Billing_Address, 
+            Order_Status 
+        FROM `Order`
+        WHERE User_ID = ? AND Order_Status = 'Order Received'
+        GROUP BY Order_Num, Payment_Type, Billing_Address, Order_Status
+        ORDER BY Order_Num ASC;
+    ";
+
+    $pendingOrders = getOrders($conn, $pendingOrdersQuery, $userID);
+    $historyOrders = getOrders($conn, $historyOrdersQuery, $userID);
+
+    $conn->close();
+
+    return json_encode([
+        'icon' => 'success', 
+        'pendingOrders' => $pendingOrders,
+        'historyOrders' => $historyOrders
+    ]);
+}
+
+function getOrders($conn, $query, $userID)
+{
+    $stmt = $conn->prepare($query);
+
     if (!$stmt) {
-        $response["message"] = 'Prepare failed: ' . $conn->error;
-        return json_encode($response);
+        return 'Prepare failed: ' . $conn->error;
     }
 
     $stmt->bind_param("i", $userID);
@@ -73,8 +99,7 @@ function getAllOrders()
     }
 
     $stmt->close();
-    $conn->close();
-    return json_encode(['icon' => 'success', 'data' => $arrResult]);
+    return $arrResult;
 }
 
 // Mark order as received

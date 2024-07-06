@@ -138,31 +138,42 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                 dataType: "json",
                 success: function (response) {
                     if (response.icon === 'success') {
-                        var orders = response.data;
-                        if (orders.length === 0) {
+                        var pendingOrders = response.pendingOrders;
+                        var historyOrders = response.historyOrders;
+
+                        if (pendingOrders.length === 0) {
                             pendingTable.row.add(['', '', '', '', '', '', '']).draw(false); // If no data, add empty row
-                            historyTable.row.add(['', '', '', '', '', '']).draw(false); // If no data, add empty row
                         } else {
-                            orders.forEach(function (order) {
+                            pendingOrders.forEach(function (order) {
                                 var action = `<button class='btn btn-view' data-id='${order.Order_ID}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
-                                if (order.Order_Status === 'Order Placed') {
-                                    action += `<button class='btn btn-received' data-id='${order.Order_ID}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
-                                }
+                                action += `<button class='btn btn-received' data-id='${order.Order_ID}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
                                 var row = [
                                     order.Order_ID,
-                                    order.Total_Items,
+                                    order.Number_of_Items,
                                     order.Total_Amount,
                                     order.Payment_Type,
                                     order.Billing_Address,
                                     order.Order_Status,
                                     action
                                 ];
-                                
-                                if (order.Order_Status === 'Order Placed') {
-                                    pendingTable.row.add(row).draw(false);
-                                } else if (order.Order_Status === 'Order Received') {
-                                    historyTable.row.add(row).draw(false);
-                                }
+                                pendingTable.row.add(row).draw(false);
+                            });
+                        }
+
+                        if (historyOrders.length === 0) {
+                            historyTable.row.add(['', '', '', '', '', '']).draw(false); // If no data, add empty row
+                        } else {
+                            historyOrders.forEach(function (order) {
+                                var action = `<button class='btn btn-view' data-id='${order.Order_ID}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
+                                var row = [
+                                    order.Order_ID,
+                                    order.Number_of_Items,
+                                    order.Total_Amount,
+                                    order.Payment_Type,
+                                    order.Billing_Address,
+                                    action
+                                ];
+                                historyTable.row.add(row).draw(false);
                             });
                         }
                     } else {
