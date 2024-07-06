@@ -18,7 +18,7 @@
         </dependency>
     </dependencies>
     <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
+        <sourceDirectory>src/</sourceDirectory>
         <testSourceDirectory>tests/uitest</testSourceDirectory>
         <plugins>
             <plugin>
