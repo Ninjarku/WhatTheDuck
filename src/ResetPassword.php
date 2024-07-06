@@ -12,7 +12,7 @@ include "includes/navbar.php";
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" 
           crossorigin="anonymous">
-    <style>
+          <style>
         body, html {
             height: 100%;
             margin: 0;
@@ -22,7 +22,7 @@ include "includes/navbar.php";
         .container {
             margin-top: 20px;
         }
-        .password-card {
+        .otp-card {
             border: 1px solid #ddd;
             border-radius: 10px;
             text-align: center;
@@ -31,8 +31,11 @@ include "includes/navbar.php";
             background-color: #fff;
             max-width: 400px;
         }
-        .navbar, .footer {
+        .navbar {
             margin-bottom: 20px;
+        }
+        .footer {
+            margin-top: 20px;
             text-align: center;
             padding: 10px;
             background-color: #f1f1f1;
@@ -56,6 +59,8 @@ include "includes/navbar.php";
             </form>
         </div>
     </div>
+
+    <?php include 'includes/footer.php'; ?>
 
     <script defer 
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" 
