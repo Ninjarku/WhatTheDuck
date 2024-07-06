@@ -80,7 +80,7 @@ pipeline {
                 }
             }
         }
-          stage('Run Selenium Tests') {
+          stage('UI Tests with Selenium') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
                     script {
