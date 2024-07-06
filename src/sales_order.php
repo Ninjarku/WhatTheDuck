@@ -168,7 +168,6 @@ if ($_SESSION["cust_rol"] !== "Sales Admin") {
                             pendingOrders.forEach(function (order) {
                                 var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>
                                               <button class='btn btn-shipped' data-id='${order.Order_Num}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
-                                }
                                 var row = [
                                     order.Order_Num,
                                     order.Number_of_Items,
