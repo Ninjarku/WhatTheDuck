@@ -22,7 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("ss", $hashedPassword, $email);
 
         if ($stmt->execute()) {
-            echo "Password updated successfully.";
+            $_SESSION = [];
+            session_destroy();
+            header('Location: Login.php');
+            exit;
         } else {
             echo "Error updating password: " . $stmt->error;
         }
