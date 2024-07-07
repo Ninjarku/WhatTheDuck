@@ -1,8 +1,8 @@
 <?php
 session_start();
-require 'jwt/jwt_cookie.php';
+require_once 'jwt/jwt_cookie.php';
 checkAuthentication('IT Admin');
-include "includes/navbar.php";
+include_once "includes/navbar.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,26 +11,16 @@ include "includes/navbar.php";
     <meta charset="UTF-8">
     <title>What The Duck - IT Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- START OF THE LINK -->
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <!-- jQuery -->
     <script src="js/jquery-3.5.1.js" type="text/javascript"></script>
-    <!--Bootstrap JS-->
     <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
         integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
         </script>
-    <!-- DataTables JS -->
     <script defer src="js/datatables.min.js" type="text/javascript"></script>
-    <!-- DataTables CSS -->
     <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
-    <!-- FontAwesome for Icons -->
     <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
-    <!-- SweetAlert2 for Popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Styling for Table -->
     <style>
         body,
         html {
@@ -70,12 +60,8 @@ include "includes/navbar.php";
             color: white;
         }
     </style>
-    <!-- END OF THE LINK -->
-
-    <!-- Custom JS for User Management -->
     <script>
         $(document).ready(function () {
-            // Initialize DataTable
             $('#user_table').DataTable({
                 "iDisplayLength": 5,
                 "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -93,22 +79,17 @@ include "includes/navbar.php";
                 ],
                 "deferRender": true
             });
-
-            // Load table data on page load
             loadTableData();
 
-            // Add new user button click event
             $('#btnAddNew').click(function () {
                 window.location.href = "user_form.php?action=addUser&Form_Type=0";
             });
 
-            // Edit user button click event
             $("#user_table").on("click", ".btn-edit", function () {
                 var User_ID = $(this).data("id");
-                window.location.href = "user_form.php?action=editUser&Form_Type=1&User_ID=" + User_ID; // Redirect to user_form.php for editing the user
+                window.location.href = "user_form.php?action=editUser&Form_Type=1&User_ID=" + User_ID;
             });
 
-            // Delete user button click event
             $("#user_table").on("click", ".btn-delete", function () {
                 var User_ID = $(this).data("id");
                 Swal.fire({
@@ -139,7 +120,7 @@ include "includes/navbar.php";
                                     confirmButtonText: 'Ok'
                                 }).then(() => {
                                     if (response.icon === 'success') {
-                                        loadTableData(); // Reload table data after deletion
+                                        loadTableData();
                                     }
                                 });
                             }
@@ -149,21 +130,20 @@ include "includes/navbar.php";
             });
         });
 
-        // Function to load user data into the DataTable
         function loadTableData() {
             var table = $('#user_table').DataTable();
             table.clear().draw();
 
             $.ajax({
                 type: "GET",
-                url: "process_user.php?action=getAllUsers", // Fetch all users from process_user.php
+                url: "process_user.php?action=getAllUsers",
                 cache: false,
                 dataType: "JSON",
                 success: function (response) {
                     if (response.icon === 'success') {
                         var users = response.data;
                         if (users.length === 0) {
-                            table.row.add(['', '', '', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
+                            table.row.add(['', '', '', '', '', '', '', '', '', '']).draw(false);
                         } else {
                             users.forEach(function (user) {
                                 var action = `<button class='btn btn-edit' data-id='${user.User_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>

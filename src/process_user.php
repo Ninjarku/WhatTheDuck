@@ -50,6 +50,40 @@ function getAllUsers()
     return json_encode(['icon' => 'success', 'data' => $arrResult]);
 }
 
+function getUserbyUserID($User_ID)
+{
+    $conn = getDatabaseConnection();
+    $response = [];
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("SELECT * FROM User WHERE User_ID=?");
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
+
+    $stmt->bind_param("i", $User_ID);
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return json_encode($row);
+    } else {
+        $response["message"] = 'No user found with the given ID' . $stmt->error;
+        return json_encode($response);
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+
 function addUser($userData)
 {
     $conn = getDatabaseConnection();
@@ -59,7 +93,6 @@ function addUser($userData)
         return json_encode($response);
     }
 
-    // Check if the username is already taken
     $stmt = $conn->prepare("SELECT * FROM User WHERE Username=?");
     $stmt->bind_param("s", $userData["Username"]);
     $stmt->execute();
@@ -175,7 +208,7 @@ function editUser($userData)
 
     $username = sanitize_input($userData["Username"]);
     $email = sanitize_input($userData["Email"]);
-    $mobileNumber = validate_mobile_number($userData["Mobile_Number"]); // Assuming this function validates and returns a valid mobile number
+    $mobileNumber = validate_mobile_number($userData["Mobile_Number"]);
     $billingAddress = sanitize_input($userData["Billing_Address"]);
     $gender = sanitize_input($userData["Gender"]);
     $dob = sanitize_input($userData["DOB"]);
@@ -229,12 +262,15 @@ function validate_mobile_number($mobileNumber)
     return preg_match('/^\d{8}$/', $mobileNumber) ? $mobileNumber : false;
 }
 
-// Handle actions
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($action === 'getAllUsers') {
         echo getAllUsers();
+    } elseif ($action === 'getUserbyUserID' && isset($_GET['User_ID'])) {
+        $userID = intval($_GET['User_ID']);
+        $userData = getUserbyUserID($userID);
+        echo $userData;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'addUser') {
