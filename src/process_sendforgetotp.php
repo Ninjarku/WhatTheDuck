@@ -34,14 +34,22 @@ function sendSMSOTP($number) {
     $sid = $twilio_config['SID'];
     $token = $twilio_config['Token'];
     $twilio = new TwilioClient($sid, $token);
-    $number = '+65'.$number;
+    $fullNumber = "+65".(string)$number;
 
     $verification = $twilio->verify->v2
         ->services($twilio_config['Service'])
         ->verifications->create(
-            $number, // to
+            $fullNumber, // to
             "sms" // channel
         );
+
+    $response = json_decode($verification->status);
+    if ($response['status'] == 'pending') {
+        return true;
+    }
+    
+    echo($verification->status);
+    return false;
 }
 
 function sendOTP($email, $otp) {
