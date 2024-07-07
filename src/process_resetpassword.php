@@ -23,9 +23,9 @@ function password_complexity($pwd){
 function hasRepetitiveCharacters($pwd) {
     $pattern = '/(.)\1{2}/'; 
     if (preg_match($pattern, $pwd)) {
+        echo "Passwords must not contain three or more repetitive characters.<br/>";
         return true; 
     } else {
-        echo "Passwords must not contain three or more repetitive characters.<br/>";
         return false; 
     }
 }
@@ -67,7 +67,7 @@ function meetPasswordPolicy(){
     $passwordLength = passwordLength($newPassword);
     $passwordSame = confirmPassword($newPassword, $confirmPassword);
 
-    if ($complexity && !$repetitive && !$inwordlist && $passwordLength && $passwordSame) {
+    if ($complexity && $repetitive && !$inwordlist && $passwordLength && $passwordSame) {
         return true;
     }
     
