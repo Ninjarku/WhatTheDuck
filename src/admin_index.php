@@ -82,7 +82,7 @@ include_once "includes/navbar.php";
             loadTableData();
 
             $('#btnAddNew').click(function () {
-                window.location.href = "user_form.php?action=addUser&Form_Type=0";
+                window.location.href = "user_form.php?action=addUser&Form_Type=0&User_ID=0";
             });
 
             $("#user_table").on("click", ".btn-edit", function () {
