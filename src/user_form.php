@@ -24,10 +24,10 @@ $user = [
 if ($Form_Type == 1 && $action === 'editUser') {
     $User_ID = isset($_GET['User_ID']) ? intval($_GET['User_ID']) : 0;
     $userData = getUserbyUserID($User_ID);
-    $userDataArray = json_decode($userData, true); // Decode JSON to array
+    $userDataArray = json_decode($userData, true);
     if ($userDataArray && is_array($userDataArray)) {
-        unset($userDataArray['Password']); // Remove Password field
-        $user = array_merge($user, $userDataArray); // Merge arrays
+        unset($userDataArray['Password']);
+        $user = array_merge($user, $userDataArray);
     }
 }
 ?>

@@ -58,7 +58,7 @@ function getUserbyUserID($User_ID)
         return json_encode($response);
     }
 
-    $stmt = $conn->prepare("SELECT * FROM User WHERE User_ID=?");
+    $stmt = $conn->prepare("SELECT User_ID, Username, Email, Mobile_Number, Billing_Address, Gender, DOB, User_Type, Account_Active FROM User WHERE User_ID=?");
     if (!$stmt) {
         $response["message"] = 'Prepare failed: ' . $conn->error;
         return json_encode($response);
