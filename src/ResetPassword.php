@@ -12,7 +12,7 @@ include "includes/navbar.php";
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" 
           crossorigin="anonymous">
-          <style>
+    <style>
         body, html {
             height: 100%;
             margin: 0;
@@ -40,6 +40,21 @@ include "includes/navbar.php";
             padding: 10px;
             background-color: #f1f1f1;
         }
+        .passwordWarning{
+            color: red;
+            text-align: center;
+        }
+        .passwordWarningGroup {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            flex-direction: column;
+        }
+        .btn:disabled {
+            background-color: #8a8a8a;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -55,7 +70,18 @@ include "includes/navbar.php";
                     <label for="confirmPassword">Confirm Password:</label>
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Reset Password</button>
+                <div class="passwordWarning">
+                    <small id="passwordLengthWarning" class="passwordWarningGroup" style="display: none;">
+                        Password must be at least 12 characters long.
+                    </small>
+                    <small id="passwordComplexityWarning" class="passwordWarningGroup" style="display: none;">
+                        Password must comprise of uppercase, lowercase, and numbers.
+                    </small>
+                    <small id="confirmPasswordWarning" class="passwordWarningGroup" style="display: none;">
+                        Passwords do not match.
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-btn" disabled>Reset Password</button>
             </form>
         </div>
     </div>
@@ -66,6 +92,70 @@ include "includes/navbar.php";
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" 
             integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" 
             crossorigin="anonymous"></script>
+
+    <script>
+        function checkPasswordLength(password) {
+            if (password.length >= 12 && password.length <= 128) {
+                $('#passwordLengthWarning').hide();
+                return true
+            }
+            else {
+                $('#passwordLengthWarning').show();
+                return false
+            }
+        }
+
+        function checkPasswordComplexity(password) {
+            const complexityRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+            if (complexityRegex.test(password)) {
+                $('#passwordComplexityWarning').hide();
+                return true
+            }
+            else {
+                $('#passwordComplexityWarning').show();
+                return false
+            }
+        }
+        
+        function checkBothPasswords() {
+            var pwd = $("#newPassword").val();
+            var pwdconfirm = $("#confirmPassword").val();
+            if (pwd == pwdconfirm) {
+                $('#confirmPasswordWarning').hide();
+                return true
+            }
+            else {
+                $('#confirmPasswordWarning').show();
+                return false
+            }
+        }
+
+        function checkPasswords(password) {
+            var lengthBool = checkPasswordLength(password);
+            var complexityBool = checkPasswordComplexity(password);
+            var confirmPasswordBool = checkBothPasswords();
+            if (lengthBool && complexityBool && confirmPasswordBool) {
+                $('#submit-btn').prop('disabled', false);
+            }
+
+            else {
+                $('#submit-btn').prop('disabled', true);
+            }
+        }
+
+        $(document).ready(function () {
+            $("#newPassword").on("input", function () {
+                const password = $(this).val();
+                checkPasswords(password);
+            });
+
+            $("#confirmPassword").on("input", function () {
+                const password = $("#newPassword").val();
+                checkPasswords(password);
+            });
+                
+        });
+    </script>
 </body>
 </html>
 
