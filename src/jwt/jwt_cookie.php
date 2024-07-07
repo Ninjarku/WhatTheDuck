@@ -77,6 +77,7 @@ function checkAuthentication($requiredRole = null)
                 return $decodedToken; // Valid token and correct role
             } else {
                 // Token is invalid or expired, prompt for re-login
+                unsetJWTInCookie();
                 header("Location: Login.php?message=" . urlencode('Session expired or invalid. Please log in again.'));
                 exit();
             }
