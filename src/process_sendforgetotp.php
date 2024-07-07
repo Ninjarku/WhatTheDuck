@@ -34,6 +34,7 @@ function sendSMSOTP($number) {
     $sid = $twilio_config['SID'];
     $token = $twilio_config['Token'];
     $twilio = new TwilioClient($sid, $token);
+    $number = '+65'.$number;
 
     $verification = $twilio->verify->v2
         ->services($twilio_config['Service'])
