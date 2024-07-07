@@ -236,14 +236,14 @@ if (isset($_GET['action']) && $_GET['action'] == 'additem') {
         if ($cartitemexists !== null){
             $qty = $oldqty + 1; 
             $newTotalPrice = $oldprice * $qty; 
-            $newTotalPrice = round($newTotalPrice,2);
+            $newTotalPrice = number_format($newTotalPrice,2);
             $stmt = $conn->prepare("UPDATE Cart SET Quantity = ?, Total_Price = ? WHERE Cart_ID = ?;");
             $stmt->bind_param("idi", $qty, $newTotalPrice, $cartitemexists);
             $stmt->execute();
             $stmt->close();
         }else{
             $qty = '1';
-            $product_price = round($product_price,2);
+            $product_price = number_format($product_price,2);
             $stmt = $conn->prepare("INSERT INTO Cart(User_ID, Product_ID, Quantity, Price, Total_Price) values (?,?,?,?,?);");
             $stmt->bind_param("iiidd", $User_ID, $product_id,$qty,$product_price,$product_price);
             $stmt->execute();
