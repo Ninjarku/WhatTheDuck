@@ -61,7 +61,7 @@ if ($_SESSION['Order_Num']) {
                                 JOIN Product p ON o.Product_ID = p.Product_ID
                                 WHERE o.Order_Num = ?"
                                 );
-        $stmt->bind_param("s", $orderNumber);
+        $stmt->bind_param("s", $Order_Num);
         $stmt->execute();
         $stmt->bind_result($totalPrice, $billingAddress, $email, $name, $productId, $productName, $productDescription, $productPrice);
 
