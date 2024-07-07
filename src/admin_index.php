@@ -1,17 +1,7 @@
 <?php
-session_start();
-
-// Check if it admin is logged in
-if ($_SESSION["cust_rol"] !== "IT Admin") {
-    ?>
-    <script>
-        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
-    </script>
-    <?php
-    exit();
-} else {
-    include "includes/navbar.php";
-}
+require 'jwt_cookie.php';
+$decodedToken = checkAuthentication('IT Admin');
+include "includes/navbar.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">

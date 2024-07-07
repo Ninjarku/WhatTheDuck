@@ -8,15 +8,16 @@ use Predis\Client;
 $redis = new Client([
     'scheme' => 'tcp',
     // 'host'   => 'localhost', // either this or redis
-    'host'   => 'redis', // either this or redis
-    'port'   => 6379,
+    'host' => 'redis', // either this or redis
+    'port' => 6379,
 ]);
 
 // Validate JWT
-function validateJWT($jwt, $publicKeyPath, $algorithm = 'RS256') {
+function validateJWT($jwt, $publicKeyPath, $algorithm = 'RS256')
+{
     // Load RSA public key
     $publicKey = file_get_contents($publicKeyPath);
-    
+
     // Check if the token is blacklisted
     if (isTokenBlacklisted($jwt)) {
         throw new Exception('Token is blacklisted.');
@@ -51,48 +52,47 @@ function validateJWT($jwt, $publicKeyPath, $algorithm = 'RS256') {
 }
 
 
-function getJWTFromCookie($cookieName = 'auth_token') {
+function getJWTFromCookie($cookieName = 'auth_token')
+{
     if (isset($_COOKIE[$cookieName])) {
-        // echo "JWT found in cookie: " . $_COOKIE[$cookieName];
         return $_COOKIE[$cookieName];
     } else {
-        // echo "No JWT found in cookie.";
         return null;
     }
 }
 
-function authenticationCheck(){
-    try {
-        $publicKeyPath = '/var/www/private/public.pem';
+function checkAuthentication($requiredRole = null)
+{
+    $jwt = getJWTFromCookie();
 
-        $jwt = getJWTFromCookie();
+    if (!$jwt) {
+        header('Location: Login.php');
+        exit();
+    }
 
-        if ($jwt) {
-            $decodedToken = validateJWT($jwt, $publicKeyPath);
-            if ($decodedToken) {
-                echo 'Valid JWT: ', json_encode($decodedToken);
-                
-                if ($decodedToken['rol'] == "SalesAdmin" or $decodedToken['rol'] == "ITAdmin"){
-                    // Permit access to salesadmin and itadmin stuff
-                    // allow customer access
-                }
-                else {
-                    // Check if its customer has access
-                    //do customer stuff 
-                }
-            } else {
-                echo 'Invalid JWT.';
-            }
-        } else {
-            echo 'No JWT found in cookie.';
-            // Do redirection to login etc
-        }
-    } catch (Exception $e) {
-        echo 'Error: ', $e->getMessage(), "\n";
-    }    
+    $publicKeyPath = '/var/www/private/public.pem';
+    $decodedToken = validateJWT($jwt, $publicKeyPath);
+
+    if (!$decodedToken) {
+        header('Location: Login.php');
+        exit();
+    }
+
+    // Check if the user role matches the required role
+    if ($requiredRole && $decodedToken['rol'] !== $requiredRole) {
+        ?>
+        <script>
+            window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Unauthorized access');
+        </script>
+        <?php
+        exit();
+    }
+
+    return $decodedToken; // Return decoded token if valid and role matches
 }
 
-function blacklistToken($token){
+function blacklistToken($token)
+{
     global $redis; // Make sure $redis is accessible
     $payload = validateJWT($token, "/var/www/private/public.pem");
 
@@ -105,13 +105,15 @@ function blacklistToken($token){
     }
 }
 
-function isTokenBlacklisted($token) {
+function isTokenBlacklisted($token)
+{
     global $redis; // Make sure $redis is accessible
     return $redis->exists("bl_$token");
 }
 
 
-function unsetJWTInCookie($cookieName = 'auth_token') {
+function unsetJWTInCookie($cookieName = 'auth_token')
+{
     // Ensure the cookie is sent only over HTTPS and is inaccessible via JavaScript
     $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
     $cookieParams = [

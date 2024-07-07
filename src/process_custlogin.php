@@ -80,11 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else {
                         $response["redirect"] = "index.php";
                     }
-
-                    // $response["icon"] = "success";
-                    // $response["title"] = "Login successful!";
-                    // $response["message"] = "Welcome back, " . htmlspecialchars($cust_username);
-                    // $response["redirect"] = "index.php";
                 } else {
                     $response["message"] = "Invalid username or password.";
                 }
