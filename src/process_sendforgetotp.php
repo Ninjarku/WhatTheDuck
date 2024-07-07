@@ -4,6 +4,7 @@ require 'vendor/autoload.php';
 use Predis\Client;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Twilio\Rest\Client as TwilioClient;
 
 $redis = new Client([
     'scheme' => 'tcp',
@@ -26,6 +27,20 @@ function generateOTP($length = 6) {
 function storeOTP($email, $otp, $expiry = 300) { // 300 seconds = 5 minutes
     global $redis;
     $redis->set("otp:$email", $otp, 'ex', $expiry);
+}
+
+function sendSMSOTP($number) {
+    $twilio_config = parse_ini_file('/var/www/private/twilio-config.ini');
+    $sid = $twilio_config['SID'];
+    $token = $twilio_config['Token'];
+    $twilio = new TwilioClient($sid, $token);
+
+    $verification = $twilio->verify->v2
+        ->services($twilio_config['Service'])
+        ->verifications->create(
+            $number, // to
+            "sms" // channel
+        );
 }
 
 function sendOTP($email, $otp) {
@@ -56,18 +71,19 @@ function sendOTP($email, $otp) {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
-    $email = sanitizeInput($_POST['email']);
-    //$otp = generateOTP();
-    //storeOTP($email, $otp);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_POST['method'])) {
+    $email = sanitizeInput($_POST['email']);
+    $method =  $_POST['method'];
     // Database connection setup
+
     $config = parse_ini_file('/var/www/private/db-config.ini');
     $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
-    } else {
+    } else if ($method === 'email'){
+
         $stmt = $conn->prepare("SELECT * FROM User WHERE Email = ?");
         $stmt->bind_param("s", $email); // Bind parameter
         $stmt->execute();
@@ -93,7 +109,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
             echo json_encode(array("success" => false, "message" => "Email not registered."));
         }
         $stmt->close();
+        
+    } else if ($method === 'sms') {
+        $stmt = $conn->prepare("SELECT Mobile_Number FROM User WHERE Email = ?");
+        $stmt->bind_param("s", $email); // Bind parameter
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $timeNow = time(); // Get current timestamp
+
+            if (sendSMSOTP($result)) {
+                $_SESSION['phonenum'] = $number;
+                $_SESSION['email'] = $email;
+                $stmt->close();
+                $conn->close();
+                header("Location: ForgetSMSVerify.php");
+                exit;
+            } else {
+                echo json_encode(array("success" => false, "message" => "Failed to send OTP."));
+            }
+        } else {
+            echo json_encode(array("success" => false, "message" => "Email not registered."));
+        }
+        $stmt->close();
     }
+
     $conn->close();
 }
 ?>

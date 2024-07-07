@@ -47,11 +47,22 @@ include "includes/navbar.php";
         <h1 class="text-center">Forget Password</h1>
         <div class="forget-password-card">
             <h2>Reset Your Password</h2>
-            <p>Please enter your email address to receive a password reset otp.</p>
+            <p>Please enter your email address and select how you would like to receive your password reset OTP.</p>
             <form action="process_sendforgetotp.php" method="post">
                 <div class="form-group">
                     <label for="email">Email address:</label>
                     <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <p>Receive OTP via:</p>
+                    <div>
+                        <input type="radio" id="email-otp" name="method" value="email" checked>
+                        <label for="email">Email</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="sms-otp" name="method" value="sms">
+                        <label for="sms">SMS</label>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
