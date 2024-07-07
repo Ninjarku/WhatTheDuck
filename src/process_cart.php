@@ -204,4 +204,40 @@ if (isset($_GET['action']) && $_GET['action'] == 'update_quantity') {
     $conn->close();
 }
 
+//add item to cart
+if (isset($_GET['action']) && $_GET['action'] == 'additem') {  
+    $User_ID = $_SESSION['userid'];
+    if ($User_ID !== null){
+        $product_id = $_GET['productid'];
+
+        //insert to cart table
+        $conn = getDatabaseConnection(); 
+        if ($conn->connect_error) {
+            echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+            exit();
+        }
+
+        //get from product table the price
+        $stmt3 = $conn->prepare("SELECT Price FROM Product WHERE Product_ID = ?;");
+        $stmt3->bind_param("i", $product_id);
+        $stmt3->execute();
+        $stmt3->bind_result($product_price);
+        $stmt3->fetch();
+        $stmt3->close();
+        
+        print_r($product_price);
+
+        $stmt = $conn->prepare("INSERT INTO Cart(User_ID, Product_ID, Quantity, Price, Total_Price) values (?,?,?,?,?);");
+        $stmt->bind_param("iiidd", $User_ID, $product_id,1,$product_price,$product_price);
+        $stmt->execute();
+        $stmt->close();
+
+        if ($product_price !== null) {
+            echo "<script>window.location.href = 'cart.php';</script>"; 
+        }
+    }else{
+        echo "<script>window.location.href = 'Login.php';</script>"; 
+    }
+    
+}
 ?>
