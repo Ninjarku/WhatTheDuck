@@ -157,25 +157,39 @@ if (isset($_GET['action']) && $_GET['action'] == 'update_quantity') {
 
     $conn = getDatabaseConnection(); 
     if ($conn->connect_error) {
-        echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+        echo json_encode(['success' => false, 'message' => 'Please try again']);
         exit();
     }
 
-    $stmt = $conn->prepare("SELECT Quantity, Price FROM Cart WHERE Cart_ID = ? AND User_ID = ?");
+    $stmt = $conn->prepare("SELECT Quantity, Price, Product_ID FROM Cart WHERE Cart_ID = ? AND User_ID = ?");
     $stmt->bind_param("ii", $cart_id, $User_ID);
     
     $stmt->execute();
-    $stmt->bind_result($quantity, $price);
+    $stmt->bind_result($quantity, $price, $product_id);
     $stmt->fetch();
     $stmt->close();
 
     if ($quantity !== null) {
+        // Check the quantity available in the Product table
+        $stmtckqty = $conn->prepare("SELECT Quantity FROM Product WHERE Product_ID = ?");
+        $stmtckqty->bind_param("i", $product_id);
+        
+        $stmtckqty->execute();
+        $stmtckqty->bind_result($productQuantity);
+        $stmtckqty->fetch();
+        $stmtckqty->close();
+        
         if ($quantityaction == 'increase') {
-            $newQuantity = $quantity + 1;
+            if ($quantity + 1 <= $productQuantity) {
+                $newQuantity = $quantity + 1;
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Insufficient product quantity']);
+                exit();
+            }
         } elseif ($quantityaction == 'decrease' && $quantity > 1) {
             $newQuantity = $quantity - 1;
         } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid action']);
+            echo json_encode(['success' => false, 'message' => 'Please try again']);
             exit();
         }
 
