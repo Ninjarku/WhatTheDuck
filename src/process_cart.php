@@ -224,9 +224,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'additem') {
         $stmt3->bind_result($product_price);
         $stmt3->fetch();
         $stmt3->close();
+        
+        print_r($product_price);
 
         $stmt = $conn->prepare("INSERT INTO Cart(User_ID, Product_ID, Quantity, Price, Total_Price) values (?,?,?,?,?);");
-        $stmt->bind_param("iiidd", $User_ID, $product_id,'1',$product_price,$product_price);
+        $stmt->bind_param("iiidd", $User_ID, $product_id,1,$product_price,$product_price);
         $stmt->execute();
         $stmt->close();
 
