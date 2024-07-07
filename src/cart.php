@@ -159,8 +159,8 @@ if ($conn->connect_error) {
                                     <div id="qtyamt-<?php echo htmlspecialchars($item['Cart_ID']); ?>" ><?php echo htmlspecialchars($item['Quantity']); ?></div> 
                                     <button type="button" class="qty-btn plus-btn btn btn-secondary" data-cart-id="<?php echo htmlspecialchars($item['Cart_ID']); ?>">+</button>
                                 </div>
-                                <div class="uprice-obj" id="uprice-obj-<?php echo htmlspecialchars($item['Cart_ID']); ?>">$<?php echo htmlspecialchars($item['Price']); ?></div> 
-                                <div class="price-obj" id="price-obj-<?php echo htmlspecialchars($item['Cart_ID']); ?>">$<?php echo htmlspecialchars($item['Total_Price']); ?></div> 
+                                <div class="uprice-obj" id="uprice-obj-<?php echo htmlspecialchars($item['Cart_ID']); ?>">$<?php echo htmlspecialchars(number_format($item['Price'],2)); ?></div> 
+                                <div class="price-obj" id="price-obj-<?php echo htmlspecialchars($item['Cart_ID']); ?>">$<?php echo htmlspecialchars(number_format($item['Total_Price'],2)); ?></div> 
                                 <div class="delete">
                                     <button type="button" class="delete-btn" name="delete" value="<?php echo htmlspecialchars($item['Cart_ID']); ?>" data-price="<?php echo htmlspecialchars($item['Total_Price']); ?>">
                                         <i class="fas fa-trash" style="padding-top: 0px;color:red;" aria-hidden="true"></i>
