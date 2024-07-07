@@ -1,5 +1,6 @@
 <?php
-require 'jwt/jwt_cookie.php';
+session_start();
+require_once 'jwt/jwt_cookie.php';
 header('Content-Type: application/json');
 
 $response = array(
