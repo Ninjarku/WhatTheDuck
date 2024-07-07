@@ -34,6 +34,7 @@ function sendReceipt($email, $subject, $body) {
         return true;
     } catch (Exception $e) {
         error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}"); // Log error
+        echo($mail->ErrorInfo);
         return false;
     }
 }
