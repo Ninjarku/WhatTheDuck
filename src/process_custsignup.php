@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 else {
                     # Repetitive characters
                     if (hasRepetitiveCharacters($pwd)) {
-                        $response["message"] .= "<br/>Passwords must not contain more than two repetitive characters";
+                        $response["message"] .= "<br/>Passwords must not contain three or more repetitive characters";
                         $success = false;
                     }
                     # Check against wordlist

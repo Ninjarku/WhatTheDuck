@@ -63,7 +63,7 @@ include 'includes/navbar.php';
     <div class="container">
         <div class="payment-card">
             <h1 class="text-center">Payment</h1>
-            <form action="payment_success.php" method="post">
+            <form id="submit-payment" method="post">
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="fullName">Full Name:</label>
@@ -247,25 +247,25 @@ include 'includes/navbar.php';
                 cardValidation();
             });
 
-            // $("#submitBtn").on("submit", function (event) {
-            //     event.preventDefault();
-            //     $.ajax({
-            //         type: "POST",
-            //         url: "process_payment.php",
-            //         data: $(this).serialize(),
-            //         success: function (response) {
-            //             if (response.redirect) {
-            //                 window.location.href = response.redirect;
-            //             }
-            //             else {
-            //                 Swal.fire({
-            //                 icon: response.icon,
-            //                 html: response.message,
-            //                 })
-            //             }
-            //         }   
-            //     });
-            // });
+            $("#submit-payment").on("submit", function (event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "process_payment.php",
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                        else {
+                            Swal.fire({
+                            icon: response.icon,
+                            html: response.message,
+                            })
+                        }
+                    }   
+                });
+            });
         });
     </script>
 </body>
