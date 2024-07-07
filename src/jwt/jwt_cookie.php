@@ -63,32 +63,31 @@ function getJWTFromCookie($cookieName = 'auth_token')
 
 function checkAuthentication($requiredRole = null)
 {
-    $jwt = getJWTFromCookie();
+    try {
+        $publicKeyPath = __DIR__ . '/var/www/private/public.pem';
+        $jwt = getJWTFromCookie();
 
-    if (!$jwt) {
-        header('Location: Login.php');
+        if ($jwt) {
+            $decodedToken = validateJWT($jwt, $publicKeyPath);
+            if ($decodedToken) {
+                if ($requiredRole && $decodedToken['rol'] !== $requiredRole) {
+                    header("Location: error_page.php?error_id=0&error=" . urlencode('Unauthorized access'));
+                    exit();
+                }
+                return $decodedToken; // Valid token and correct role
+            } else {
+                // Token is invalid or expired, prompt for re-login
+                header("Location: Login.php?message=" . urlencode('Session expired. Please log in again.'));
+                exit();
+            }
+        } else {
+            header("Location: Login.php");
+            exit();
+        }
+    } catch (Exception $e) {
+        header("Location: error_page.php?error_id=0&error=" . urlencode('Error: ' . $e->getMessage()));
         exit();
     }
-
-    $publicKeyPath = '/var/www/private/public.pem';
-    $decodedToken = validateJWT($jwt, $publicKeyPath);
-
-    if (!$decodedToken) {
-        header('Location: Login.php');
-        exit();
-    }
-
-    // Check if the user role matches the required role
-    if ($requiredRole && $decodedToken['rol'] !== $requiredRole) {
-        ?>
-        <script>
-            window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Unauthorized access');
-        </script>
-        <?php
-        exit();
-    }
-
-    return $decodedToken; // Return decoded token if valid and role matches
 }
 
 function blacklistToken($token)
