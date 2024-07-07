@@ -119,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // }
 
         //For testing only
-        $cartids = array(6, 7);
+        $cartids = array(14);
 
         $config = parse_ini_file('/var/www/private/db-config.ini');
         $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
