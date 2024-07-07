@@ -1,16 +1,8 @@
 <?php
-session_start();
+require 'jwt/jwt_cookie.php';
+$decodedToken = checkAuthentication('IT Admin');
 include_once "includes/navbar.php";
 
-// Check if it admin is logged in
-if ($_SESSION["cust_rol"] !== "IT Admin") {
-    ?>
-    <script>
-        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
-    </script>
-    <?php
-    exit();
-}
 
 $Form_Type = isset($_GET['Form_Type']) ? intval($_GET['Form_Type']) : 0;
 $action = isset($_GET['action']) ? $_GET['action'] : '';

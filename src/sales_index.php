@@ -1,17 +1,8 @@
 <?php
-session_start();
+require 'jwt/jwt_cookie.php';
+$decodedToken = checkAuthentication('Sales Admin');
+include "includes/navbar.php";
 
-// Check if sales admin is logged in
-if ($_SESSION["cust_rol"] !== "Sales Admin") {
-    ?>
-    <script>
-        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Unauthorized access');
-    </script>
-    <?php
-    exit();
-} else {
-    include "includes/navbar.php";
-}
 ?>
 
 <!DOCTYPE html>
