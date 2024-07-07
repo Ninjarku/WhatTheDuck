@@ -56,7 +56,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = sanitize_input($_POST["signup_username"]);
         $pwd = sanitize_input($_POST["signup_pwd"]);
         $pwd_confirm = sanitize_input($_POST["signup_pwdconfirm"]);
-        #$agree = sanitize_input($_POST["agree"]);
         $user_type = 'Customer';
 
         if (!filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS)) {
@@ -76,25 +75,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $success = false;
         }
         else {
-            # Check password policy only if passwords match
-            # Password length
             if (strlen($pwd) < 12 && strlen($pwd) > 128) {
                 $response["message"] .= "<br/>Passwords must be between 12 to 128 characters in length.";
                 $success = false;
             }
             else {
-                # Alphanumerical
                 if (!password_complexity($pwd)) {
                     $response["message"] .= "<br/>Passwords must contain uppercase, lowercase, and numbers.";
                     $success = false;
                 }
                 else {
-                    # Repetitive characters
                     if (hasRepetitiveCharacters($pwd)) {
                         $response["message"] .= "<br/>Passwords must not contain three or more repetitive characters";
                         $success = false;
                     }
-                    # Check against wordlist
                     if (isPasswordInWordlist($pwd)) {
                         $response["message"] .= "<br/>Your chosen password may have been compromised in previous security breaches. <br/>Please choose a new password.";
                         $success = false;
@@ -111,7 +105,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($conn->connect_error) {
             $response["message"] = "Connection failed: " . $conn->connect_error;
         } else {
-            // Check if username, email, or phone number already exists
             $stmt0 = $conn->prepare("SELECT Username, Email, Mobile_Number FROM User WHERE Username = ? OR Email = ? OR Mobile_Number = ?");
             $stmt0->bind_param("sss", $username, $email, $mobile);
             $stmt0->execute();

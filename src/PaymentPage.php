@@ -2,7 +2,6 @@
 session_start();
 
 if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
-    // Redirect to the login page
     header("Location: Login.php");
     exit();
 }
@@ -181,8 +180,8 @@ include 'includes/navbar.php';
                     }
                     
                     const [, month, year] = expiryDate.match(regex);
-                    const currentYear = new Date().getFullYear() % 100; // Get last two digits of the current year
-                    const currentMonth = new Date().getMonth() + 1; // Months are 0-based
+                    const currentYear = new Date().getFullYear() % 100; 
+                    const currentMonth = new Date().getMonth() + 1; 
 
                     if (month < 1 || month > 12) {
                         expiryDateError.text('Invalid month. Use MM between 01 and 12.').show();

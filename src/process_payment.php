@@ -36,18 +36,14 @@ function checkProcessSuccess($success) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") { 
     $success = true;
-    #Ensure input is not empty
     if (empty($_POST["fullName"]) || empty($_POST["phoneNumber"]) || empty($_POST["address"]) || empty($_POST["postalCode"]) || empty($_POST["paymentMethod"])) {
-        #Input empty
         $success = false;
     }
     else {
         $paymentMethod = $_POST["paymentMethod"];
         $Payment_Type;
         if ($paymentMethod == "card") {
-            # If card, make sure relevant fields are not empty
             if (empty($_POST["cardName"]) || empty($_POST["cardNumber"]) || empty($_POST["expiryDate"]) || empty($_POST["cvv"])) {
-                #Input empty
                 $success = false;
             }
         }
@@ -125,7 +121,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             die("Connection failed: " . $conn->connect_error);
         }
 
-        # Get highest order number
         $stmt = $conn->prepare("SELECT MAX(Order_Num) AS Order_Num FROM `Order`");
         $stmt->execute();
         $result = $stmt->get_result();
@@ -138,9 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             checkProcessSuccess($success);
         }
         $stmt->close();
-        # Create order for each cart id
         foreach ($cartids as $cartid) {
-            # Read cart object
             $stmt = $conn->prepare("SELECT Cart.Cart_ID, Cart.Product_ID, Cart.Quantity, Product.Price
             FROM Cart
             JOIN Product
@@ -164,7 +157,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 checkProcessSuccess($success);
             }
             $stmt->close();
-            # Create order
             $Order_Status = "Order Placed";
             $stmt = $conn->prepare("INSERT INTO `Order` (Order_Num, User_ID, Product_ID, Quantity, Total_Price, Payment_Type, Billing_Address, Order_Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param('iiiidsss', $Order_Num, $User_ID, $Product_ID, $Quantity, $Total_Price, $Payment_Type, $Billing_Address, $Order_Status);
@@ -175,7 +167,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $stmt->close();
 
-            # Quantity 
             $stmt = $conn->prepare("UPDATE Product SET Quantity = Quantity - ? WHERE Product_ID = ?");
             $stmt->bind_param('is', $Quantity, $Product_ID);
             $stmt->execute();
@@ -186,7 +177,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
             $stmt->close();
 
-            # Delete cart object
             $stmt = $conn->prepare("DELETE FROM Cart WHERE Cart_ID = ?");
             $stmt->bind_param('i', $Cart_ID);
             $stmt->execute();
@@ -204,10 +194,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     checkProcessSuccess($success);
 
     if ($success) {
-        # Create sesson object, store order number 
         $_SESSION['Order_Num'] = $Order_Num;
 
-        # Redirect to zhenyu
         $response["icon"] = "";
         $response["title"] = "";
         $response["redirect"] = "zhenyufunction.php";
