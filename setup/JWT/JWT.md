@@ -1,3 +1,4 @@
+# How to install private public key pair to put in server
 Generate keys to use for JWT signing
 ```bash
 sudo openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:2048

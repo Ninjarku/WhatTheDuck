@@ -86,6 +86,7 @@ server {
     server_name whattheduck.ddns.net;
     #error_page error_page.php;
     error_page 403 = /error_page.php;
+	error_page 404 = /error_page.php;
     
     location / {
         try_files $uri $uri/ /index.php?$query_string;
@@ -194,6 +195,7 @@ echo "server {
     server_name whattheduck.ddns.net;
     #error_page error_page.php;
     error_page 403 = /error_page.php;
+	error_page 404 = /error_page.php;
     
     location / {
         try_files \$uri \$uri/ /index.php?\$query_string;
@@ -287,7 +289,8 @@ echo "server {
         deny all;
         return 403;
     }
-     ssl_certificate /etc/letsencrypt/live/whattheduck.ddns.net/fullchain.pem; # managed by Certbot
+
+    ssl_certificate /etc/letsencrypt/live/whattheduck.ddns.net/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/whattheduck.ddns.net/privkey.pem; # managed by Certbot
 }" >  /etc/nginx/sites-available/whattheduck
 ```
