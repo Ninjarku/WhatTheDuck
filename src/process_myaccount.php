@@ -19,18 +19,14 @@ if (!$decodedToken) {
 
 function sanitize_input($data)
 {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
+    return htmlspecialchars(stripslashes(trim($data)));
 }
 
 $success = true;
 $errorMsg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $cust_user = $decodedToken['cust_username'];
-    $username = sanitize_input($_POST['username_input']);
+    $cust_user_id = $decodedToken['id'];
     $email = sanitize_input($_POST["email_input"]);
     $mobile = sanitize_input($_POST["mobile_input"]);
     $address = sanitize_input($_POST["address_input"]);
@@ -49,22 +45,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errorMsg .= "Invalid email format.<br>";
+        $errorMsg .= "Invalid email format.";
         $success = false;
     }
 
     // Check if email already exists in the database for another user
     if ($success) {
-        $stmt = $conn->prepare("SELECT Email FROM User WHERE Email = ? AND Username != ?");
-        $stmt->bind_param("ss", $email, $cust_user);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if ($stmt->num_rows > 0) {
+        $stmt = $conn->prepare("SELECT Email FROM User WHERE Email = ? AND User_ID != ?");
+        if (!$stmt) {
+            $errorMsg = "Prepare failed: " . $conn->error;
             $success = false;
-            $errorMsg .= "Email already in use.<br>";
+        } else {
+            $stmt->bind_param("si", $email, $cust_user_id);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if ($stmt->num_rows > 0) {
+                $success = false;
+                $errorMsg .= "Email already in use.<br>";
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 
     // Handle profile image upload with validation
