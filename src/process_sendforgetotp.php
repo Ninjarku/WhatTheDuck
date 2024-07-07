@@ -43,12 +43,10 @@ function sendSMSOTP($number) {
             "sms" // channel
         );
 
-    $response = json_decode($verification->status);
-    if ($response['status'] == 'pending') {
+    if ($verification->status == 'pending') {
         return true;
     }
     
-    echo($verification->status);
     return false;
 }
 
