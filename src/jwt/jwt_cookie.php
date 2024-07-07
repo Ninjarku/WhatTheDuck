@@ -100,6 +100,56 @@ function checkAuthentication($requiredRole = null)
     }
 }
 
+function authenticationCheckWithOrderValidation($User_ID){
+    try {
+        $publicKeyPath = '/var/www/private/public.pem';
+
+        $jwt = getJWTFromCookie();
+
+        if ($jwt) {
+            $decodedToken = validateJWT($jwt, $publicKeyPath);
+            if ($decodedToken) {
+                //echo 'Valid JWT: ', json_encode($decodedToken);
+                
+                if ($decodedToken['rol'] == "SalesAdmin" || $decodedToken['rol'] == "ITAdmin"){
+                    // Permit access to SalesAdmin and ITAdmin
+                    return true;
+                }
+                else if ($decodedToken['rol'] == "Customer" && $decodedToken['user_id'] == $User_ID) {
+                    // Allow customer access if the user ID matches
+                    return true;
+                }
+                else {
+                    // Unauthorized access
+                    ?>
+                    <script>
+                        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Unauthorized access to order details.');
+                    </script>
+                    <?php
+                    exit();
+                }
+            } else {
+                ?>
+                <script>
+                    window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Invalid JWT.');
+                </script>
+                <?php
+                exit();
+            }
+        } else {
+            ?>
+            <script>
+                window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('No JWT found in cookie.');
+            </script>
+            <?php
+            exit();
+        }
+    } catch (Exception $e) {
+        echo 'Error: ', $e->getMessage(), "\n";
+        exit();
+    }    
+}
+
 function blacklistToken($token)
 {
     global $redis; // Make sure $redis is accessible
