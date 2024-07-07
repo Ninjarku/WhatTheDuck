@@ -1,5 +1,5 @@
 <?php
-require 'jwt_cookie.php';
+require '/jwt/jwt_cookie.php';
 $decodedToken = checkAuthentication('IT Admin');
 include "includes/navbar.php";
 ?>
