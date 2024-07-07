@@ -25,7 +25,7 @@ pipeline {
                 }
             }
         }
-         
+
         stage('Security Analysis with OWASP Dependency-Check Plugin') {
              steps {
                 withCredentials([string(credentialsId: 'nvd_api_key', variable: 'nvd_api_key')]) {
