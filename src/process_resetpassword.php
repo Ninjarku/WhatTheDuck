@@ -49,15 +49,25 @@ function passwordLength($pwd) {
     return false;
 }
 
+function confirmPassword($pwd, $confirmpwd) {
+    if ($pwd == $confirmpwd) {
+        return true;
+    }
+    echo "Passwords do not match.<br/>";
+    return false;
+}
+
 function meetPasswordPolicy(){
     $newPassword = sanitize_input($_POST['newPassword']);
+    $confirmPassword = sanitize_input($_POST['confirmPassword']);
 
     $complexity = password_complexity($newPassword);
     $repetitive = hasRepetitiveCharacters($newPassword);
     $inwordlist= isPasswordInWordlist($newPassword);
     $passwordLength = passwordLength($newPassword);
+    $passwordSame = confirmPassword($newPassword, $confirmPassword);
 
-    if ($complexity && !$repetitive && !$inwordlist && $passwordLength) {
+    if ($complexity && !$repetitive && !$inwordlist && $passwordLength && $passwordSame) {
         return true;
     }
     
@@ -72,7 +82,7 @@ $redis = new Client([
 ]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['newPassword'], $_POST['confirmPassword']) && $_POST['newPassword'] === $_POST['confirmPassword'] && meetPasswordPolicy()) {
+    if (isset($_POST['newPassword'], $_POST['confirmPassword']) && meetPasswordPolicy()) {
         $newPassword = $_POST['newPassword']; 
         $email = $_SESSION['email'];  
 
@@ -103,8 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt->close();
         $conn->close();
-    } else {
-        echo "Passwords do not match.<br/>";
-    }
+    } 
 }
 ?>
