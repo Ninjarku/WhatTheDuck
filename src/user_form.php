@@ -73,6 +73,11 @@ if ($Form_Type == 1 && $action === 'editUser') {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
+        .container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
         .btn-primary {
             background-color: #ffcc00;
             border: none;
