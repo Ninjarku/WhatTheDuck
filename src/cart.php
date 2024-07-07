@@ -74,24 +74,6 @@ if ($conn->connect_error) {
         .container {
             margin-top: 50px;
             margin-bottom: 50px;
-            color: black;
-        }
-
-        .hdr-row,
-        .obj-rows,
-        .room-obj,
-        .qty-obj,
-        .uprice-obj,
-        .price-obj,
-        .delete,
-        #order-summary-header,
-        #subtotal-row,
-        #checkout-row {
-            color: black;
-        }
-
-        .text-center {
-            color: black;
         }
     </style>
     <script>
