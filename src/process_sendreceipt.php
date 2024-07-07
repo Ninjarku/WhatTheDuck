@@ -47,62 +47,39 @@ if ($_SESSION['Order_Num']) {
         die("Connection failed: " . $conn->connect_error);
     } else {
 
-        $stmt = $conn->prepare("SELECT 
-                                o.Total_Price, 
-                                o.Billing_Address, 
-                                u.Email, 
-                                u.Username,
-                                p.Product_ID,
-                                p.Product_Name,
-                                p.Product_Description,
-                                p.Price
-                                FROM Order o
-                                JOIN User u ON o.User_ID = u.User_ID
-                                JOIN Product p ON o.Product_ID = p.Product_ID
-                                WHERE Order_Num = ?"
-                                );
-        $stmt->bind_param("s", $Order_Num);
+        $stmt = $conn->prepare("SELECT Total_Price, Billing_Address, User_IDFROM `Order` WHERE Order_Num = ?");
+        if (!$stmt) {
+            die('Prepare failed: ' . $conn->error);
+        }
+        $stmt->bind_param("i", $Order_Number);
         $stmt->execute();
-        $stmt->bind_result($totalPrice, $billingAddress, $email, $name, $productId, $productName, $productDescription, $productPrice);
+        $stmt->bind_result($totalPrice, $billingAddress, $userId);
+        $stmt->fetch();
+        $stmt->close();
 
-        $orderDetails = [];
-        while ($stmt->fetch()) {
-            if (!isset($orderDetails['order'])) {
-                $orderDetails['order'] = [
-                    'email' => $email,
-                    'name' => $name,
-                    'totalPrice' => $totalPrice,
-                    'billingAddress' => $billingAddress,
-                    'products' => []
-                ];
-            }
-    
-            $orderDetails['order']['products'][] = [
-                'productId' => $productId,
-                'productName' => $productName,
-                'productDescription' => $productDescription,
-                'productPrice' => $productPrice
-            ];
-        }        
+        $stmt = $conn->prepare("SELECT Email, Username FROM `User` WHERE User_ID = ?");
+        if (!$stmt) {
+            die('Prepare failed: ' . $conn->error);
+        }
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $stmt->bind_result($email, $username);
+        $stmt->fetch();
+        $stmt->close();
+
     }
 
-    $stmt->close();
     $conn->close();
 
     // Prepare the email content
-    $emailContent = "Hello " . $orderDetails['name'] . ",\n\n";
+    $emailContent = "Hello " . $username . ",\n\n";
     $emailContent .= "Thank you for your order. Here are the details:\n";
-    $emailContent .= "Billing Address: " . $orderDetails['billingAddress'] . "\n";
-    $emailContent .= "Total Price: $" . $orderDetails['totalPrice'] . "\n\n";
-    $emailContent .= "Products Ordered:\n";
-
-    foreach ($orderDetails['products'] as $product) {
-        $emailContent .= "- " . $product['productName'] . " (" . $product['productDescription'] . ") - $" . $product['productPrice'] . "\n";
-    }
+    $emailContent .= "Billing Address: " . $billingAddress . "\n";
+    $emailContent .= "Total Price: $" . $totalPrice . "\n\n";
 
     $emailContent .= "\nThank you for shopping with us.";
 
-    if(sendReceipt($orderDetails['email'], "Order Confirmation", $emailContent)) {
+    if(sendReceipt($email, "Order Confirmation", $emailContent)) {
         header('Location: index.php');
     }
     else {
