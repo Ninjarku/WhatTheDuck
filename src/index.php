@@ -136,7 +136,7 @@ $conn->close();
                             </a>
                             <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
                             <!-- Add to cart button -->
-                            <form action="PaymentPage.php" method="post">
+                            <form action="proceed_cart.php?action=additem&productid=<?php echo $product['Product_ID']; ?>" method="post">
                                 <input type="hidden" name="product_name"
                                     value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
                                 <input type="hidden" name="product_price"
