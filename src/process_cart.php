@@ -226,17 +226,18 @@ if (isset($_GET['action']) && $_GET['action'] == 'additem') {
         $stmt3->close();
         
         //check if product exist in cart already
-        $stmt2 = $conn->prepare("SELECT Cart_ID, Quantity FROM Cart WHERE Product_ID = ? AND User_ID = ?;");
+        $stmt2 = $conn->prepare("SELECT Cart_ID, Quantity, Price FROM Cart WHERE Product_ID = ? AND User_ID = ?;");
         $stmt2->bind_param("ii", $product_id,$User_ID);
         $stmt2->execute();
-        $stmt2->bind_result($cartitemexists,$oldqty);
+        $stmt2->bind_result($cartitemexists,$oldqty,$oldprice);
         $stmt2->fetch();
         $stmt2->close();
         
         if ($cartitemexists !== null){
             $qty = $oldqty + 1; 
-            $stmt = $conn->prepare("UPDATE Cart SET Quantity = ? WHERE Cart_ID = ?;");
-            $stmt->bind_param("ii", $qty, $cartitemexists);
+            $newTotalPrice = $oldprice * $qty;
+            $stmt = $conn->prepare("UPDATE Cart SET Quantity = ?, Total_Price = ? WHERE Cart_ID = ?;");
+            $stmt->bind_param("ii", $qty, $newTotalPrice, $cartitemexists);
             $stmt->execute();
             $stmt->close();
         }else{
