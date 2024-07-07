@@ -216,7 +216,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'additem') {
             echo json_encode(['success' => false, 'message' => 'Database connection failed']);
             exit();
         }
-
+        
         //get from product table the price
         $stmt3 = $conn->prepare("SELECT Price FROM Product WHERE Product_ID = ?;");
         $stmt3->bind_param("i", $product_id);
@@ -225,12 +225,28 @@ if (isset($_GET['action']) && $_GET['action'] == 'additem') {
         $stmt3->fetch();
         $stmt3->close();
         
-        $qty = '1';
-        $stmt = $conn->prepare("INSERT INTO Cart(User_ID, Product_ID, Quantity, Price, Total_Price) values (?,?,?,?,?);");
-        $stmt->bind_param("iiidd", $User_ID, $product_id,$qty,$product_price,$product_price);
-        $stmt->execute();
-        $stmt->close();
-
+        //check if product exist in cart already
+        $stmt2 = $conn->prepare("SELECT Cart_ID, Quantity FROM Cart WHERE Product_ID = ? AND User_ID = ?;");
+        $stmt2->bind_param("ii", $product_id,$User_ID);
+        $stmt2->execute();
+        $stmt2->bind_result($cartitemexists,$oldqty);
+        $stmt2->fetch();
+        $stmt2->close();
+        
+        if ($cartitemexists !== null){
+            $qty = $oldqty + 1; 
+            $stmt = $conn->prepare("UPDATE Cart SET Quantity = ? WHERE Cart_ID = ?;");
+            $stmt->bind_param("ii", $qty, $cartitemexists);
+            $stmt->execute();
+            $stmt->close();
+        }else{
+            $qty = '1';
+            $stmt = $conn->prepare("INSERT INTO Cart(User_ID, Product_ID, Quantity, Price, Total_Price) values (?,?,?,?,?);");
+            $stmt->bind_param("iiidd", $User_ID, $product_id,$qty,$product_price,$product_price);
+            $stmt->execute();
+            $stmt->close();
+        }
+        
         if ($product_price !== null) {
             echo "<script>window.location.href = 'cart.php';</script>"; 
         }
