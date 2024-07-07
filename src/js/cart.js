@@ -7,20 +7,7 @@ document.getElementById("cartForm").addEventListener("submit", validateAndSubmit
 // Add a click event listener to each delete button
 deleteButtons.forEach(button => {
   button.addEventListener('click', function() {
-      //sweet alert for user to confirm deletion
-        Swal.fire({
-            title: 'Are you sure you would like to delete?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                deleteEntry(button);
-            }
-        });
+      deleteEntry(button);
   });
 });
 
