@@ -108,7 +108,7 @@ if ($conn->connect_error) {
                             $('#subtotal-value').text('$' + newSubtotal.toFixed(2));
                             updateSubtotal(); // Recalculate subtotal
                         } else {
-                            Swal.fire('Error', 'Please try again.', 'error');
+                            Swal.fire('Error', response.message, 'error');
                         }
                     }
                 });
