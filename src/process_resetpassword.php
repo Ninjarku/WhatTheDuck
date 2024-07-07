@@ -35,9 +35,14 @@ function isPasswordInWordlist($pwd) {
 
     $wordlist = file($wordlistFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-    echo "Your chosen password may have been compromised in previous security breaches. <br/>Please choose a new password.<br/>";
+    $existsInList = in_array($pwd, $wordlist);
     
-    return in_array($pwd, $wordlist);
+    if ($existsInList) {
+        echo "Your chosen password may have been compromised in previous security breaches. <br/>Please choose a new password.<br/>";
+        return true;
+    }
+    
+    return false;
 }
 
 function passwordLength($pwd) {
@@ -67,7 +72,7 @@ function meetPasswordPolicy(){
     $passwordLength = passwordLength($newPassword);
     $passwordSame = confirmPassword($newPassword, $confirmPassword);
 
-    if ($complexity && $repetitive && $inwordlist && $passwordLength && $passwordSame) {
+    if ($complexity && !$repetitive && !$inwordlist && $passwordLength && $passwordSame) {
         return true;
     }
     
