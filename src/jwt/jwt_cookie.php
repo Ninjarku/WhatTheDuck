@@ -77,11 +77,13 @@ function checkAuthentication($requiredRole = null)
                 return $decodedToken; // Valid token and correct role
             } else {
                 // Token is invalid or expired, prompt for re-login
+                session_destroy();
                 unsetJWTInCookie();
                 header("Location: Login.php?message=" . urlencode('Session expired or invalid. Please log in again.'));
                 exit();
             }
         } else {
+            session_destroy();
             header("Location: Login.php?message=" . urlencode('No token found. Please log in.'));
             exit();
         }
