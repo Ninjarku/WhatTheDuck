@@ -238,6 +238,10 @@ include 'includes/navbar.php';
             }
 
         $(document).ready(function () {
+            // Set the maximum date to today
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById("signup_birthday").setAttribute('max', today);
+
             $('#signup_pwd').on('input', function () {
                 var password = $(this).val();
                 var result = zxcvbn(password);
