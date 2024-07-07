@@ -1,17 +1,7 @@
 <?php
-session_start();
-
-// Check if customer is logged in
-if ($_SESSION["cust_rol"] !== "Sales Admin") {
-    ?>
-    <script>
-        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
-    </script>
-    <?php
-    exit();
-} else {
-    include "includes/navbar.php";
-}
+require 'jwt/jwt_cookie.php';
+$decodedToken = checkAuthentication('Sales Admin');
+include "includes/navbar.php";
 ?>
 
 <!DOCTYPE html>

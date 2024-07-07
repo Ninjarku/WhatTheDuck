@@ -1,8 +1,7 @@
 <?php
 require 'jwt/jwt_cookie.php';
-$decodedToken = checkAuthentication('Sales Admin');
+checkAuthentication('Sales Admin');
 include "includes/navbar.php";
-
 ?>
 
 <!DOCTYPE html>
