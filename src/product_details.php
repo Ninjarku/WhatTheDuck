@@ -1,9 +1,10 @@
 <?php
 session_start();
 include_once 'includes/navbar.php';
-include_once "process_product.php";
 
-$conn = getDatabaseConnection();
+$config = parse_ini_file('/var/www/private/db-config.ini');
+$conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
