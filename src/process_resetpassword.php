@@ -3,6 +3,67 @@ session_start();
 require 'vendor/autoload.php';  // Make sure this autoloads Predis or your Redis client library
 use Predis\Client;
 
+function sanitize_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+function password_complexity($pwd){
+    $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/';
+    if (preg_match($pattern, $pwd)) {
+        return true; 
+    } else {
+        echo "Password must comprise of uppercase, lowercase, and numbers.<br/>";
+        return false; 
+    }
+}
+
+function hasRepetitiveCharacters($pwd) {
+    $pattern = '/(.)\1{2}/'; 
+    if (preg_match($pattern, $pwd)) {
+        return true; 
+    } else {
+        return false; 
+        echo "Passwords must not contain three or more repetitive characters.<br/>";
+    }
+}
+
+function isPasswordInWordlist($pwd) {
+    $wordlistFile = '/var/www/html/pwd_list/list.txt';
+
+    $wordlist = file($wordlistFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+    echo "Your chosen password may have been compromised in previous security breaches. <br/>Please choose a new password.<br/>";
+    
+    return in_array($pwd, $wordlist);
+}
+
+function passwordLength($pwd) {
+    $length = strlen($pwd);
+    if ($length >= 12 && $length <= 128) {
+        return true;
+    }
+    echo "Password must be at least 12 characters long.<br/>";
+    return false;
+}
+
+function meetPasswordPolicy(){
+    $newPassword = sanitize_input($_POST['newPassword']);
+
+    $complexity = password_complexity($newPassword);
+    $repetitive = hasRepetitiveCharacters($newPassword);
+    $inwordlist= isPasswordInWordlist($newPassword);
+    $passwordLength = passwordLength($newPassword);
+
+    if ($complexity && !$repetitive && !$inwordlist && $passwordLength) {
+        return true;
+    }
+    
+    return false;
+}
+
 // Assume Redis client setup
 $redis = new Client([
     'scheme' => 'tcp',
@@ -11,7 +72,7 @@ $redis = new Client([
 ]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['newPassword'], $_POST['confirmPassword']) && $_POST['newPassword'] === $_POST['confirmPassword']) {
+    if (isset($_POST['newPassword'], $_POST['confirmPassword']) && $_POST['newPassword'] === $_POST['confirmPassword'] && meetPasswordPolicy()) {
         $newPassword = $_POST['newPassword']; 
         $email = $_SESSION['email'];  
 
@@ -43,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
         $conn->close();
     } else {
-        echo "Passwords do not match.";
+        echo "Passwords do not match.<br/>";
     }
 }
 ?>
