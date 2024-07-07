@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'jwt/jwt_cookie.php';
 header('Content-Type: application/json');
 
 $response = array(
@@ -8,6 +9,13 @@ $response = array(
     "message" => "Please try again.",
     "redirect" => null
 );
+
+$decodedToken = checkAuthentication();
+if (!$decodedToken) {
+    $response["message"] = "Unauthorized access. Please log in.";
+    echo json_encode($response);
+    exit();
+}
 
 function sanitize_input($data) {
     $data = trim($data);
@@ -20,7 +28,7 @@ $success = true;
 $errorMsg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $cust_user = $_SESSION['cust_username'];
+    $cust_user = $decodedToken['cust_username'];
     $username = sanitize_input($_POST['username_input']);
     $email = sanitize_input($_POST["email_input"]);
     $mobile = sanitize_input($_POST["mobile_input"]);
