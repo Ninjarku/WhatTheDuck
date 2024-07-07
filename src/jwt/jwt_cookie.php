@@ -61,10 +61,9 @@ function getJWTFromCookie($cookieName = 'auth_token')
     }
 }
 
-function checkAuthentication($requiredRole = null)
-{
+function checkAuthentication($requiredRole = null) {
     try {
-        $publicKeyPath = __DIR__ . '/var/www/private/public.pem';
+        $publicKeyPath = '/var/www/private/public.pem';
         $jwt = getJWTFromCookie();
 
         if ($jwt) {
