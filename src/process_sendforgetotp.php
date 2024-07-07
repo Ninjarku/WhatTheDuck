@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         if ($result->num_rows > 0) {
             $timeNow = time(); // Get current timestamp
             $row = $result->fetch_assoc();
-            $number = $row["Username"];
+            $number = $row["Mobile_Number"];
             if (sendSMSOTP($number)) {
                 $_SESSION['phonenum'] = $number;
                 $_SESSION['email'] = $email;
