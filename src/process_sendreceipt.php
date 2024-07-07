@@ -53,7 +53,7 @@ if ($_SESSION['Order_Num']) {
         }
         $stmt->bind_param("i", $Order_Number);
         $stmt->execute();
-        $stmt->bind_result($totalPrice, $billingAddress, $userId);
+        $stmt->bind_result($billingAddress, $userId);
         $stmt->fetch();
         $stmt->close();
 
