@@ -56,12 +56,12 @@ if ($_SESSION['Order_Num']) {
                                 p.Product_Name,
                                 p.Product_Description,
                                 p.Price
-                                FROM Orders o
+                                FROM Order o
                                 JOIN User u ON o.User_ID = u.User_ID
                                 JOIN Product p ON o.Product_ID = p.Product_ID
                                 WHERE o.Order_Num = ?"
                                 );
-        $stmt->bind_param("i", $orderNumber);
+        $stmt->bind_param("s", $orderNumber);
         $stmt->execute();
         $stmt->bind_result($totalPrice, $billingAddress, $email, $name, $productId, $productName, $productDescription, $productPrice);
 
