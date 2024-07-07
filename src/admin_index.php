@@ -1,8 +1,8 @@
 <?php
 session_start();
-require 'jwt/jwt_cookie.php';
+require_once 'jwt/jwt_cookie.php';
 checkAuthentication('IT Admin');
-include "includes/navbar.php";
+include_once "includes/navbar.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
