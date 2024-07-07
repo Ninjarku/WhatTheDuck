@@ -115,6 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         else {
             $success = false;
+            checkProcessSuccess($success);
         }
 
         $config = parse_ini_file('/var/www/private/db-config.ini');
@@ -134,6 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $Order_Num += 1;
         } else {
             $success = false;
+            checkProcessSuccess($success);
         }
         $stmt->close();
         # Create order for each cart id
@@ -159,6 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             else {
                 $success = false;
+                checkProcessSuccess($success);
             }
             $stmt->close();
             # Create order
@@ -168,6 +171,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (!$stmt->execute())
             {
                 $success = false;
+                checkProcessSuccess($success);
             }
             $stmt->close();
 
@@ -180,6 +184,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->affected_rows < 1) {
                 echo "Error deleting record";
                 $success = false;
+                checkProcessSuccess($success);
             }
 
             $stmt->close();
