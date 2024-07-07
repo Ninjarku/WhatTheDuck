@@ -20,6 +20,7 @@ function checkInputSuccess($success) {
     if (!$success) {
         $response["message"] = "Please fill in the fields properly.";
         echo json_encode($response);
+        exit();
     }
 }
 
@@ -27,6 +28,7 @@ function checkProcessSuccess($success) {
     if (!$success) {
         $response["message"] = "Something went wrong, please try again later.";
         echo json_encode($response);
+        exit();
     }
 }
 
