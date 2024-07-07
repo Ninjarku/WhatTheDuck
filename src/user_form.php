@@ -71,6 +71,7 @@ if ($Form_Type == 1 && $action === 'editUser') {
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            justify-content: space-between;
         }
 
         .container {
