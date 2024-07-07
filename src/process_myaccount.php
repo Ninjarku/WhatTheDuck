@@ -70,18 +70,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Handle profile image upload with validation
     if ($success && isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
-        $allowed_types = ['image/jpeg', 'image/png'];
+        $allowed_extensions = ['jpg', 'jpeg', 'png'];
         $max_size = 1 * 1024 * 1024; // 1MB
-        $file_type = $_FILES['profile_image']['type'];
+        $file_extension = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
         $file_size = $_FILES['profile_image']['size'];
 
-        if (!in_array($file_type, $allowed_types)) {
-            $errorMsg .= 'Invalid file type. Only JPG and PNG files are allowed.';
+        // Use Fileinfo to get MIME type
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime_type = $finfo->file($_FILES['profile_image']['tmp_name']);
+
+        if (!in_array($file_extension, $allowed_extensions) || !in_array($mime_type, ['image/jpeg', 'image/png'])) {
+            $errorMsg .= 'Invalid file type. Only JPG and PNG files are allowed.<br>';
             $success = false;
         }
 
         if ($file_size > $max_size) {
-            $errorMsg .= 'File size too large. Maximum allowed size is 1MB.';
+            $errorMsg .= 'File size too large. Maximum allowed size is 1MB.<br>';
             $success = false;
         }
 
