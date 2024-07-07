@@ -115,7 +115,7 @@ function authenticationCheckWithOrderValidation($User_ID){
                     // Permit access to SalesAdmin and ITAdmin
                     return true;
                 }
-                else if ($decodedToken['rol'] == "Customer" && $decodedToken['user_id'] == $User_ID) {
+                else if ($decodedToken['rol'] == "Customer" && $decodedToken['id'] == $User_ID) {
                     // Allow customer access if the user ID matches
                     return true;
                 }
