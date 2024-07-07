@@ -129,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         # Get highest order number
-        $stmt = $conn->prepare("SELECT MAX(Order_Num) AS Order_Num FROM 'Order'");
+        $stmt = $conn->prepare("SELECT MAX(Order_Num) AS Order_Num FROM `Order`");
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
@@ -169,7 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->close();
             # Create order
             $Order_Status = "Order Placed";
-            $stmt = $conn->prepare("INSERT INTO 'Order' (Order_Num, User_ID, Product_ID, Quantity, Total_Price, Payment_Type, Billing_Address, Order_Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO `Order` (Order_Num, User_ID, Product_ID, Quantity, Total_Price, Payment_Type, Billing_Address, Order_Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param('iiiidsss', $Order_Num, $User_ID, $Product_ID, $Quantity, $Total_Price, $Payment_Type, $Billing_Address, $Order_Status);
             if (!$stmt->execute())
             {
