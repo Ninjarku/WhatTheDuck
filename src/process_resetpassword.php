@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'vendor/autoload.php';  // Make sure this autoloads Predis or your Redis client library
+require 'vendor/autoload.php'; 
 use Predis\Client;
 
 function sanitize_input($data) {
@@ -89,7 +89,6 @@ $redis = new Client([
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['newPassword'], $_POST['confirmPassword']) && meetPasswordPolicy()) {
         $newPassword = $_POST['newPassword']; 
-        $email = $_SESSION['email'];  
 
         // Hash password
         $hashedPassword = password_hash($newPassword, PASSWORD_ARGON2ID);
@@ -101,23 +100,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die("Connection failed: " . $conn->connect_error);
         }
 
-        $stmt = $conn->prepare("UPDATE User SET Password = ? WHERE Email = ?");
-        $stmt->bind_param("ss", $hashedPassword, $email);
-
-        if ($stmt->execute()) {
-            // If password update is successful, delete user-related data from Redis
-            $redis->del(["otp:$email"]);  // Adjust key as necessary to match how you've stored the OTP or session data
-
-            $_SESSION = [];
-            session_destroy();
-            header('Location: Login.php');
-            exit;
-        } else {
-            echo "Error updating password: " . $stmt->error;
+        if ($_SESSION['method'] == 'email') {
+            $email = $_SESSION['email'];  
+            $stmt = $conn->prepare("UPDATE User SET Password = ? WHERE Email = ?");
+            $stmt->bind_param("ss", $hashedPassword, $email);
+    
+            if ($stmt->execute()) {
+                $redis->del(["otp:$email"]);  
+    
+                $_SESSION = [];
+                session_destroy();
+                header('Location: Login.php');
+                exit;
+            } else {
+                echo "Error updating password: " . $stmt->error;
+            }
+    
+            $stmt->close();
+            $conn->close();
+        }
+        if ($_SESSION['method'] == 'sms') {
+            $number = $_SESSION['phonenum'];  
+            $stmt = $conn->prepare("UPDATE User SET Password = ? WHERE Mobile_Number = ?");
+            $stmt->bind_param("ss", $hashedPassword, $number);
+    
+            if ($stmt->execute()) {  
+                $_SESSION = [];
+                session_destroy();
+                header('Location: Login.php');
+                exit;
+            } else {
+                echo "Error updating password: " . $stmt->error;
+            }
+    
+            $stmt->close();
+            $conn->close();            
         }
 
-        $stmt->close();
-        $conn->close();
     } 
 }
 ?>

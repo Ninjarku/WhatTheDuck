@@ -34,11 +34,12 @@ function sendSMSOTP($number) {
     $sid = $twilio_config['SID'];
     $token = $twilio_config['Token'];
     $twilio = new TwilioClient($sid, $token);
+    $fullNum = "+65".$number;
 
     $verification = $twilio->verify->v2
         ->services($twilio_config['Service'])
         ->verifications->create(
-            $number, // to
+            $fullNum, // to
             "sms" // channel
         );
 
@@ -104,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 $_SESSION['otp'] = $otp;
                 $_SESSION['otp_time'] = $timeNow;
                 $_SESSION['email'] = $email;
+                $_SESSION['method'] = $method;
                 $stmt->close();
                 $conn->close();
                 header("Location: ForgetVerify.php");
@@ -125,10 +127,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
         if ($result->num_rows > 0) {
             $timeNow = time(); // Get current timestamp
             $row = $result->fetch_assoc();
-            $number = "+65".$row["Mobile_Number"];
+            $number = $row["Mobile_Number"];
             if (sendSMSOTP($number)) {
                 $_SESSION['phonenum'] = $number;
-                $_SESSION['email'] = $email;
+                $_SESSION['method'] = $method;
                 $stmt->close();
                 $conn->close();
                 header("Location: ForgetSMSVerify.php");
