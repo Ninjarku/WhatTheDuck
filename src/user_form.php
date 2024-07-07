@@ -71,9 +71,6 @@ if ($Form_Type == 1 && $action === 'editUser') {
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
         }
 
         .btn-primary {
@@ -145,7 +142,7 @@ if ($Form_Type == 1 && $action === 'editUser') {
                         </option>
                     </select>
                 </div>
-                <?php if ($User_ID == 0): ?>
+                <?php if (empty($user['User_ID'])): ?>
                     <div class="form-group">
                         <label for="Password">Password:</label>
                         <input type="password" class="form-control" id="Password" name="Password" required>
