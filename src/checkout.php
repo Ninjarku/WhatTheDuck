@@ -1,6 +1,14 @@
 <?php 
-    session_start(); 
-    include_once "includes/navbar.php";
+session_start(); 
+
+// Check if the user is logged in
+if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
+    // Redirect to the login page
+    header("Location: Login.php");
+    exit();
+}
+include_once "includes/navbar.php";
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,6 +98,7 @@
                             <div class="qty-obj"><?php echo htmlspecialchars($row['Quantity']); ?></div> 
                             <div class="price-obj">$<?php echo htmlspecialchars($row['Price']); ?></div> 
                         </div>
+                        <input type="hidden" name="selectedCartIds[]" value="<?php echo htmlspecialchars($row['Cart_ID']); ?>" class="cart-checkbox form-check-input" id="checkbox-<?php echo htmlspecialchars($row['Cart_ID']); ?>">
                     <?php
                     }
                     ?>

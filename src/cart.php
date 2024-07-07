@@ -128,7 +128,7 @@ if ($conn->connect_error) {
         <h1 class="visually-hidden">My Cart</h1>        
     </header>
 
-    <form method="post" id="cartForm" action="PaymentPage.php">
+    <form method="post" id="cartForm" action="checkout.php">
         <div class="container my-3 main-container">
             <main>
                 <div class="container left-container">
