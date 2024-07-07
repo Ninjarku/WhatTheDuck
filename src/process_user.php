@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -47,40 +48,6 @@ function getAllUsers()
     $stmt->close();
     $conn->close();
     return json_encode(['icon' => 'success', 'data' => $arrResult]);
-}
-
-function getUserbyUserID($User_ID)
-{
-    $conn = getDatabaseConnection();
-    $response = [];
-    if (!$conn) {
-        $response["message"] = 'Database connection failed';
-        return json_encode($response);
-    }
-
-    $stmt = $conn->prepare("SELECT User_ID, Username, Email, Mobile_Number, Billing_Address, Gender, DOB, User_Type, Account_Active FROM User WHERE User_ID=?");
-    if (!$stmt) {
-        $response["message"] = 'Prepare failed: ' . $conn->error;
-        return json_encode($response);
-    }
-
-    $stmt->bind_param("i", $User_ID);
-    if (!$stmt->execute()) {
-        $response["message"] = 'Execute failed: ' . $stmt->error;
-        return json_encode($response);
-    }
-
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        return json_encode($row);
-    } else {
-        $response["message"] = 'No user found with the given ID' . $stmt->error;
-        return json_encode($response);
-    }
-
-    $stmt->close();
-    $conn->close();
 }
 
 function addUser($userData)
@@ -207,7 +174,7 @@ function editUser($userData)
 
     $username = sanitize_input($userData["Username"]);
     $email = sanitize_input($userData["Email"]);
-    $mobileNumber = validate_mobile_number($userData["Mobile_Number"]);
+    $mobileNumber = validate_mobile_number($userData["Mobile_Number"]); // Assuming this function validates and returns a valid mobile number
     $billingAddress = sanitize_input($userData["Billing_Address"]);
     $gender = sanitize_input($userData["Gender"]);
     $dob = sanitize_input($userData["DOB"]);
@@ -266,10 +233,6 @@ $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($action === 'getAllUsers') {
         echo getAllUsers();
-    } elseif ($action === 'getUserbyUserID' && isset($_GET['User_ID'])) {
-        $userID = intval($_GET['User_ID']);
-        $userData = getUserbyUserID($userID);
-        echo $userData;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'addUser') {

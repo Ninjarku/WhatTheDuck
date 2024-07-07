@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once 'jwt/jwt_cookie.php';
+require 'jwt/jwt_cookie.php';
 checkAuthentication('IT Admin');
-include_once "includes/navbar.php";
+include "includes/navbar.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,6 +60,7 @@ include_once "includes/navbar.php";
             color: white;
         }
     </style>
+
     <script>
         $(document).ready(function () {
             $('#user_table').DataTable({
@@ -82,7 +83,7 @@ include_once "includes/navbar.php";
             loadTableData();
 
             $('#btnAddNew').click(function () {
-                window.location.href = "user_form.php?action=addUser&Form_Type=0&User_ID=0";
+                window.location.href = "user_form.php?action=addUser&Form_Type=0";
             });
 
             $("#user_table").on("click", ".btn-edit", function () {
