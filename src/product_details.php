@@ -183,7 +183,7 @@ $conn->close();
                 <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
                 <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
                 <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
-                <form action="" method="post"> <!-- Add your add to cart process -->
+                <form action="process_cart.php?action=additem&productid=<?php echo $product['Product_ID']; ?>" method="post"> <!-- Add your add to cart process -->
                     <input type="hidden" name="Product_ID"
                         value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
                     <input type="hidden" name="product_name"
