@@ -61,7 +61,8 @@ function getJWTFromCookie($cookieName = 'auth_token')
     }
 }
 
-function checkAuthentication($requiredRole = null) {
+function checkAuthentication($requiredRole = null)
+{
     try {
         $publicKeyPath = '/var/www/private/public.pem';
         $jwt = getJWTFromCookie();
@@ -76,11 +77,11 @@ function checkAuthentication($requiredRole = null) {
                 return $decodedToken; // Valid token and correct role
             } else {
                 // Token is invalid or expired, prompt for re-login
-                header("Location: Login.php?message=" . urlencode('Session expired. Please log in again.'));
+                header("Location: Login.php?message=" . urlencode('Session expired or invalid. Please log in again.'));
                 exit();
             }
         } else {
-            header("Location: Login.php");
+            header("Location: Login.php?message=" . urlencode('No token found. Please log in.'));
             exit();
         }
     } catch (Exception $e) {
