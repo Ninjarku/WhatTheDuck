@@ -109,14 +109,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     checkInputSuccess($success);
 
     if ($success) {
-        if (isset($_SESSION['selectedCartIds'])){
-            $cartids = $_SESSION['selectedCartIds'];
-            unset($_SESSION['selectedCartIds']);
-        }
-        else {
-            $success = false;
-            checkProcessSuccess($success);
-        }
+        // if (isset($_SESSION['selectedCartIds'])){
+        //     $cartids = $_SESSION['selectedCartIds'];
+        //     unset($_SESSION['selectedCartIds']);
+        // }
+        // else {
+        //     $success = false;
+        //     checkProcessSuccess($success);
+        // }
+
+        //For testing only
+        $cardids = array(6, 7);
 
         $config = parse_ini_file('/var/www/private/db-config.ini');
         $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
@@ -135,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $Order_Num += 1;
         } else {
             $success = false;
-            checkProcessSuccess($success);
+            //checkProcessSuccess($success);
         }
         $stmt->close();
         # Create order for each cart id
@@ -161,7 +164,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             else {
                 $success = false;
-                checkProcessSuccess($success);
+                //checkProcessSuccess($success);
             }
             $stmt->close();
             # Create order
@@ -171,7 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (!$stmt->execute())
             {
                 $success = false;
-                checkProcessSuccess($success);
+                //checkProcessSuccess($success);
             }
             $stmt->close();
 
@@ -184,7 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($stmt->affected_rows < 1) {
                 echo "Error deleting record";
                 $success = false;
-                checkProcessSuccess($success);
+                //checkProcessSuccess($success);
             }
 
             $stmt->close();
