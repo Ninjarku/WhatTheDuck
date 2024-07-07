@@ -30,7 +30,7 @@ if (!$product) {
     die("Product not found.");
 }
 
-$conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+$conn = getDatabaseConnection();
 $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Image, Price FROM Product WHERE Product_ID != ? ORDER BY RAND() LIMIT 3");
 $stmt->bind_param("i", $Product_ID);
 $stmt->execute();
