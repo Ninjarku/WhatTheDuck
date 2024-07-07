@@ -20,7 +20,7 @@ $token = $twilio_config['Token'];
 $twilio = new TwilioClient($sid, $token);
 
 $verification_check = $twilio->verify->v2
-    ->$twilio_config['Service']
+    ->services($twilio_config['Service'])
     ->verificationChecks->create([
         "to" => $number,
         "code" => $code ,
