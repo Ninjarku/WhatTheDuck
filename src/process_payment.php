@@ -5,6 +5,8 @@ header('Content-Type: application/json');
 $User_ID = $_SESSION['userid'];
 
 $response = array(
+    "icon" => "error",
+    "title" => "Signup failed!",
     "message" => "",
     "redirect" => null
 );
