@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "includes/navbar.php";
+require_once '/var/www/html/jwt/jwt_cookie.php';
 
 // Check if customer is logged in
 if (!isset($_SESSION["cust_rol"]) || ($_SESSION["cust_rol"] !== "Customer" && $_SESSION["cust_rol"] !== "Sales Admin")) {
@@ -22,7 +23,7 @@ if ($conn->connect_error) {
 
 $orderNum = isset($_GET['Order_Num']) ? intval($_GET['Order_Num']) : 0;
 $stmt = $conn->prepare("
-    SELECT o.Order_Num, o.Order_Status, o.Billing_Address, o.Payment_Type, p.Product_ID, p.Product_Name, p.Product_Image, o.Quantity, o.Total_Price 
+    SELECT o.Order_Num, o.Order_Status, o.Billing_Address, o.Payment_Type, p.Product_ID, p.Product_Name, p.Product_Image, o.Quantity, o.Total_Price, o.User_ID
     FROM `Order` o 
     JOIN `Product` p ON o.Product_ID = p.Product_ID 
     WHERE o.Order_Num = ?");
@@ -33,10 +34,13 @@ $result = $stmt->get_result();
 $orderDetails = [];
 while ($row = $result->fetch_assoc()) {
     $orderDetails[] = $row;
+    $User_ID = $row['User_ID'];
 }
+
+authenticationCheckWithOrderValidation($User_ID);
 $stmt->close();
 $conn->close();
-?>
+
 ?>
 
 <!DOCTYPE html>
@@ -159,7 +163,10 @@ $conn->close();
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <a href="my_orders.php" class="btn-close">Close</a>
+                <?php
+                $closeUrl = $_SESSION['role'] === 'SalesAdmin' ? 'sales_index.php' : 'my_orders.php';
+                ?>
+                <a href="<?php echo $closeUrl; ?>" class="btn-close">Close</a>
             <?php else: ?>
                 <p>Order not found.</p>
                 <a href="'error_page.php?error_id=0&error=' + encodeURIComponent('Order Not Found!!');" class="btn-close">Close</a>
