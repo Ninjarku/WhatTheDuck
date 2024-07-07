@@ -84,6 +84,11 @@ function getOrdersByUserID()
         return json_encode($response);
     }
 
+    if (!isset($_SESSION['userid'])) {
+        $response["message"] = 'User not logged in';
+        return json_encode($response);
+    }
+
     $userID = $_SESSION['userid'];
     error_log("User ID: " . $userID);
 

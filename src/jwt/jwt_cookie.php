@@ -111,7 +111,7 @@ function authenticationCheckWithOrderValidation($User_ID){
             if ($decodedToken) {
                 //echo 'Valid JWT: ', json_encode($decodedToken);
                 
-                if ($decodedToken['rol'] == "SalesAdmin" || $decodedToken['rol'] == "ITAdmin"){
+                if ($decodedToken['rol'] == "Sales Admin" || $decodedToken['rol'] == "IT Admin"){
                     // Permit access to SalesAdmin and ITAdmin
                     return true;
                 }
