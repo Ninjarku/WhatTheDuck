@@ -216,11 +216,6 @@ include "includes/navbar.php";
                                 <h1>My Profile</h1>
                                 <p>Manage and protect your account</p>
                                 <div class="form-group">
-                                    <label for="username_input">Username</label>
-                                    <input type="text" id="username_input" name="username_input"
-                                        value="<?php echo $username; ?>" class="form-control">
-                                </div>
-                                <div class="form-group">
                                     <label for="email_input">Email</label>
                                     <input type="email" id="email_input" name="email_input" value="<?php echo $email; ?>"
                                         class="form-control">

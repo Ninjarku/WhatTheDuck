@@ -67,56 +67,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
     }
 
-    // // Handle profile image upload with validation
-    // if ($success && isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
-    //     $allowed_types = ['image/jpeg', 'image/png'];
-    //     $max_size = 1 * 1024 * 1024; // 1MB
-    //     $file_type = $_FILES['profile_image']['type'];
-    //     $file_size = $_FILES['profile_image']['size'];
-
-    //     if (!in_array($file_type, $allowed_types)) {
-    //         $errorMsg .= 'Invalid file type. Only JPG and PNG files are allowed.';
-    //         $success = false;
-    //     }
-
-    //     if ($file_size > $max_size) {
-    //         $errorMsg .= 'File size too large. Maximum allowed size is 1MB.';
-    //         $success = false;
-    //     }
-
-    //     if ($success) {
-    //         $imageData = file_get_contents($_FILES['profile_image']['tmp_name']);
-    //         $profile_image = $imageData;
-    //     }
-    // }
-
-    // Handle profile image upload
+    // Handle profile image upload with validation
     if ($success && isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
-        $imageData = file_get_contents($_FILES['profile_image']['tmp_name']);
-        $profile_image = $imageData;
+        $allowed_types = ['image/jpeg', 'image/png'];
+        $max_size = 1 * 1024 * 1024; // 1MB
+        $file_type = $_FILES['profile_image']['type'];
+        $file_size = $_FILES['profile_image']['size'];
+
+        if (!in_array($file_type, $allowed_types)) {
+            $errorMsg .= 'Invalid file type. Only JPG and PNG files are allowed.';
+            $success = false;
+        }
+
+        if ($file_size > $max_size) {
+            $errorMsg .= 'File size too large. Maximum allowed size is 1MB.';
+            $success = false;
+        }
+
+        if ($success) {
+            $imageData = file_get_contents($_FILES['profile_image']['tmp_name']);
+            $profile_image = $imageData;
+        }
     }
 
     // Update user information if validation is successful
     if ($success) {
         if ($profile_image) {
-            $stmt = $conn->prepare("UPDATE User SET Username = ?, Email = ?, Mobile_Number = ?, Billing_Address = ?, Gender = ?, DOB = ?, Profile_Image = ? WHERE User_ID = ?");
-            $stmt->bind_param("sssssssi", $username, $email, $mobile, $address, $gender, $birthday, $profile_image, $cust_user);
+            $stmt = $conn->prepare("UPDATE User SET Email = ?, Mobile_Number = ?, Billing_Address = ?, Gender = ?, DOB = ?, Profile_Image = ? WHERE User_ID = ?");
+            $stmt->bind_param("ssssssi", $email, $mobile, $address, $gender, $birthday, $profile_image, $cust_user_id);
         } else {
-            $stmt = $conn->prepare("UPDATE User SET Username = ?, Email = ?, Mobile_Number = ?, Billing_Address = ?, Gender = ?, DOB = ? WHERE User_ID = ?");
-            $stmt->bind_param("ssssssi", $username, $email, $mobile, $address, $gender, $birthday, $cust_user);
+            $stmt = $conn->prepare("UPDATE User SET Email = ?, Mobile_Number = ?, Billing_Address = ?, Gender = ?, DOB = ? WHERE User_ID = ?");
+            $stmt->bind_param("sssssi", $email, $mobile, $address, $gender, $birthday, $cust_user_id);
         }
 
-        if ($stmt->execute()) {
-            $_SESSION['cust_username'] = $username;  // Update session username if changed
-            $response["icon"] = "success";
-            $response["title"] = "Profile updated successfully!";
-            $response["message"] = "Your profile has been updated.";
-            $response["redirect"] = "MyAccount.php";
-        } else {
+        if (!$stmt) {
+            $errorMsg = "Prepare failed: " . $conn->error;
             $success = false;
-            $errorMsg = "Update failed: " . $stmt->error;
+        } else {
+            if ($stmt->execute()) {
+                $response["icon"] = "success";
+                $response["title"] = "Profile updated successfully!";
+                $response["message"] = "Your profile has been updated.";
+                $response["redirect"] = "MyAccount.php";
+            } else {
+                $success = false;
+                $errorMsg = "Update failed: " . $stmt->error;
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 
     // Display error message if update fails
