@@ -119,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // }
 
         //For testing only
-        $cardids = array(6, 7);
+        $cartids = array(6, 7);
 
         $config = parse_ini_file('/var/www/private/db-config.ini');
         $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
@@ -201,7 +201,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['Order_Num'] = $Order_Num;
 
         # Redirect to zhenyu
-        $response["redirect"] = "/zhenyufunction.php";
+        $response["icon"] = "";
+        $response["title"] = "";
+        $response["redirect"] = "zhenyufunction.php";
     }
     
     echo json_encode($response);
