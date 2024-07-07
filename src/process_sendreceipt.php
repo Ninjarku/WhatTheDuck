@@ -47,7 +47,7 @@ if ($_SESSION['Order_Num']) {
         die("Connection failed: " . $conn->connect_error);
     } else {
 
-        $stmt = $conn->prepare("SELECT Total_Price, Billing_Address, User_ID FROM `Order` WHERE Order_Num = ?");
+        $stmt = $conn->prepare("SELECT Billing_Address, User_ID FROM Order WHERE Order_Num = ?");
         if (!$stmt) {
             die('Prepare failed: ' . $conn->error);
         }
@@ -75,7 +75,7 @@ if ($_SESSION['Order_Num']) {
     $emailContent = "Hello " . $username . ",\n\n";
     $emailContent .= "Thank you for your order. Here are the details:\n";
     $emailContent .= "Billing Address: " . $billingAddress . "\n";
-    $emailContent .= "Total Price: $" . $totalPrice . "\n\n";
+    $emailContent .= "Order ID: " . $Order_Num . "\n\n";
 
     $emailContent .= "\nThank you for shopping with us.";
 
