@@ -1,16 +1,19 @@
 <?php
 session_start();
 
-// Check if the user is logged in
-// if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
-//     // Redirect to the login page
-//     header("Location: Login.php");
-//     exit();
-// }
+if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
+    // Redirect to the login page
+    header("Location: Login.php");
+    exit();
+}
 
 if (isset($_POST['selectedCartIds'])) {
     $cart_ids = $_POST['selectedCartIds'];
     $_SESSION['selectedCartIds'] = $cart_ids;
+} 
+else {
+    header("Location: cart.php");
+    exit();
 }
 
 include 'includes/navbar.php';
