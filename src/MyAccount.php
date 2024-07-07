@@ -140,9 +140,6 @@ include "includes/navbar.php";
             var today = new Date().toISOString().split('T')[0];
             document.getElementById("birthday_input").setAttribute('max', today);
 
-            var birthday = "<?php echo $birthday; ?>";
-            document.getElementById("birthday_input").defaultValue = birthday;
-
             $("#profile-form").on("submit", function (event) {
                 event.preventDefault();
                 var formData = new FormData(this);
