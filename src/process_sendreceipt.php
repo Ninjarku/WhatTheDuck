@@ -45,7 +45,7 @@ if ($_SESSION['Order_Num']) {
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
-    } else if ($method === 'email'){
+    } else {
 
         $stmt = $conn->prepare("SELECT 
                                 o.Total_Price, 
