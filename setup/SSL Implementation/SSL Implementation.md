@@ -438,7 +438,6 @@ CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
 
 # Linking to sites-enabled
 RUN rm /etc/nginx/sites-enabled/default
-#RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/default
 RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/whattheduck
 RUN ln -s /etc/nginx/sites-available/whattheduck /etc/nginx/sites-enabled/whattheduck.ddns.net
 RUN chown www-data /var/www/private/private.pem
