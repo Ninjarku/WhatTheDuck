@@ -1,8 +1,5 @@
 <?php
 session_start();
-header('Content-Type: application/json');
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 $response = array(
     "icon" => "error",
@@ -174,7 +171,7 @@ function editUser($userData)
 
     $username = sanitize_input($userData["Username"]);
     $email = sanitize_input($userData["Email"]);
-    $mobileNumber = validate_mobile_number($userData["Mobile_Number"]); // Assuming this function validates and returns a valid mobile number
+    $mobileNumber = validate_mobile_number($userData["Mobile_Number"]);
     $billingAddress = sanitize_input($userData["Billing_Address"]);
     $gender = sanitize_input($userData["Gender"]);
     $dob = sanitize_input($userData["DOB"]);
