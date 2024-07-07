@@ -51,7 +51,7 @@ if ($_SESSION['Order_Num']) {
         if (!$stmt) {
             die('Prepare failed: ' . $conn->error);
         }
-        $stmt->bind_param("i", $Order_Number);
+        $stmt->bind_param("i", $Order_Num);
         $stmt->execute();
         $stmt->bind_result($billingAddress, $userId);
         $stmt->fetch();
