@@ -67,7 +67,7 @@ function meetPasswordPolicy(){
     $passwordLength = passwordLength($newPassword);
     $passwordSame = confirmPassword($newPassword, $confirmPassword);
 
-    if ($complexity && $repetitive && !$inwordlist && $passwordLength && $passwordSame) {
+    if ($complexity && $repetitive && $inwordlist && $passwordLength && $passwordSame) {
         return true;
     }
     
