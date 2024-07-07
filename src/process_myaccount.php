@@ -17,7 +17,8 @@ if (!$decodedToken) {
     exit();
 }
 
-function sanitize_input($data) {
+function sanitize_input($data)
+{
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
@@ -66,8 +67,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
     }
 
-     // Handle profile image upload with validation
-     if ($success && isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
+    // Handle profile image upload with validation
+    if ($success && isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
         $allowed_types = ['image/jpeg', 'image/png'];
         $max_size = 1 * 1024 * 1024; // 1MB
         $file_type = $_FILES['profile_image']['type'];
@@ -92,11 +93,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Update user information if validation is successful
     if ($success) {
         if ($profile_image) {
-            $stmt = $conn->prepare("UPDATE User SET Username = ?, Email = ?, Mobile_Number = ?, Billing_Address = ?, Gender = ?, DOB = ?, Profile_Image = ? WHERE Username = ?");
-            $stmt->bind_param("ssssssss", $username, $email, $mobile, $address, $gender, $birthday, $profile_image, $cust_user);
+            $stmt = $conn->prepare("UPDATE User SET Username = ?, Email = ?, Mobile_Number = ?, Billing_Address = ?, Gender = ?, DOB = ?, Profile_Image = ? WHERE User_ID = ?");
+            $stmt->bind_param("sssssssi", $username, $email, $mobile, $address, $gender, $birthday, $profile_image, $cust_user);
         } else {
-            $stmt = $conn->prepare("UPDATE User SET Username = ?, Email = ?, Mobile_Number = ?, Billing_Address = ?, Gender = ?, DOB = ? WHERE Username = ?");
-            $stmt->bind_param("sssssss", $username, $email, $mobile, $address, $gender, $birthday, $cust_user);
+            $stmt = $conn->prepare("UPDATE User SET Username = ?, Email = ?, Mobile_Number = ?, Billing_Address = ?, Gender = ?, DOB = ? WHERE User_ID = ?");
+            $stmt->bind_param("ssssssi", $username, $email, $mobile, $address, $gender, $birthday, $cust_user);
         }
 
         if ($stmt->execute()) {
