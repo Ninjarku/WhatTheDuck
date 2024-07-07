@@ -251,7 +251,7 @@ include 'includes/navbar.php';
                 event.preventDefault();
                 $.ajax({
                     type: "POST",
-                    url: "process_payment.php",
+                    url: "/process_payment.php",
                     data: $(this).serialize(),
                     success: function (response) {
                         if (response.redirect) {
