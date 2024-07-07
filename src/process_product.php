@@ -1,6 +1,5 @@
 <?php
 session_start();
-header('Content-Type: application/json');
 
 $response = array(
     "icon" => "error",
@@ -9,7 +8,6 @@ $response = array(
     "redirect" => null
 );
 
-// Database connection
 function getDatabaseConnection()
 {
     $config = parse_ini_file('/var/www/private/db-config.ini');
@@ -20,7 +18,6 @@ function getDatabaseConnection()
     return $conn;
 }
 
-// Sanitize input
 function sanitize_input($data)
 {
     $data = trim($data);
@@ -29,7 +26,6 @@ function sanitize_input($data)
     return $data;
 }
 
-// Get all products for sales index
 function getAllProductsSales()
 {
     $conn = getDatabaseConnection();
@@ -51,7 +47,7 @@ function getAllProductsSales()
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            $row['Product_Image'] = base64_encode($row['Product_Image']); // Encode the image data
+            $row['Product_Image'] = base64_encode($row['Product_Image']);
             $arrResult[] = $row;
         }
     }
@@ -61,7 +57,6 @@ function getAllProductsSales()
     return json_encode(['icon' => 'success', 'data' => $arrResult]);
 }
 
-// Add product
 function addProduct($productData)
 {
     $conn = getDatabaseConnection();
@@ -113,7 +108,6 @@ function addProduct($productData)
     return json_encode($response);
 }
 
-// Edit product
 function editProduct($productData)
 {
     $conn = getDatabaseConnection();
@@ -152,8 +146,6 @@ function editProduct($productData)
     $response["redirect"] = "sales_index.php";
     return json_encode($response);
 }
-
-// Delete product function
 function deleteProduct($Product_ID)
 {
     $conn = getDatabaseConnection();
@@ -188,7 +180,6 @@ function deleteProduct($Product_ID)
     return json_encode($response);
 }
 
-// Upload product image
 function uploadProductImage($productData)
 {
     $conn = getDatabaseConnection();
@@ -200,7 +191,6 @@ function uploadProductImage($productData)
 
     $Product_ID = sanitize_input($productData['Product_ID']);
 
-    // Validate image file
     $allowed_types = ['image/jpeg', 'image/png'];
     $max_size = 1 * 1024 * 1024;
     if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
@@ -234,7 +224,6 @@ function uploadProductImage($productData)
         return json_encode($response);
     }
 
-    // Bind image data as a blob
     $null = NULL;
     $stmt->bind_param("bi", $null, $Product_ID);
     $stmt->send_long_data(0, $image);
@@ -253,9 +242,6 @@ function uploadProductImage($productData)
     return json_encode($response);
 }
 
-
-
-// Handle actions
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

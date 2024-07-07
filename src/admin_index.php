@@ -4,6 +4,7 @@ require_once 'jwt/jwt_cookie.php';
 checkAuthentication('IT Admin');
 include_once "includes/navbar.php";
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 

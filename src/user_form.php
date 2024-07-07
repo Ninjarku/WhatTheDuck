@@ -5,7 +5,6 @@ checkAuthentication('IT Admin');
 include_once "includes/navbar.php";
 include_once "process_user.php";
 
-
 $Form_Type = isset($_GET['Form_Type']) ? intval($_GET['Form_Type']) : 0;
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
@@ -66,12 +65,12 @@ if ($Form_Type == 1 && $action === 'editUser') {
             background-color: #fff5cc;
             color: black;
         }
+
         .form-content {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            justify-content: space-between;
         }
 
         .container {
@@ -160,8 +159,8 @@ if ($Form_Type == 1 && $action === 'editUser') {
                     <label class="form-check-label" for="Account_Active">Account Active</label>
                 </div>
 
-                <button type="submit"
-                    class="btn btn-primary"><?php echo $Form_Type == 1 ? 'Update' : 'Add'; ?> User</button>
+                <button type="submit" class="btn btn-primary"><?php echo $Form_Type == 1 ? 'Update' : 'Add'; ?>
+                    User</button>
             </form>
         </div>
     </div>

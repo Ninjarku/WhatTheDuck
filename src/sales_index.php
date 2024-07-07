@@ -1,8 +1,8 @@
 <?php
 session_start();
-require 'jwt/jwt_cookie.php';
+require_once 'jwt/jwt_cookie.php';
 checkAuthentication('Sales Admin');
-include "includes/navbar.php";
+include_once "includes/navbar.php";
 ?>
 
 <!DOCTYPE html>
@@ -10,28 +10,18 @@ include "includes/navbar.php";
 
 <head>
     <meta charset="UTF-8">
-    <title>WhatTheDuck - Sales Admin</title>
+    <title>What The Duck - IT Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- START OF THE LINK -->
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <!-- jQuery -->
     <script src="js/jquery-3.5.1.js" type="text/javascript"></script>
-    <!--Bootstrap JS-->
     <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
         integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
         </script>
-    <!-- DataTables JS -->
     <script defer src="js/datatables.min.js" type="text/javascript"></script>
-    <!-- DataTables CSS -->
     <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
-    <!-- FontAwesome for Icons -->
     <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
-    <!-- SweetAlert2 for Popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Styling for Table -->
     <style>
         body,
         html {
@@ -50,18 +40,6 @@ include "includes/navbar.php";
         .container {
             margin-top: 50px;
             margin-bottom: 50px;
-        }
-
-        .btn-upload,
-        .btn-edit,
-        .btn-delete {
-            transition: transform 0.2s;
-        }
-
-        .btn-upload:hover,
-        .btn-edit:hover,
-        .btn-delete:hover {
-            transform: scale(1.1);
         }
 
         .btn-primary {
@@ -83,12 +61,9 @@ include "includes/navbar.php";
             color: white;
         }
     </style>
-    <!-- END OF THE LINK -->
 
-    <!-- Custom JS for Product Management -->
     <script>
         $(document).ready(function () {
-            // Initialize DataTable
             $('#product_table').DataTable({
                 "iDisplayLength": 5,
                 "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -105,29 +80,23 @@ include "includes/navbar.php";
                 ],
                 "deferRender": true
             });
-
-            // Load table data on page load
             loadTableData();
 
-            // Add new product button click event
             $('#btnAddNew').click(function () {
                 window.location.href = "product_form.php?action=addProduct&Form_Type=0";
             });
 
-            // Edit product button click event
             $("#product_table").on("click", ".btn-edit", function () {
                 var Product_ID = $(this).data("id");
-                window.location.href = "product_form.php?action=editProduct&Form_Type=1&Product_ID=" + Product_ID; // Redirect to product_form.php for editing the product
+                window.location.href = "product_form.php?action=editProduct&Form_Type=1&Product_ID=" + Product_ID;
             });
 
-            // Upload image button click event
             $("#product_table").on("click", ".btn-upload", function () {
                 var Product_ID = $(this).data("id");
-                $("#Product_ID").val(Product_ID); // Set Product_ID in the modal form
-                $("#uploadImageModal").modal("show"); // Show the modal
+                $("#Product_ID").val(Product_ID);
+                $("#uploadImageModal").modal("show");
             });
 
-            // Delete product button click event
             $("#product_table").on("click", ".btn-delete", function () {
                 var Product_ID = $(this).data("id");
                 Swal.fire({
@@ -158,7 +127,7 @@ include "includes/navbar.php";
                                     confirmButtonText: 'Ok'
                                 }).then(() => {
                                     if (response.icon === 'success') {
-                                        loadTableData(); // Reload table data after deletion
+                                        loadTableData();
                                     }
                                 });
                             }
@@ -167,7 +136,6 @@ include "includes/navbar.php";
                 });
             });
 
-            // Handle image upload form submission
             $("#image-upload-form").submit(function (event) {
                 event.preventDefault();
 
@@ -189,8 +157,8 @@ include "includes/navbar.php";
                             confirmButtonText: 'OK'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                $("#uploadImageModal").modal("hide"); // Hide the modal
-                                loadTableData(); // Reload table data
+                                $("#uploadImageModal").modal("hide");
+                                loadTableData();
                             }
                         });
                     },
@@ -208,21 +176,20 @@ include "includes/navbar.php";
             });
         });
 
-        // Function to load product data into the DataTable
         function loadTableData() {
             var table = $('#product_table').DataTable();
             table.clear().draw();
 
             $.ajax({
                 type: "GET",
-                url: "process_product.php?action=getAllProductsSales", // Fetch all products from process_product.php
+                url: "process_product.php?action=getAllProductsSales",
                 cache: false,
                 dataType: "json",
                 success: function (response) {
                     if (response.icon === 'success') {
                         var products = response.data;
                         if (products.length === 0) {
-                            table.row.add(['', '', '', '', '', '', '', '', '']).draw(false); // If no data, add empty row
+                            table.row.add(['', '', '', '', '', '', '', '', '']).draw(false);
                         } else {
                             products.forEach(function (product) {
                                 var action = `<button class='btn btn-edit' data-id='${product.Product_ID}'><i class='fas fa-edit' style='padding-top: 0px;color:orange;'></i></button>
@@ -270,7 +237,6 @@ include "includes/navbar.php";
             <br><br>
         </div>
 
-        <!-- Modal for Image Upload -->
         <div class="modal fade" id="uploadImageModal" tabindex="-1" role="dialog"
             aria-labelledby="uploadImageModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

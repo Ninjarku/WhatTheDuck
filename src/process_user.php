@@ -18,6 +18,18 @@ function getDatabaseConnection()
     return $conn;
 }
 
+function sanitize_input($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    return $data;
+}
+
+function validate_mobile_number($mobileNumber)
+{
+    return preg_match('/^\d{8}$/', $mobileNumber) ? $mobileNumber : false;
+}
+
 function getAllUsers()
 {
     $conn = getDatabaseConnection();
@@ -119,41 +131,6 @@ function addUser($userData)
     return json_encode($response);
 }
 
-function deleteUser($User_ID)
-{
-    $conn = getDatabaseConnection();
-    global $response;
-    if (!$conn) {
-        $response["message"] = 'Database connection failed';
-        return json_encode($response);
-    }
-
-    if (empty($User_ID)) {
-        $response["message"] = 'Empty User ID.';
-        return json_encode($response);
-    }
-
-    $stmt = $conn->prepare("DELETE FROM User WHERE User_ID = ?");
-    if (!$stmt) {
-        $response["message"] = 'Prepare failed: ' . $conn->error;
-        return json_encode($response);
-    }
-
-    $stmt->bind_param("i", $User_ID);
-    if (!$stmt->execute()) {
-        $response["message"] = 'Execute failed: ' . $stmt->error;
-        return json_encode($response);
-    }
-
-    $stmt->close();
-    $conn->close();
-
-    $response["icon"] = "success";
-    $response["title"] = "User Deleted";
-    $response["message"] = "User deleted successfully";
-    return json_encode($response);
-}
-
 function editUser($userData)
 {
     $conn = getDatabaseConnection();
@@ -213,16 +190,39 @@ function editUser($userData)
     return json_encode($response);
 }
 
-function sanitize_input($data)
+function deleteUser($User_ID)
 {
-    $data = trim($data);
-    $data = stripslashes($data);
-    return $data;
-}
+    $conn = getDatabaseConnection();
+    global $response;
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
 
-function validate_mobile_number($mobileNumber)
-{
-    return preg_match('/^\d{8}$/', $mobileNumber) ? $mobileNumber : false;
+    if (empty($User_ID)) {
+        $response["message"] = 'Empty User ID.';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("DELETE FROM User WHERE User_ID = ?");
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
+
+    $stmt->bind_param("i", $User_ID);
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    $response["icon"] = "success";
+    $response["title"] = "User Deleted";
+    $response["message"] = "User deleted successfully";
+    return json_encode($response);
 }
 
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
