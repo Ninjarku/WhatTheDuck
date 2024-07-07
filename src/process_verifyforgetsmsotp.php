@@ -27,4 +27,4 @@ $verification_check = $twilio->verify->v2
     ]);
 
 
-echo(verificationChecks->status);
+echo($verification_check->status);
