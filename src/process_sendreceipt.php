@@ -59,7 +59,7 @@ if ($_SESSION['Order_Num']) {
                                 FROM Order o
                                 JOIN User u ON o.User_ID = u.User_ID
                                 JOIN Product p ON o.Product_ID = p.Product_ID
-                                WHERE o.Order_Num = ?"
+                                WHERE Order_Num = ?"
                                 );
         $stmt->bind_param("s", $Order_Num);
         $stmt->execute();
