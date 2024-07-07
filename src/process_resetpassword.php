@@ -25,8 +25,8 @@ function hasRepetitiveCharacters($pwd) {
     if (preg_match($pattern, $pwd)) {
         return true; 
     } else {
-        return false; 
         echo "Passwords must not contain three or more repetitive characters.<br/>";
+        return false; 
     }
 }
 
