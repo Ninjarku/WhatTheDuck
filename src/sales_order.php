@@ -1,8 +1,8 @@
 <?php
 session_start();
-require 'jwt/jwt_cookie.php';
+require_once 'jwt/jwt_cookie.php';
 checkAuthentication('Sales Admin');
-include "includes/navbar.php";
+include_once "includes/navbar.php";
 ?>
 
 <!DOCTYPE html>
@@ -12,26 +12,16 @@ include "includes/navbar.php";
     <meta charset="UTF-8">
     <title>What The Duck</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- START OF THE LINK -->
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <!-- jQuery -->
     <script src="js/jquery-3.5.1.js" type="text/javascript"></script>
-    <!--Bootstrap JS-->
     <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
         integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
         </script>
-    <!-- DataTables JS -->
     <script defer src="js/datatables.min.js" type="text/javascript"></script>
-    <!-- DataTables CSS -->
     <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
-    <!-- FontAwesome for Icons -->
     <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
-    <!-- SweetAlert2 for Popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Styling for Table -->
     <style>
         body,
         html {
@@ -52,12 +42,9 @@ include "includes/navbar.php";
             margin-bottom: 50px;
         }
     </style>
-    <!-- END OF THE LINK -->
 
-    <!-- Custom JS for Order Management -->
     <script>
         $(document).ready(function () {
-            // Initialize DataTables
             $('#pending_table').DataTable({
                 "iDisplayLength": 5,
                 "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -85,17 +72,13 @@ include "includes/navbar.php";
                     { title: "Actions" }
                 ],
             });
-
-            // Load table data on page load
             loadTableData();
 
-            /// View order details
             $("#pending_table, #history_table").on("click", ".btn-view", function () {
                 var Order_Num = $(this).data("id");
                 window.location.href = "order_details.php?Order_Num=" + Order_Num;
             });
 
-            // Set order status to received
             $("#pending_table").on("click", ".btn-shipped", function () {
                 var Order_Num = $(this).data("id");
                 Swal.fire({
@@ -126,7 +109,7 @@ include "includes/navbar.php";
                                     confirmButtonText: 'Ok'
                                 }).then(() => {
                                     if (response.icon === 'success') {
-                                        loadTableData(); // Reload table data after update
+                                        loadTableData();
                                     }
                                 });
                             }
@@ -136,7 +119,6 @@ include "includes/navbar.php";
             });
         });
 
-        // Function to load product data into the DataTable
         function loadTableData() {
             var pendingTable = $('#pending_table').DataTable();
             var historyTable = $('#history_table').DataTable();
@@ -145,7 +127,7 @@ include "includes/navbar.php";
 
             $.ajax({
                 type: "GET",
-                url: "process_order.php?action=getAllOrders", // Fetch all products from process_product.php
+                url: "process_order.php?action=getAllOrders",
                 cache: false,
                 dataType: "json",
                 success: function (response) {
@@ -154,7 +136,7 @@ include "includes/navbar.php";
                         var historyOrders = response.historyOrders;
 
                         if (pendingOrders.length === 0) {
-                            pendingTable.row.add(['', '', '', '', '', '', '']).draw(false); // If no data, add empty row
+                            pendingTable.row.add(['', '', '', '', '', '', '']).draw(false);
                         } else {
                             pendingOrders.forEach(function (order) {
                                 var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>
@@ -173,7 +155,7 @@ include "includes/navbar.php";
                         }
 
                         if (historyOrders.length === 0) {
-                            historyTable.row.add(['', '', '', '', '', '']).draw(false); // If no data, add empty row
+                            historyTable.row.add(['', '', '', '', '', '']).draw(false);
                         } else {
                             historyOrders.forEach(function (order) {
                                 var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;

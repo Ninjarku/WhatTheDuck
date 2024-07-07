@@ -1,17 +1,8 @@
 <?php
 session_start();
-
-// Check if customer is logged in
-if ($_SESSION["cust_rol"] !== "Customer") {
-    ?>
-    <script>
-        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Please login!!');
-    </script>
-    <?php
-    exit();
-} else {
-    include "includes/navbar.php";
-}
+require_once 'jwt/jwt_cookie.php';
+checkAuthentication('Customer');
+include_once "includes/navbar.php";
 ?>
 
 <!DOCTYPE html>
@@ -21,26 +12,16 @@ if ($_SESSION["cust_rol"] !== "Customer") {
     <meta charset="UTF-8">
     <title>What The Duck</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- START OF THE LINK -->
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <!-- jQuery -->
     <script src="js/jquery-3.5.1.js" type="text/javascript"></script>
-    <!--Bootstrap JS-->
     <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
         integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
         </script>
-    <!-- DataTables JS -->
     <script defer src="js/datatables.min.js" type="text/javascript"></script>
-    <!-- DataTables CSS -->
     <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
-    <!-- FontAwesome for Icons -->
     <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
-    <!-- SweetAlert2 for Popups -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Styling for Table -->
     <style>
         body,
         html {
@@ -61,12 +42,9 @@ if ($_SESSION["cust_rol"] !== "Customer") {
             margin-bottom: 50px;
         }
     </style>
-    <!-- END OF THE LINK -->
 
-    <!-- Custom JS for Order Management -->
     <script>
         $(document).ready(function () {
-            // Initialize DataTables
             $('#pending_table').DataTable({
                 "iDisplayLength": 5,
                 "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
@@ -94,17 +72,13 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                     { title: "Actions" }
                 ],
             });
-
-            // Load table data on page load
             loadTableData();
 
-            /// View order details
             $("#pending_table, #history_table").on("click", ".btn-view", function () {
                 var Order_Num = $(this).data("id");
                 window.location.href = "order_details.php?action=viewOrderDetails&Order_Num=" + Order_Num;
             });
 
-            // Set order status to received
             $("#pending_table").on("click", ".btn-received", function () {
                 var Order_Num = $(this).data("id");
                 Swal.fire({
@@ -135,7 +109,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                                     confirmButtonText: 'Ok'
                                 }).then(() => {
                                     if (response.icon === 'success') {
-                                        loadTableData(); // Reload table data after update
+                                        loadTableData();
                                     }
                                 });
                             }
@@ -145,7 +119,6 @@ if ($_SESSION["cust_rol"] !== "Customer") {
             });
         });
 
-        // Function to load product data into the DataTable
         function loadTableData() {
             var pendingTable = $('#pending_table').DataTable();
             var historyTable = $('#history_table').DataTable();
@@ -154,7 +127,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
 
             $.ajax({
                 type: "GET",
-                url: "process_order.php?action=getOrdersByUserID", // Fetch all products from process_product.php
+                url: "process_order.php?action=getOrdersByUserID",
                 cache: false,
                 dataType: "json",
                 success: function (response) {
@@ -163,7 +136,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                         var historyOrders = response.historyOrders;
 
                         if (pendingOrders.length === 0) {
-                            pendingTable.row.add(['', '', '', '', '', '', '']).draw(false); // If no data, add empty row
+                            pendingTable.row.add(['', '', '', '', '', '', '']).draw(false);
                         } else {
                             pendingOrders.forEach(function (order) {
                                 var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
@@ -184,7 +157,7 @@ if ($_SESSION["cust_rol"] !== "Customer") {
                         }
 
                         if (historyOrders.length === 0) {
-                            historyTable.row.add(['', '', '', '', '', '']).draw(false); // If no data, add empty row
+                            historyTable.row.add(['', '', '', '', '', '']).draw(false);
                         } else {
                             historyOrders.forEach(function (order) {
                                 var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;

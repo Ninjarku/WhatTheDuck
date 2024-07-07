@@ -1,9 +1,8 @@
 <?php
 session_start();
-include "includes/navbar.php";
-require_once '/var/www/html/jwt/jwt_cookie.php';
+require_once 'jwt/jwt_cookie.php';
+include_once "includes/navbar.php";
 
-// Check if customer is logged in
 if (!isset($_SESSION["cust_rol"]) || ($_SESSION["cust_rol"] !== "Customer" && $_SESSION["cust_rol"] !== "Sales Admin")) {
     ?>
     <script>
@@ -13,8 +12,6 @@ if (!isset($_SESSION["cust_rol"]) || ($_SESSION["cust_rol"] !== "Customer" && $_
     exit();
 }
 
-
-// Fetch order details from the database
 $config = parse_ini_file('/var/www/private/db-config.ini');
 $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 if ($conn->connect_error) {
@@ -40,7 +37,6 @@ while ($row = $result->fetch_assoc()) {
 authenticationCheckWithOrderValidation($User_ID);
 $stmt->close();
 $conn->close();
-
 ?>
 
 <!DOCTYPE html>
@@ -169,7 +165,8 @@ $conn->close();
                 <a href="<?php echo $closeUrl; ?>" class="btn-close">Close</a>
             <?php else: ?>
                 <p>Order not found.</p>
-                <a href="'error_page.php?error_id=0&error=' + encodeURIComponent('Order Not Found!!');" class="btn-close">Close</a>
+                <a href="'error_page.php?error_id=0&error=' + encodeURIComponent('Order Not Found!!');"
+                    class="btn-close">Close</a>
             <?php endif; ?>
         </div>
     </div>

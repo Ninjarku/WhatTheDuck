@@ -1,17 +1,13 @@
 <?php
 session_start();
-include 'includes/navbar.php';
+include_once 'includes/navbar.php';
+include_once "process_product.php";
 
-// Database connection
-$config = parse_ini_file('/var/www/private/db-config.ini');
-$conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
-
-// Check connection
+$conn = getDatabaseConnection();
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch product details
 $Product_ID = isset($_GET['Product_ID']) ? intval($_GET['Product_ID']) : 0;
 $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category FROM Product WHERE Product_ID = ?");
 if (!$stmt) {
@@ -34,7 +30,6 @@ if (!$product) {
     die("Product not found.");
 }
 
-// Fetch recommended products
 $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Image, Price FROM Product WHERE Product_ID != ? ORDER BY RAND() LIMIT 3");
 $stmt->bind_param("i", $Product_ID);
