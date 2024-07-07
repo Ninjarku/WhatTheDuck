@@ -260,8 +260,10 @@ include 'includes/navbar.php';
                         }
                         else {
                             Swal.fire({
-                            icon: response.icon,
-                            html: response.message,
+                                icon: response.icon,
+                                title: response.title,
+                                icon: response.icon,
+                                html: response.message,
                             })
                         }
                     }   
