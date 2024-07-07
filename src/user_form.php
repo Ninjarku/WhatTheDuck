@@ -24,6 +24,7 @@ $user = [
 if ($Form_Type == 1 && $action === 'editUser') {
     $User_ID = isset($_GET['User_ID']) ? intval($_GET['User_ID']) : 0;
     $userData = getUserbyUserID($User_ID);
+    $userDataArray = json_decode($userData, true); 
     if ($userData && is_array($userData)) {
         $user = array_merge($user, $userData);
     }
