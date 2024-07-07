@@ -198,7 +198,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $response["icon"] = "";
         $response["title"] = "";
-        $response["redirect"] = "zhenyufunction.php";
+        $response["redirect"] = "process_sendreceipt.php";
     }
     
     echo json_encode($response);
