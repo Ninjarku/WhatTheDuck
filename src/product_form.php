@@ -1,7 +1,8 @@
 <?php
+session_start();
 require 'jwt/jwt_cookie.php';
-$decodedToken = checkAuthentication('Sales Admin');
-include 'includes/navbar.php';
+checkAuthentication('Sales Admin');
+include "includes/navbar.php";
 
 $Form_Type = isset($_GET['Form_Type']) ? intval($_GET['Form_Type']) : 0;
 $action = isset($_GET['action']) ? $_GET['action'] : '';
