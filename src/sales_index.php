@@ -1,7 +1,8 @@
 <?php
+session_start();
 require 'jwt/jwt_cookie.php';
-include "includes/navbar.php";
 checkAuthentication('Sales Admin');
+include "includes/navbar.php";
 ?>
 
 <!DOCTYPE html>

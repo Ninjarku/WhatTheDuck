@@ -77,17 +77,24 @@ function checkAuthentication($requiredRole = null)
                 return $decodedToken; // Valid token and correct role
             } else {
                 // Token is invalid or expired, prompt for re-login
-                session_destroy();
+                if (session_status() == PHP_SESSION_ACTIVE) {
+                    session_destroy();
+                }
                 unsetJWTInCookie();
                 header("Location: Login.php?message=" . urlencode('Session expired or invalid. Please log in again.'));
                 exit();
             }
         } else {
-            session_destroy();
+            if (session_status() == PHP_SESSION_ACTIVE) {
+                session_destroy();
+            }
             header("Location: Login.php?message=" . urlencode('No token found. Please log in.'));
             exit();
         }
     } catch (Exception $e) {
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
         header("Location: error_page.php?error_id=0&error=" . urlencode('Error: ' . $e->getMessage()));
         exit();
     }
