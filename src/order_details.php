@@ -164,7 +164,7 @@ $conn->close();
                     <?php endforeach; ?>
                 </div>
                 <?php
-                $closeUrl = $_SESSION['role'] === 'Sales Admin' ? 'sales_index.php' : 'my_orders.php';
+                $closeUrl = $_SESSION['role'] === 'Sales Admin' ? 'my_orders.php' : 'sales_order.php';
                 ?>
                 <a href="<?php echo $closeUrl; ?>" class="btn-close">Close</a>
             <?php else: ?>
