@@ -42,7 +42,7 @@ include "includes/navbar.php";
     <p class="text-center"><?php echo htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'); ?></p>
     <?php
     $error_redirects = [
-        0 => ["Back to Login Page", "Login.php"],
+        0 => ["Back to Home Page", "index.php"],
         1 => ["Back to IT Admin Page", "admin_index.php"],
         2 => ["Back to User Form", "user_form.php"],
         3 => ["Back to Sales Admin Page", "sales_index.php"],
