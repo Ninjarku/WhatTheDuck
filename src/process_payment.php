@@ -175,6 +175,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $stmt->close();
 
+            # Quantity 
+            $stmt = $conn->prepare("UPDATE Product SET Quantity = Quantity - ? WHERE Product_ID = ?");
+            $stmt->bind_param('is', $Quantity, $Product_ID);
+            $stmt->execute();
+    
+            if ($stmt->affected_rows < 1) {
+                $success = false;
+            } 
+    
+            $stmt->close();
 
             # Delete cart object
             $stmt = $conn->prepare("DELETE FROM Cart WHERE Cart_ID = ?");
