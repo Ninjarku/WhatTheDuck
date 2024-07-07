@@ -23,7 +23,7 @@ $user = [
 
 if ($Form_Type == 1 && $action === 'editUser') {
     $User_ID = isset($_GET['User_ID']) ? intval($_GET['User_ID']) : 0;
-    getUserbyUserID($User_ID);
+    $userData = getUserbyUserID($User_ID);
     if ($userData && is_array($userData)) {
         $user = array_merge($user, $userData);
     }
