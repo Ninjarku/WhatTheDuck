@@ -47,7 +47,7 @@ if ($_SESSION['Order_Num']) {
         die("Connection failed: " . $conn->connect_error);
     } else {
 
-        $stmt = $conn->prepare("SELECT Billing_Address, User_ID FROM Order WHERE Order_Num = ?");
+        $stmt = $conn->prepare("SELECT Billing_Address, User_ID FROM `Order` WHERE Order_Num = ?");
         if (!$stmt) {
             die('Prepare failed: ' . $conn->error);
         }
