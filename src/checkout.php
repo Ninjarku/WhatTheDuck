@@ -7,49 +7,49 @@ if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
     header("Location: Login.php");
     exit();
 }
-include_once "includes/navbar.php";
-
-$User_ID = $_SESSION['userid'];  
 
 if (isset($_POST['selectedCartIds'])) {
     $cart_ids = $_POST['selectedCartIds'];
-    
+
     $totalprice = 0;
 
-    // Create database connection.
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-    $arrResult = [];
-    // An array to hold the rows of data
-    $rows = array();
-    // Loop through each cart ID and retrieve the record from the database
-    $cartitem = array(); 
-    for ($x = 0; $x < sizeof($cart_ids); $x++) { 
-        $stmt = $conn->prepare("SELECT c.Cart_ID, c.Quantity, c.Price, p.Product_Name, p.Product_Image 
-                            FROM Cart c
-                            JOIN Product p ON c.Product_ID = p.Product_ID 
-                            WHERE c.Cart_ID = ? AND User_ID = ? ");
-        $stmt->bind_param('ii', $cart_ids[$x], $User_ID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $cartitem[] = $row;
-            }
-        }
-    }
-
-    if (empty($cartitem)) {
-        header("Location: cart.php");
-        exit();
-    }
+            // Create database connection.
+            $config = parse_ini_file('/var/www/private/db-config.ini');
+            $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
     
-    $_SESSION['selectedCartIds'] = $cart_ids;
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+            $arrResult = [];
+            // An array to hold the rows of data
+            $rows = array();
+            // Loop through each cart ID and retrieve the record from the database
+            $cartitem = array(); 
+            for ($x = 0; $x < sizeof($cart_ids); $x++) { 
+                $stmt = $conn->prepare("SELECT c.Cart_ID, c.Quantity, c.Price, p.Product_Name, p.Product_Image 
+                                    FROM Cart c
+                                    JOIN Product p ON c.Product_ID = p.Product_ID 
+                                    WHERE c.Cart_ID = ? AND User_ID = ? ");
+                $stmt->bind_param('ii', $cart_ids[$x], $User_ID);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $cartitem[] = $row;
+                    }
+                }
+            }
+}
+
+if (empty($cartitem)) {
+    header("Location: cart.php");
+    exit();
+}
+
+include_once "includes/navbar.php";
+
+$User_ID = $_SESSION['userid'];    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,6 +75,10 @@ if (isset($_POST['selectedCartIds'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+<?php   
+    if (isset($_POST['selectedCartIds']) && !empty($cartitem)) {
+        $_SESSION['selectedCartIds'] = $cart_ids;
+    ?>
     <header>
         <h1 class="visually-hidden">Checkout</h1>        
     </header>
