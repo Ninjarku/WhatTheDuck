@@ -7,6 +7,10 @@ if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
     header("Location: Login.php");
     exit();
 }
+
+require_once 'jwt/jwt_cookie.php';
+checkAuthentication('Customer');
+
 include_once "includes/navbar.php";
 
 $User_ID = $_SESSION['userid'];    

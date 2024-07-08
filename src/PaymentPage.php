@@ -1,5 +1,9 @@
 <?php
 session_start();
+// Ensures user is logged in
+require_once 'jwt/jwt_cookie.php';
+checkAuthentication('Customer');
+
 
 if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
     header("Location: Login.php");
@@ -10,6 +14,7 @@ $User_ID = $_SESSION['userid'];
 
 include 'includes/navbar.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 

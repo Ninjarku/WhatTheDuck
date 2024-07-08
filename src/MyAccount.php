@@ -1,6 +1,8 @@
 <?php
 session_start();
-include "includes/navbar.php";
+require_once 'jwt/jwt_cookie.php';
+checkAuthenticated();
+include_once "includes/navbar.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">

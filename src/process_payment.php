@@ -1,5 +1,8 @@
 <?php
 session_start();
+require_once 'jwt/jwt_cookie.php';
+checkAuthentication('Customer');
+
 header('Content-Type: application/json');
 
 $User_ID = $_SESSION['userid'];

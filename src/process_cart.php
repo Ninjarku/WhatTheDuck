@@ -1,6 +1,8 @@
 <?php
 
 session_start(); 
+require_once 'jwt/jwt_cookie.php';
+checkAuthentication('Customer');
 
 // Database connection
 function getDatabaseConnection(){
