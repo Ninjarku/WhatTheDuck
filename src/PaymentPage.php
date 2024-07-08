@@ -26,6 +26,7 @@ if (isset($_POST['selectedCartIds'])) {
     $rows = array();
     // Loop through each cart ID and retrieve the record from the database
     $cartitem = array(); 
+    $cartids = array();
     for ($x = 0; $x < sizeof($cart_ids); $x++) { 
         $stmt = $conn->prepare("SELECT c.Cart_ID, c.Quantity, c.Price, p.Product_Name, p.Product_Image 
                             FROM Cart c
@@ -37,16 +38,20 @@ if (isset($_POST['selectedCartIds'])) {
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $cartitem[] = $row;
+                $cartids[] = $row['Cart_ID'];
             }
         }
     }
 
-    $_SESSION['selectedCartIds'] = $cart_ids;
+    if (empty($cartids)) {
+        header("Location: cart.php");
+        exit();
+    }
+
+    $_SESSION['selectedCartIds'] = $cartids;
 }else { 
     // Redirect back to cart if no items selected
-    echo "<script> 
-        window.location.href = 'cart.php';
-    </script>";
+    header("Location: cart.php");
     exit();
 }
 
