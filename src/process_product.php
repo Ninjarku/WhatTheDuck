@@ -2,12 +2,20 @@
 session_start();
 header('Content-Type: application/json');
 
+require_once 'jwt/jwt_cookie.php';
+
 $response = array(
     "icon" => "error",
     "title" => "Operation failed!",
     "message" => "Please try again.",
     "redirect" => null
 );
+
+$decodedToken = checkAuthentication('Sales Admin');
+if (!$decodedToken) {
+    echo json_encode($response);
+    exit();
+}
 
 function getDatabaseConnection()
 {
