@@ -8,6 +8,8 @@ if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
 
 $User_ID = $_SESSION['userid']; 
 
+include 'includes/navbar.php';
+
 if (isset($_POST['selectedCartIds'])) {
     $cart_ids = $_POST['selectedCartIds'];
 
@@ -59,8 +61,6 @@ if (isset($_POST['selectedCartIds'])) {
     </script>";
     exit();
 }
-
-include 'includes/navbar.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
