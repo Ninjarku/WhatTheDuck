@@ -191,13 +191,18 @@ function uploadProductImage($productData)
 
     $Product_ID = sanitize_input($productData['Product_ID']);
 
-    $allowed_types = ['image/jpeg', 'image/png'];
-    $max_size = 1 * 1024 * 1024;
+    // Validate image file
     if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
-        $file_type = $_FILES['Product_Image']['type'];
+        $allowed_extensions = ['jpg', 'jpeg', 'png'];
+        $max_size = 1 * 1024 * 1024; // 1MB
+        $file_extension = strtolower(pathinfo($_FILES['Product_Image']['name'], PATHINFO_EXTENSION));
         $file_size = $_FILES['Product_Image']['size'];
 
-        if (!in_array($file_type, $allowed_types)) {
+        // Use Fileinfo to get MIME type
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime_type = $finfo->file($_FILES['Product_Image']['tmp_name']);
+
+        if (!in_array($file_extension, $allowed_extensions) || !in_array($mime_type, ['image/jpeg', 'image/png'])) {
             $response["message"] = 'Invalid file type. Only JPG and PNG files are allowed.';
             return json_encode($response);
         }
@@ -224,6 +229,7 @@ function uploadProductImage($productData)
         return json_encode($response);
     }
 
+    // Bind image data as a blob
     $null = NULL;
     $stmt->bind_param("bi", $null, $Product_ID);
     $stmt->send_long_data(0, $image);
@@ -241,6 +247,7 @@ function uploadProductImage($productData)
     $response["message"] = "Product image uploaded successfully";
     return json_encode($response);
 }
+
 
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
 
