@@ -181,21 +181,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_param('i', $Product_ID);
             $result = $stmt->get_result();
             if ($result->num_rows > 0) {
+                $CheckQuantity;
                 while ($row = $result->fetch_assoc()) {
                     $CheckQuantity = $row['Quantity'];
                 }
+
+                if ($CheckQuantity < 1) {
+                    $stmt2 = $conn->prepare("UPDATE Product SET Product_Available = 0 WHERE Product_ID = ?");
+                    $stmt2->bind_param('i', $Product_ID);
+                    if (!$stmt2->execute()) {
+                        $success = false;
+                        checkProcessSuccess($success);
+                    }
+                    $stmt2->close();
+                }
             }
             $stmt->close();
-
-            if ($CheckQuantity <= 0) {
-                $stmt = $conn->prepare("UPDATE Product SET Product_Available = 0 WHERE Product_ID = ?");
-                $stmt->bind_param('i', $Product_ID);
-                if (!$stmt->execute()) {
-                    $success = false;
-                    checkProcessSuccess($success);
-                }
-                $stmt->close();
-            }
 
             $stmt = $conn->prepare("DELETE FROM Cart WHERE Cart_ID = ?");
             $stmt->bind_param('i', $Cart_ID);
