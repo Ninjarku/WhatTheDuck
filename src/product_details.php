@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once 'jwt/jwt_cookie.php';
+$decodedToken = checkGuestAccess();
 include_once 'includes/navbar.php';
 
 $config = parse_ini_file('/var/www/private/db-config.ini');
@@ -161,8 +163,16 @@ $conn->close();
             padding: 10px;
             background-color: #f1f1f1;
         }
+
+        .btn-disabled {
+            background-color: #ccc;
+            border: none;
+            color: white;
+            cursor: not-allowed;
+        }
     </style>
 </head>
+
 
 <body>
     <div class="container">
@@ -179,15 +189,20 @@ $conn->close();
                 <h2><?php echo htmlspecialchars($product['Product_Name']); ?></h2>
                 <p><?php echo htmlspecialchars($product['Product_Description']); ?></p>
                 <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
-                <form action="process_cart.php?action=additem&productid=<?php echo $product['Product_ID']; ?>" method="post"> <!-- Add your add to cart process -->
-                    <input type="hidden" name="Product_ID"
-                        value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
-                    <input type="hidden" name="product_name"
-                        value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
-                    <input type="hidden" name="product_price"
-                        value="<?php echo htmlspecialchars($product['Price']); ?>">
-                    <button type="submit" class="btn btn-primary">Add to Cart</button>
-                </form>
+                <?php if (isset($decodedToken) && ($decodedToken['rol'] === 'Sales Admin' || $decodedToken['rol'] === 'IT Admin')): ?>
+                    <button class="btn btn-disabled">Add to Cart</button>
+                <?php else: ?>
+                    <form action="process_cart.php?action=additem&productid=<?php echo $product['Product_ID']; ?>"
+                        method="post">
+                        <input type="hidden" name="Product_ID"
+                            value="<?php echo htmlspecialchars($product['Product_ID']); ?>">
+                        <input type="hidden" name="product_name"
+                            value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
+                        <input type="hidden" name="product_price"
+                            value="<?php echo htmlspecialchars($product['Price']); ?>">
+                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
 
