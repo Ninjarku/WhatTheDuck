@@ -151,7 +151,7 @@ public class AppTest {
             driver.get("https://whattheduck.ddns.net/checkout.php");
 
             System.out.println("Clicking 'Proceed to payment' button...");
-            WebElement proceedToPaymentButton = driver.findElement(By.xpath("//button[text()='Proceed to payment']"));
+            WebElement proceedToPaymentButton = driver.findElement(By.id("checkout-btn"));
             proceedToPaymentButton.click();
 
             System.out.println("Navigating to payment page...");
