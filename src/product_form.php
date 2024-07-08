@@ -88,7 +88,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
 
 <body>
     <div class="container">
-        <div class"form-content">
+        <div class="form-content">
             <h2><?php echo $Form_Type == 1 ? 'Edit Product' : 'Add Product'; ?></h2>
             <form id="product-form" method="post"
                 action="process_product.php?action=<?php echo $Form_Type == 1 ? 'editProduct' : 'addProduct'; ?>">
