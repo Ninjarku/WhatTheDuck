@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $cust_rol = $row["User_Type"];
                 $account_active = $row["Account_Active"];
 
+                //Check if account is active
                 if ($account_active != 1) {
                     $response["message"] = "Your account is not active. Please contact support.";
                 } elseif (password_verify($cust_pw, $db_password)) {
