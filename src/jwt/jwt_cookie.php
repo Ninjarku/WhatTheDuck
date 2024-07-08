@@ -61,7 +61,7 @@ function getJWTFromCookie($cookieName = 'auth_token')
     }
 }
 
-function checkAuthentication($requiredRole = null)
+function checkAuthentication($requiredRole = null, $allowGuest = false)
 {
     try {
         $publicKeyPath = '/var/www/private/public.pem';
@@ -85,11 +85,15 @@ function checkAuthentication($requiredRole = null)
                 exit();
             }
         } else {
-            if (session_status() == PHP_SESSION_ACTIVE) {
-                session_destroy();
+            if ($allowGuest) {
+                return null; // Allow guests to access the page
+            } else {
+                if (session_status() == PHP_SESSION_ACTIVE) {
+                    session_destroy();
+                }
+                header("Location: Login.php?message=" . urlencode('No token found. Please log in.'));
+                exit();
             }
-            header("Location: Login.php?message=" . urlencode('No token found. Please log in.'));
-            exit();
         }
     } catch (Exception $e) {
         if (session_status() == PHP_SESSION_ACTIVE) {
@@ -100,7 +104,8 @@ function checkAuthentication($requiredRole = null)
     }
 }
 
-function authenticationCheckWithOrderValidation($User_ID){
+function authenticationCheckWithOrderValidation($User_ID)
+{
     try {
         $publicKeyPath = '/var/www/private/public.pem';
 
@@ -110,23 +115,21 @@ function authenticationCheckWithOrderValidation($User_ID){
             $decodedToken = validateJWT($jwt, $publicKeyPath);
             if ($decodedToken) {
                 //echo 'Valid JWT: ', json_encode($decodedToken);
-                
-                if ($decodedToken['rol'] == "Sales Admin" || $decodedToken['rol'] == "IT Admin"){
+
+                if ($decodedToken['rol'] == "Sales Admin" || $decodedToken['rol'] == "IT Admin") {
                     // Permit access to SalesAdmin and ITAdmin
                     return true;
-                }
-                else if ($decodedToken['rol'] == "Customer" && $decodedToken['id'] == $User_ID) {
+                } else if ($decodedToken['rol'] == "Customer" && $decodedToken['id'] == $User_ID) {
                     // Allow customer access if the user ID matches
                     return true;
-                }
-                else {
+                } else {
                     // Unauthorized access
                     ?>
-                    <script>
-                        window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Unauthorized access to order details.');
-                    </script>
-                    <?php
-                    exit();
+                        <script>
+                            window.location.href = 'error_page.php?error_id=0&error=' + encodeURIComponent('Unauthorized access to order details.');
+                        </script>
+                        <?php
+                        exit();
                 }
             } else {
                 ?>
@@ -147,7 +150,7 @@ function authenticationCheckWithOrderValidation($User_ID){
     } catch (Exception $e) {
         echo 'Error: ', $e->getMessage(), "\n";
         exit();
-    }    
+    }
 }
 
 function blacklistToken($token)
