@@ -237,7 +237,7 @@ function markAsShipped($Order_Num)
         return json_encode($response);
     }
 
-    $stmt->bind_param("i", $Order_Num);
+    $stmt->bind_param("s", $Order_Num);
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
         return json_encode($response);
@@ -278,8 +278,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'markAsReceived' && isset($_POST['Order_Num'])) {
         echo markAsReceived($_POST['Order_Num']);
-    } elseif ($action === 'editOrder') {
-        echo editOrder($_POST);
+    } elseif ($action === 'markAsShipped' && isset($_POST['Order_Num'])) {
+        echo markAsReceived($_POST['Order_Num']);
     }
 }
 ?>
