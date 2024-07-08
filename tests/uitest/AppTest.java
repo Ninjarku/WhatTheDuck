@@ -54,11 +54,10 @@ public class AppTest {
             driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
             driver.findElement(By.id("submit")).click();
 
-            driver.get("https://whattheduck.ddns.net/index.php");
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[contains(text(),'" + validUsername + "')]")));
-
-            WebElement usernameLink = driver.findElement(By.xpath("//a[contains(text(),'" + validUsername + "')]"));
-            assertTrue(usernameLink.isDisplayed());
+            // Check for the success button in the popup
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Return to Home']")));
+            WebElement successButton = driver.findElement(By.xpath("//button[text()='Return to Home']"));
+            assertTrue(successButton.isDisplayed());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
