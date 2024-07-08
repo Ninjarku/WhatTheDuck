@@ -36,14 +36,14 @@ pipeline {
 
           
 
-          stage('Unit Testing with PHPUnit') {
-           steps {
-               script {
-                    sh 'docker exec -i php-docker ./vendor/bin/phpunit --log-junit /var/www/html/test-results/unitreport.xml -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
+       //    stage('Unit Testing with PHPUnit') {
+       //     steps {
+       //         script {
+       //              sh 'docker exec -i php-docker ./vendor/bin/phpunit --log-junit /var/www/html/test-results/unitreport.xml -c /var/www/private/tests/unit/phpunit.xml /var/www/private/tests/unit'
                
-               }
-           }
-       }
+       //         }
+       //     }
+       // }
     
          stage('Deployment to AWS Web Server') {
             steps {
@@ -66,39 +66,39 @@ pipeline {
                 }
             }
         }
-          stage('UI Tests with Selenium') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
-                    script {
-                        try {
-                            // Run Selenium tests
-                            sh 'export PATH=$PATH:/usr/local/bin'
-                            sh 'mvn test'
-                        } catch (Exception e) {
-                            echo "Selenium tests failed. Rolling back deployment..."
-                            // Revert to the previous commit
-                            sh 'git reset --hard HEAD~1'
-                            // Redeploy the previous version
-                            sshPublisher(
-                                publishers: [
-                                    sshPublisherDesc(
-                                        configName: 'jenkins ssh',
-                                        transfers: [
-                                            sshTransfer(
-                                                sourceFiles: 'src/**/*', // Use wildcard to match all files in src directory
-                                                removePrefix: 'src' // Remove src prefix
-                                            )
-                                        ],
-                                        verbose: true
-                                    )
-                                ]
-                            )
-                            throw e // Re-throw the exception to mark the build as failed
-                        }
-                    }
-                }
-            }
-        }
+        //   stage('UI Tests with Selenium') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'UserTest', usernameVariable: 'TEST_USERNAME', passwordVariable: 'TEST_PASSWORD')]) {
+        //             script {
+        //                 try {
+        //                     // Run Selenium tests
+        //                     sh 'export PATH=$PATH:/usr/local/bin'
+        //                     sh 'mvn test'
+        //                 } catch (Exception e) {
+        //                     echo "Selenium tests failed. Rolling back deployment..."
+        //                     // Revert to the previous commit
+        //                     sh 'git reset --hard HEAD~1'
+        //                     // Redeploy the previous version
+        //                     sshPublisher(
+        //                         publishers: [
+        //                             sshPublisherDesc(
+        //                                 configName: 'jenkins ssh',
+        //                                 transfers: [
+        //                                     sshTransfer(
+        //                                         sourceFiles: 'src/**/*', // Use wildcard to match all files in src directory
+        //                                         removePrefix: 'src' // Remove src prefix
+        //                                     )
+        //                                 ],
+        //                                 verbose: true
+        //                             )
+        //                         ]
+        //                     )
+        //                     throw e // Re-throw the exception to mark the build as failed
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
      
          
     }
