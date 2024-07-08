@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once 'jwt/jwt_cookie.php';
+$decodedToken = checkAuthentication();
 include 'includes/navbar.php';
 
 // Database connection
@@ -136,13 +138,19 @@ $conn->close();
                             </a>
                             <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
                             <!-- Add to cart button -->
-                            <form action="process_cart.php?action=additem&productid=<?php echo $product['Product_ID']; ?>" method="post">
-                                <input type="hidden" name="product_name"
-                                    value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
-                                <input type="hidden" name="product_price"
-                                    value="<?php echo htmlspecialchars($product['Price']); ?>">
-                                <button type="submit" class="btn btn-primary btn-buy-now">Add To Cart </button>
-                            </form>
+                            <?php if ($decodedToken['rol'] !== 'IT Admin' && $decodedToken['rol'] !== 'Sales Admin'): ?>
+                                <form action="process_cart.php?action=additem&productid=<?php echo $product['Product_ID']; ?>"
+                                    method="post">
+                                    <input type="hidden" name="product_name"
+                                        value="<?php echo htmlspecialchars($product['Product_Name']); ?>">
+                                    <input type="hidden" name="product_price"
+                                        value="<?php echo htmlspecialchars($product['Price']); ?>">
+                                    <button type="submit" class="btn btn-primary btn-buy-now">Add To Cart</button>
+                                </form>
+                            <?php else: ?>
+                                <button class="btn btn-primary btn-buy-now" disabled title="Admins cannot purchase products.">Add To
+                                    Cart</button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
