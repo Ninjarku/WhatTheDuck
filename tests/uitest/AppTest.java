@@ -111,7 +111,7 @@ public class AppTest {
         }
     }
     @Test
-    public void testAddingtoCartWithValidCredentials() {
+    public void testLogintoFullPaymentWithValidCredentials() {
         driver.get(loginUrl);
 
         try {
@@ -146,6 +146,30 @@ public class AppTest {
             System.out.println("Clicking 'Proceed to checkout' button...");
             WebElement proceedToCheckoutButton = driver.findElement(By.xpath("//button[text()='Proceed to checkout']"));
             proceedToCheckoutButton.click();
+            
+            System.out.println("Navigating to checkout page...");
+            driver.get("https://whattheduck.ddns.net/checkout.php");
+
+            System.out.println("Clicking 'Proceed to payment' button...");
+            WebElement proceedToPaymentButton = driver.findElement(By.xpath("//button[text()='Proceed to payment']"));
+            proceedToPaymentButton.click();
+
+            System.out.println("Navigating to payment page...");
+            driver.get("https://whattheduck.ddns.net/PaymentPage.php");
+
+            System.out.println("Filling out payment form...");
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("full_name")));
+            driver.findElement(By.name("full_name")).sendKeys("John Doe");
+            driver.findElement(By.name("phone_number")).sendKeys("123456789");
+            driver.findElement(By.name("address")).sendKeys("1234 Duck Street");
+            driver.findElement(By.name("postal_code")).sendKeys("123456");
+            driver.findElement(By.name("unit_no")).sendKeys("12A");
+            driver.findElement(By.name("payment_method")).sendKeys("Credit Card");
+
+            System.out.println("Clicking 'Pay Now' button...");
+            WebElement payNowButton = driver.findElement(By.xpath("//button[text()='Pay Now']"));
+            
+            payNowButton.click();
 
             // Add assertions as necessary to verify the checkout process
             System.out.println("Test completed successfully.");
