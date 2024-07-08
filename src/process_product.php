@@ -119,7 +119,7 @@ function addProduct($productData)
     $stmt->close();
     $conn->close();
 
-    $response["icon"] = "sucess";
+    $response["icon"] = "success";
     $response["title"] = "Product Added";
     $response["message"] = "Product added successfully";
     $response["redirect"] = "sales_index.php";
