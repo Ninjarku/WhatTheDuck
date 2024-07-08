@@ -9,7 +9,53 @@ if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
 $User_ID = $_SESSION['userid']; 
 
 include 'includes/navbar.php';
+?>
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatTheDuck - Payment</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body,
+        html {
+            font-family: 'Comic Neue', cursive;
+            background-color: #fff5cc;
+            height: 100%;
+            margin: 0;
+            background-color: #fff5cc;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .payment-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            text-align: left;
+            padding: 20px;
+            margin: 10px auto;
+            background-color: #fff;
+            max-width: 600px;
+        }
+
+        .navbar,
+        .footer {
+            margin-bottom: 20px;
+        }
+
+        #submitBtn:disabled {
+            background-color: #8a8a8a;
+        }
+    </style>
+</head>
+
+<?php
 if (isset($_POST['selectedCartIds'])) {
     $cart_ids = $_POST['selectedCartIds'];
 
@@ -62,50 +108,6 @@ if (isset($_POST['selectedCartIds'])) {
     exit();
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatTheDuck - Payment</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        body,
-        html {
-            font-family: 'Comic Neue', cursive;
-            background-color: #fff5cc;
-            height: 100%;
-            margin: 0;
-            background-color: #fff5cc;
-        }
-
-        .container {
-            margin-top: 20px;
-        }
-
-        .payment-card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            text-align: left;
-            padding: 20px;
-            margin: 10px auto;
-            background-color: #fff;
-            max-width: 600px;
-        }
-
-        .navbar,
-        .footer {
-            margin-bottom: 20px;
-        }
-
-        #submitBtn:disabled {
-            background-color: #8a8a8a;
-        }
-    </style>
-</head>
 
 <body>
     <div class="container">
