@@ -156,7 +156,7 @@ public class AppTest {
             System.out.println("Navigating to payment page...");
     
             System.out.println("Filling out payment form...");
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("full_name")));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("fullName")));
             driver.findElement(By.name("fullName")).sendKeys("John Doe");
             driver.findElement(By.name("phoneNumber")).sendKeys("123456789");
             driver.findElement(By.name("address")).sendKeys("1234 Duck Street");
