@@ -19,9 +19,11 @@ if (!$decodedToken) {
 
 //Prevent direct url access
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
-if (empty($action) || ($action === 'uploadImage' && empty($_POST['Product_ID'])) || 
-    ($action === 'editProduct' && empty($_POST['Product_ID'])) || 
-    ($action === 'deleteProduct' && empty($_POST['Product_ID']))) {
+if (
+    empty($action) || ($action === 'uploadImage' && empty($_POST['Product_ID'])) ||
+    ($action === 'editProduct' && empty($_POST['Product_ID'])) ||
+    ($action === 'deleteProduct' && empty($_POST['Product_ID']))
+) {
     header("Location: error_page.php?error_id=0&error=" . urlencode('Invalid or missing parameters'));
     exit();
 }
@@ -124,32 +126,6 @@ function addProduct($productData)
         $response["redirect"] = "sales_index.php";
         return json_encode($response);
     }
-<<<<<<< HEAD
-=======
-
-    $name = sanitize_input($productData['Product_Name']);
-    $description = sanitize_input($productData['Product_Description']);
-    $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT);
-    $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
-    $category = sanitize_input($productData['Product_Category']);
-    $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
-
-    $stmt->bind_param("ssdisi", $name, $description, $price, $quantity, $category, $available);
-
-    if (!$stmt->execute()) {
-        $response["message"] = 'Execute failed: ' . $stmt->error;
-        return json_encode($response);
-    }
-
-    $stmt->close();
-    $conn->close();
-
-    $response["icon"] = "success";
-    $response["title"] = "Product Added";
-    $response["message"] = "Product added successfully";
-    $response["redirect"] = "sales_index.php";
-    return json_encode($response);
->>>>>>> d2bcc250ae19bb6e2760bb4c70b3692427ee0cec
 }
 
 function editProduct($productData)
@@ -190,6 +166,7 @@ function editProduct($productData)
     $response["redirect"] = "sales_index.php";
     return json_encode($response);
 }
+
 function deleteProduct($Product_ID)
 {
     $conn = getDatabaseConnection();
