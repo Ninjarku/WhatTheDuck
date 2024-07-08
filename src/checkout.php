@@ -68,6 +68,13 @@ $User_ID = $_SESSION['userid'];
                 }
             }
         }
+
+        if (empty($cartitem)) {
+            echo "<script> 
+            window.location.href = 'cart.php';
+            </script>";
+            exit();
+        }
         
         $_SESSION['selectedCartIds'] = $cart_ids;
     ?>
