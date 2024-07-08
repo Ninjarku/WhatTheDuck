@@ -83,38 +83,38 @@ function addProduct($productData)
     if ($result->num_rows > 0) {
         $response["message"] = 'Product name is already taken.';
         return json_encode($response);
-    }
+    } else {
+        $stmt->close();
 
-    $stmt->close();
+        $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?)");
+        if (!$stmt) {
+            $response["message"] = 'Prepare failed: ' . $conn->error;
+            return json_encode($response);
+        }
 
-    $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?)");
-    if (!$stmt) {
-        $response["message"] = 'Prepare failed: ' . $conn->error;
+        $name = sanitize_input($productData['Product_Name']);
+        $description = sanitize_input($productData['Product_Description']);
+        $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT);
+        $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
+        $category = sanitize_input($productData['Product_Category']);
+        $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
+
+        $stmt->bind_param("ssdisi", $name, $description, $price, $quantity, $category, $available);
+
+        if (!$stmt->execute()) {
+            $response["message"] = 'Execute failed: ' . $stmt->error;
+            return json_encode($response);
+        }
+
+        $stmt->close();
+        $conn->close();
+
+        $response["icon"] = "sucess";
+        $response["title"] = "Product Added";
+        $response["message"] = "Product added successfully";
+        $response["redirect"] = "sales_index.php";
         return json_encode($response);
     }
-
-    $name = sanitize_input($productData['Product_Name']);
-    $description = sanitize_input($productData['Product_Description']);
-    $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT);
-    $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
-    $category = sanitize_input($productData['Product_Category']);
-    $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
-
-    $stmt->bind_param("ssdisi", $name, $description, $price, $quantity, $category, $available);
-
-    if (!$stmt->execute()) {
-        $response["message"] = 'Execute failed: ' . $stmt->error;
-        return json_encode($response);
-    }
-
-    $stmt->close();
-    $conn->close();
-
-    $response["icon"] = "sucess";
-    $response["title"] = "Product Added";
-    $response["message"] = "Product added successfully";
-    $response["redirect"] = "sales_index.php";
-    return json_encode($response);
 }
 
 function editProduct($productData)

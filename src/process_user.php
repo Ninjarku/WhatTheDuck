@@ -77,59 +77,60 @@ function addUser($userData)
     if ($result->num_rows > 0) {
         $response["message"] = 'Username is already taken.';
         return json_encode($response);
-    }
-
-    $stmt->close();
-
-    $stmt = $conn->prepare("INSERT INTO User (Username, Password, Email, Mobile_Number, Billing_Address, Gender, DOB, User_Type, Account_Active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    if (!$stmt) {
-        $response["message"] = 'Prepare failed: ' . $conn->error;
-        return json_encode($response);
-    }
-
-    $username = sanitize_input($userData["Username"]);
-    $hashedPassword = password_hash(sanitize_input($userData["Password"]), PASSWORD_DEFAULT);
-    $email = sanitize_input($userData["Email"]);
-    $mobileNumber = validate_mobile_number($userData["Mobile_Number"]);
-    $billingAddress = sanitize_input($userData["Billing_Address"]);
-    $gender = sanitize_input($userData["Gender"]);
-    $dob = sanitize_input($userData["DOB"]);
-    $userType = sanitize_input($userData["User_Type"]);
-    $accountActive = isset($userData["Account_Active"]) && $userData["Account_Active"] == 1 ? 1 : 0;
-
-    if ($mobileNumber === false) {
-        $response["message"] = 'Invalid mobile number format.';
-        return json_encode($response);
     } else {
-        $mobileNumber = sanitize_input($userData["Mobile_Number"]);
-    }
 
-    $stmt->bind_param(
-        "ssssssssi",
-        $username,
-        $hashedPassword,
-        $email,
-        $mobileNumber,
-        $billingAddress,
-        $gender,
-        $dob,
-        $userType,
-        $accountActive
-    );
+        $stmt->close();
 
-    if (!$stmt->execute()) {
-        $response["message"] = 'Execute failed: ' . $stmt->error;
+        $stmt = $conn->prepare("INSERT INTO User (Username, Password, Email, Mobile_Number, Billing_Address, Gender, DOB, User_Type, Account_Active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        if (!$stmt) {
+            $response["message"] = 'Prepare failed: ' . $conn->error;
+            return json_encode($response);
+        }
+
+        $username = sanitize_input($userData["Username"]);
+        $hashedPassword = password_hash(sanitize_input($userData["Password"]), PASSWORD_DEFAULT);
+        $email = sanitize_input($userData["Email"]);
+        $mobileNumber = validate_mobile_number($userData["Mobile_Number"]);
+        $billingAddress = sanitize_input($userData["Billing_Address"]);
+        $gender = sanitize_input($userData["Gender"]);
+        $dob = sanitize_input($userData["DOB"]);
+        $userType = sanitize_input($userData["User_Type"]);
+        $accountActive = isset($userData["Account_Active"]) && $userData["Account_Active"] == 1 ? 1 : 0;
+
+        if ($mobileNumber === false) {
+            $response["message"] = 'Invalid mobile number format.';
+            return json_encode($response);
+        } else {
+            $mobileNumber = sanitize_input($userData["Mobile_Number"]);
+        }
+
+        $stmt->bind_param(
+            "ssssssssi",
+            $username,
+            $hashedPassword,
+            $email,
+            $mobileNumber,
+            $billingAddress,
+            $gender,
+            $dob,
+            $userType,
+            $accountActive
+        );
+
+        if (!$stmt->execute()) {
+            $response["message"] = 'Execute failed: ' . $stmt->error;
+            return json_encode($response);
+        }
+
+        $stmt->close();
+        $conn->close();
+
+        $response["icon"] = "success";
+        $response["title"] = "User Added";
+        $response["message"] = "User added successfully";
+        $response["redirect"] = "admin_index.php";
         return json_encode($response);
     }
-
-    $stmt->close();
-    $conn->close();
-
-    $response["icon"] = "success";
-    $response["title"] = "User Added";
-    $response["message"] = "User added successfully";
-    $response["redirect"] = "admin_index.php";
-    return json_encode($response);
 }
 
 function editUser($userData)
