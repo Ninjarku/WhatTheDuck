@@ -8,7 +8,8 @@ if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
     exit();
 }
 include_once "includes/navbar.php";
-    
+
+$User_ID = $_SESSION['userid'];    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,6 +32,7 @@ include_once "includes/navbar.php";
     </script>
     <script src="js/cart.js" defer></script>
     <link rel="stylesheet" href="css/cart.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <?php   
@@ -56,8 +58,8 @@ include_once "includes/navbar.php";
             $stmt = $conn->prepare("SELECT c.Cart_ID, c.Quantity, c.Price, p.Product_Name, p.Product_Image 
                                 FROM Cart c
                                 JOIN Product p ON c.Product_ID = p.Product_ID 
-                                WHERE c.Cart_ID = ?");
-            $stmt->bind_param('i', $cart_ids[$x]);
+                                WHERE c.Cart_ID = ? AND User_ID = ? ");
+            $stmt->bind_param('ii', $cart_ids[$x], $User_ID);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result->num_rows > 0) {
@@ -129,8 +131,8 @@ include_once "includes/navbar.php";
         $conn->close();
     } else {
         // Redirect back to cart if no items selected
-        echo "<script>
-            alert('No items selected for checkout.');
+        echo "<script> 
+            Swal.fire('No item selected. Please try again.');
             window.location.href = 'cart.php';
         </script>";
         exit;
