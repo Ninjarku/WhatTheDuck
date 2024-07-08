@@ -2,12 +2,20 @@
 session_start();
 header('Content-Type: application/json');
 
+require_once 'jwt/jwt_cookie.php';
+
 $response = array(
     "icon" => "error",
     "title" => "Operation failed!",
     "message" => "Please try again.",
     "redirect" => null
 );
+
+$decodedToken = checkAuthentication('Sales Admin');
+if (!$decodedToken) {
+    echo json_encode($response);
+    exit();
+}
 
 function getDatabaseConnection()
 {
@@ -265,6 +273,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         echo deleteProduct($_POST['Product_ID']);
     } elseif ($action === 'uploadImage' && isset($_POST['Product_ID'])) {
         echo uploadProductImage($_POST);
+    } else {
+        $response["message"] = 'Invalid action';
+        echo json_encode($response);
     }
+} else {
+    $response["message"] = 'Invalid request method';
+    echo json_encode($response);
 }
 ?>
