@@ -137,7 +137,6 @@ public class AppTest {
             addToCartButton.click();
 
             System.out.println("Navigating to cart page...");
-            driver.get("https://whattheduck.ddns.net/cart.php");
 
             System.out.println("Selecting product checkbox...");
             WebElement productCheckbox = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type='checkbox']")));
@@ -148,15 +147,13 @@ public class AppTest {
             proceedToCheckoutButton.click();
             
             System.out.println("Navigating to checkout page...");
-            driver.get("https://whattheduck.ddns.net/checkout.php");
 
             System.out.println("Clicking 'Proceed to payment' button...");
             WebElement proceedToPaymentButton = driver.findElement(By.id("checkout-btn"));
             proceedToPaymentButton.click();
 
             System.out.println("Navigating to payment page...");
-            driver.get("https://whattheduck.ddns.net/PaymentPage.php");
-
+    
             System.out.println("Filling out payment form...");
             wait.until(ExpectedConditions.presenceOfElementLocated(By.name("full_name")));
             driver.findElement(By.name("full_name")).sendKeys("John Doe");
