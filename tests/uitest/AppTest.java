@@ -111,5 +111,48 @@ public class AppTest {
         }
     }
 
-   
-}
+    @Test
+    public void testAddingtoCartWithValidCredentials() {
+        driver.get(loginUrl);
+
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.name("cust_username")));
+            driver.findElement(By.name("cust_username")).sendKeys(validUsername);
+            driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
+            driver.findElement(By.id("submit")).click();
+
+          // Wait for the "Return to Home" button and click it
+            System.out.println("Waiting for 'Return to Home' button...");
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[text()='Return to Home']")));
+            WebElement returnToHomeButton = driver.findElement(By.xpath("//button[text()='Return to Home']"));
+            returnToHomeButton.click();
+
+            System.out.println("Verifying username is displayed on index page...");
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[contains(text(),'" + validUsername + "')]")));
+            WebElement usernameLink = driver.findElement(By.xpath("//a[contains(text(),'" + validUsername + "')]"));
+            assertTrue(usernameLink.isDisplayed());
+            System.out.println("Username is displayed: " + usernameLink.getText());
+
+            System.out.println("Clicking 'Add To Cart' button...");
+            WebElement addToCartButton = driver.findElement(By.xpath("//button[text()='Add To Cart']"));
+            addToCartButton.click();
+
+            System.out.println("Navigating to cart page...");
+            driver.get("https://whattheduck.ddns.net/cart.php");
+
+            System.out.println("Selecting product checkbox...");
+            WebElement productCheckbox = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type='checkbox']")));
+            productCheckbox.click();
+
+            System.out.println("Clicking 'Proceed to checkout' button...");
+            WebElement proceedToCheckoutButton = driver.findElement(By.xpath("//button[text()='Proceed to checkout']"));
+            proceedToCheckoutButton.click();
+
+            // Add assertions as necessary to verify the checkout process
+            System.out.println("Test completed successfully.");
+
+        } catch (Exception e) {
+            System.out.println("Test failed: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
