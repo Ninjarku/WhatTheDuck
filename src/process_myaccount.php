@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($stmt->num_rows > 0) {
                 $success = false;
-                $errorMsg .= "Email already in use.<br>";
+                $errorMsg .= "Email already in use.";
             }
             $stmt->close();
         }
@@ -80,12 +80,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mime_type = $finfo->file($_FILES['profile_image']['tmp_name']);
 
         if (!in_array($file_extension, $allowed_extensions) || !in_array($mime_type, ['image/jpeg', 'image/png'])) {
-            $errorMsg .= 'Invalid file type. Only JPG and PNG files are allowed.<br>';
+            $errorMsg .= 'Invalid file type. Only JPG and PNG files are allowed.';
             $success = false;
         }
 
         if ($file_size > $max_size) {
-            $errorMsg .= 'File size too large. Maximum allowed size is 1MB.<br>';
+            $errorMsg .= 'File size too large. Maximum allowed size is 1MB.';
             $success = false;
         }
 
