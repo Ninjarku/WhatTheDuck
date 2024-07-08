@@ -3,7 +3,6 @@ session_start();
 require_once 'jwt/jwt_cookie.php';
 checkAuthentication('Sales Admin');
 include_once "includes/navbar.php";
-include_once "process_product.php";
 
 $Form_Type = isset($_GET['Form_Type']) ? intval($_GET['Form_Type']) : 0;
 $action = isset($_GET['action']) ? $_GET['action'] : '';
@@ -20,7 +19,9 @@ $product = [
 
 if ($Form_Type == 1 && $action === 'editProduct') {
     $Product_ID = isset($_GET['Product_ID']) ? intval($_GET['Product_ID']) : 0;
-    $conn = getDatabaseConnection();
+    $config = parse_ini_file('/var/www/private/db-config.ini');
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
+
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
@@ -42,17 +43,14 @@ if ($Form_Type == 1 && $action === 'editProduct') {
 
 <head>
     <meta charset="UTF-8">
-    <title><?php echo $Form_Type == 1 ? 'Edit User' : 'Add User'; ?></title>
+    <title><?php echo $Form_Type == 1 ? 'Edit Product' : 'Add Product'; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="js/jquery-3.5.1.js" type="text/javascript"></script>
     <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
         integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
         </script>
-    <script defer src="js/datatables.min.js" type="text/javascript"></script>
-    <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
     <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -90,7 +88,7 @@ if ($Form_Type == 1 && $action === 'editProduct') {
 
 <body>
     <div class="container">
-        <div class="form-content">
+        <div class"form-content">
             <h2><?php echo $Form_Type == 1 ? 'Edit Product' : 'Add Product'; ?></h2>
             <form id="product-form" method="post"
                 action="process_product.php?action=<?php echo $Form_Type == 1 ? 'editProduct' : 'addProduct'; ?>">
