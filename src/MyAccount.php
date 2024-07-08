@@ -1,3 +1,12 @@
+<<<<<<< Updated upstream
+=======
+<?php
+session_start();
+require_once 'jwt/jwt_cookie.php';
+checkAuthenticated();
+include_once "includes/navbar.php";
+?>
+>>>>>>> Stashed changes
 <!DOCTYPE html>
 <html lang="en">
     <head>
