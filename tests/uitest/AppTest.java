@@ -156,19 +156,20 @@ public class AppTest {
     
             System.out.println("Filling out payment form...");
             wait.until(ExpectedConditions.presenceOfElementLocated(By.name("full_name")));
-            driver.findElement(By.name("full_name")).sendKeys("John Doe");
-            driver.findElement(By.name("phone_number")).sendKeys("123456789");
+            driver.findElement(By.name("fullName")).sendKeys("John Doe");
+            driver.findElement(By.name("phoneNumber")).sendKeys("123456789");
             driver.findElement(By.name("address")).sendKeys("1234 Duck Street");
-            driver.findElement(By.name("postal_code")).sendKeys("123456");
-            driver.findElement(By.name("unit_no")).sendKeys("12A");
-            driver.findElement(By.name("payment_method")).sendKeys("Credit Card");
+            driver.findElement(By.name("postalCode")).sendKeys("123456");
+            driver.findElement(By.name("unitNo")).sendKeys("12A");
+            System.out.println("Selecting payment method...");
+            Select paymentMethodDropdown = new Select(driver.findElement(By.name("payment_method")));
+            paymentMethodDropdown.selectByVisibleText("Credit/Debit Card");
 
             System.out.println("Clicking 'Pay Now' button...");
-            WebElement payNowButton = driver.findElement(By.xpath("//button[text()='Pay Now']"));
-            
+            WebElement payNowButton = driver.findElement(By.id("pay-now-btn"));
             payNowButton.click();
 
-            // Add assertions as necessary to verify the checkout process
+            // Add assertions as necessary to verify the payment process
             System.out.println("Test completed successfully.");
 
         } catch (Exception e) {
