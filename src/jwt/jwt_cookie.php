@@ -61,7 +61,7 @@ function getJWTFromCookie($cookieName = 'auth_token')
     }
 }
 
-function checkAuthentication($requiredRole = null, $allowGuest = false)
+function checkAuthentication($requiredRole = null)
 {
     try {
         $publicKeyPath = '/var/www/private/public.pem';
@@ -85,15 +85,11 @@ function checkAuthentication($requiredRole = null, $allowGuest = false)
                 exit();
             }
         } else {
-            if ($allowGuest) {
-                return null; // Allow guests to access the page
-            } else {
-                if (session_status() == PHP_SESSION_ACTIVE) {
-                    session_destroy();
-                }
-                header("Location: Login.php?message=" . urlencode('No token found. Please log in.'));
-                exit();
+            if (session_status() == PHP_SESSION_ACTIVE) {
+                session_destroy();
             }
+            header("Location: Login.php?message=" . urlencode('No token found. Please log in.'));
+            exit();
         }
     } catch (Exception $e) {
         if (session_status() == PHP_SESSION_ACTIVE) {
@@ -151,6 +147,37 @@ function authenticationCheckWithOrderValidation($User_ID)
         echo 'Error: ', $e->getMessage(), "\n";
         exit();
     }
+}
+
+function checkGuestAccess()
+{
+    try {
+        $publicKeyPath = '/var/www/private/public.pem';
+        $jwt = getJWTFromCookie();
+
+        if ($jwt) {
+            $decodedToken = validateJWT($jwt, $publicKeyPath);
+            if ($decodedToken) {
+                // Valid token, return the decoded token
+                return $decodedToken;
+            } else {
+                // Token is invalid or expired, clear session and cookie
+                if (session_status() == PHP_SESSION_ACTIVE) {
+                    session_destroy();
+                }
+                unsetJWTInCookie();
+            }
+        } else {
+            return null;
+        }
+    } catch (Exception $e) {
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
+        unsetJWTInCookie();
+    }
+
+    return null;
 }
 
 function blacklistToken($token)

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'jwt/jwt_cookie.php';
-$decodedToken = checkAuthentication();
+$decodedToken = checkGuestAccess();
 include 'includes/navbar.php';
 
 // Database connection
@@ -65,7 +65,6 @@ $conn->close();
             width: 100%;
             max-width: 300px;
             height: 450px;
-            /* Adjusted height to accommodate price */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -116,6 +115,13 @@ $conn->close();
             text-decoration: none;
             color: inherit;
         }
+
+        .btn-disabled {
+            background-color: #ccc;
+            border: none;
+            color: white;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -138,7 +144,9 @@ $conn->close();
                             </a>
                             <p class="price">$<?php echo htmlspecialchars($product['Price']); ?></p>
                             <!-- Add to cart button -->
-                            <?php if ($decodedToken['rol'] !== 'IT Admin' && $decodedToken['rol'] !== 'Sales Admin'): ?>
+                            <?php if (isset($decodedToken) && ($decodedToken['rol'] === 'Sales Admin' || $decodedToken['rol'] === 'IT Admin')): ?>
+                                <button class="btn btn-disabled">Add To Cart</button>
+                            <?php else: ?>
                                 <form action="process_cart.php?action=additem&productid=<?php echo $product['Product_ID']; ?>"
                                     method="post">
                                     <input type="hidden" name="product_name"
@@ -147,9 +155,6 @@ $conn->close();
                                         value="<?php echo htmlspecialchars($product['Price']); ?>">
                                     <button type="submit" class="btn btn-primary btn-buy-now">Add To Cart</button>
                                 </form>
-                            <?php else: ?>
-                                <button class="btn btn-primary btn-buy-now" disabled title="Admins cannot purchase products.">Add To
-                                    Cart</button>
                             <?php endif; ?>
                         </div>
                     </div>
