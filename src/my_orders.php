@@ -1,0 +1,207 @@
+<?php
+session_start();
+require_once 'jwt/jwt_cookie.php';
+checkAuthentication('Customer');
+include_once "includes/navbar.php";
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>What The Duck</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="js/jquery-3.5.1.js" type="text/javascript"></script>
+    <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+        integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous">
+        </script>
+    <script defer src="js/datatables.min.js" type="text/javascript"></script>
+    <link href="css/datatables.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body,
+        html {
+            font-family: 'Comic Neue', cursive;
+            background-color: #fff5cc;
+            color: black;
+        }
+
+        .table-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $('#pending_table').DataTable({
+                "iDisplayLength": 5,
+                "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+                columns: [
+                    { title: "Order No," },
+                    { title: "Number of Items" },
+                    { title: "Total Amount" },
+                    { title: "Payment Type" },
+                    { title: "Billing Adress" },
+                    { title: "Order Status" },
+                    { title: "Actions" }
+                ],
+                "deferRender": true
+            });
+
+            $('#history_table').DataTable({
+                "iDisplayLength": 5,
+                "aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+                columns: [
+                    { title: "Order No." },
+                    { title: "Number of Items" },
+                    { title: "Total Amount" },
+                    { title: "Payment Type" },
+                    { title: "Billing Adress" },
+                    { title: "Actions" }
+                ],
+            });
+            loadTableData();
+
+            $("#pending_table, #history_table").on("click", ".btn-view", function () {
+                var Order_Num = $(this).data("id");
+                window.location.href = "order_details.php?action=viewOrderDetails&Order_Num=" + Order_Num;
+            });
+
+            $("#pending_table").on("click", ".btn-received", function () {
+                var Order_Num = $(this).data("id");
+                Swal.fire({
+                    title: 'Are you sure you received this order?',
+                    text: "You won't be to do a refund!",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, I received it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "process_order.php",
+                            data: {
+                                action: "markAsReceived",
+                                Order_Num: Order_Num
+                            },
+                            dataType: "json",
+                            success: function (response) {
+                                Swal.fire({
+                                    icon: response.icon,
+                                    title: response.title,
+                                    text: response.message,
+                                    showCloseButton: false,
+                                    showCancelButton: false,
+                                    confirmButtonText: 'Ok'
+                                }).then(() => {
+                                    if (response.icon === 'success') {
+                                        loadTableData();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        function loadTableData() {
+            var pendingTable = $('#pending_table').DataTable();
+            var historyTable = $('#history_table').DataTable();
+            pendingTable.clear().draw();
+            historyTable.clear().draw();
+
+            $.ajax({
+                type: "GET",
+                url: "process_order.php?action=getOrdersByUserID",
+                cache: false,
+                dataType: "json",
+                success: function (response) {
+                    if (response.icon === 'success') {
+                        var pendingOrders = response.pendingOrders;
+                        var historyOrders = response.historyOrders;
+
+                        if (pendingOrders.length === 0) {
+                            pendingTable.row.add(['', '', '', '', '', '', '']).draw(false);
+                        } else {
+                            pendingOrders.forEach(function (order) {
+                                var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
+                                if (order.Order_Status === 'Order Shipped') {
+                                    action += `<button class='btn btn-received' data-id='${order.Order_Num}'><i class='fas fa-check' style='padding-top: 0px;color:green;'></i></button>`;
+                                }
+                                var row = [
+                                    order.Order_Num,
+                                    order.Number_of_Items,
+                                    "$" + order.Total_Amount,
+                                    order.Payment_Type,
+                                    order.Billing_Address,
+                                    order.Order_Status,
+                                    action
+                                ];
+                                pendingTable.row.add(row).draw(false);
+                            });
+                        }
+
+                        if (historyOrders.length === 0) {
+                            historyTable.row.add(['', '', '', '', '', '']).draw(false);
+                        } else {
+                            historyOrders.forEach(function (order) {
+                                var action = `<button class='btn btn-view' data-id='${order.Order_Num}'><i class='fas fa-eye' style='padding-top: 0px;color:orange;'></i></button>`;
+                                var row = [
+                                    order.Order_Num,
+                                    order.Number_of_Items,
+                                    "$" + order.Total_Amount,
+                                    order.Payment_Type,
+                                    order.Billing_Address,
+                                    action
+                                ];
+                                historyTable.row.add(row).draw(false);
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: response.icon,
+                            title: response.title,
+                            text: response.message,
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="table-content">
+            <h1 class="text-center">Purchase Order List</h1>
+            <br><br>
+            <h2>Pending Orders</h2>
+            <table id="pending_table" class="display" style="width:100%"></table>
+            <br><br>
+            <h2>Order History</h2>
+            <table id="history_table" class="display" style="width:100%"></table>
+            <br><br>
+        </div>
+    </div>
+    <?php include "includes/footer.php"; ?>
+</body>
+
+</html>

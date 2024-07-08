@@ -1,9 +1,11 @@
 <?php
+require '/var/www/html/jwt/jwt_gen_token.php';
 
 session_start();
 header('Content-Type: application/json');
 
-function sanitize_input($data) {
+function sanitize_input($data)
+{
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
@@ -35,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($success) {
         $config = parse_ini_file('/var/www/private/db-config.ini');
-        $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
+        $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
 
         if ($conn->connect_error) {
             $response["message"] = "Connection failed: " . $conn->connect_error;
@@ -50,17 +52,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $db_username = $row["Username"];
                 $db_password = $row["Password"];
                 $cust_id = $row["User_ID"];
+                $cust_rol = $row["User_Type"];
+                $account_active = $row["Account_Active"];
 
-                if (password_verify($cust_pw, $db_password)) {
+                //Check if account is active
+                if ($account_active != 1) {
+                    $response["message"] = "Your account is not active. Please contact support.";
+                } elseif (password_verify($cust_pw, $db_password)) {
                     $_SESSION["cust_login"] = "success";
                     $_SESSION["cust_username"] = $cust_username;
                     $_SESSION["userid"] = $cust_id;
                     $_SESSION["cust_id"] = $cust_id;
+                    $_SESSION["cust_rol"] = $cust_rol;
+
+                    // Set cookie
+                    // Creates the cookie and sets it in the user's session
+                    try {
+                        $jwt_val = gen_set_cookie($cust_id, $cust_rol);
+                    } catch (Exception $e) {
+                        echo 'Caught exception: ', $e->getMessage(), "\n";
+                    }
 
                     $response["icon"] = "success";
                     $response["title"] = "Login successful!";
                     $response["message"] = "Welcome back, " . htmlspecialchars($cust_username);
-                    $response["redirect"] = "index.php";
+
+                    if ($cust_rol == 'IT Admin') {
+                        $response["redirect"] = "admin_index.php";
+                    } elseif ($cust_rol == 'Sales Admin') {
+                        $response["redirect"] = "sales_index.php";
+                    } else {
+                        $response["redirect"] = "index.php";
+                    }
                 } else {
                     $response["message"] = "Invalid username or password.";
                 }
@@ -74,6 +97,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->close();
     }
 }
-
 echo json_encode($response);
 ?>

@@ -1,248 +1,290 @@
 <?php
+session_start();
+header('Content-Type: application/json');
 
-// process_product.php
+require_once 'jwt/jwt_cookie.php';
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+$response = array(
+    "icon" => "error",
+    "title" => "Operation failed!",
+    "message" => "Please try again.",
+    "redirect" => null
+);
 
-function getAllProducts() {
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
-
-    if ($conn->connect_error) {
-        error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=6&error=" . urlencode("Connection failed: " . $conn->connect_error));
-        exit();
-    } else {
-        $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available FROM Product ORDER BY Product_ID ASC");
-        if (!$stmt) {
-            error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=6&error=" . urlencode("Prepare failed: " . $conn->error));
-            exit();
-        }
-
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $arrResult = array();
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $arrResult[] = $row;
-            }
-        }
-        $stmt->close();
-        $conn->close();
-        return json_encode($arrResult);
-    }
+$decodedToken = checkAuthentication('Sales Admin');
+if (!$decodedToken) {
+    echo json_encode($response);
+    exit();
 }
 
-function deleteProduct($Product_ID) {
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
-
-    if ($conn->connect_error) {
-        error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=7&error=" . urlencode("Connection failed: " . $conn->connect_error));
-        exit();
-    } else {
-        if (empty($Product_ID)) {
-            header("Location: error_page.php?error_id=7&error=" . urlencode("Empty Product ID."));
-            exit();
-        }
-
-        $stmt = $conn->prepare("DELETE FROM Product WHERE Product_ID = ?");
-        if (!$stmt) {
-            error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=7&error=" . urlencode("Prepare failed: " . $conn->error));
-            exit();
-        }
-
-        $stmt->bind_param("i", $Product_ID);
-        if (!$stmt->execute()) {
-            error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=7&error=" . urlencode("Execute failed: " . $stmt->error));
-            exit();
-        }
-
-        $stmt->close();
-        $conn->close();
-        return header("Location: error_page.php?error_id=-1&error=" . urlencode("Product deleted successfully"));
-    }
+//Prevent direct url access
+$action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
+if (
+    empty($action) || ($action === 'uploadImage' && empty($_POST['Product_ID'])) ||
+    ($action === 'editProduct' && empty($_POST['Product_ID'])) ||
+    ($action === 'deleteProduct' && empty($_POST['Product_ID']))
+) {
+    header("Location: error_page.php?error_id=0&error=" . urlencode('Invalid or missing parameters'));
+    exit();
 }
 
-function getProductById($Product_ID) {
+function getDatabaseConnection()
+{
     $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
-
+    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['dbname']);
     if ($conn->connect_error) {
-        error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=8&error=" . urlencode("Connection failed: " . $conn->connect_error));
-        exit();
-    } else {
-        if (empty($Product_ID)) {
-            header("Location: error_page.php?error_id=8&error=" . urlencode("Empty Product ID."));
-            exit();
-        }
-
-        $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_ID = ?");
-        if (!$stmt) {
-            error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=8&error=" . urlencode("Prepare failed: " . $conn->error));
-            exit();
-        }
-
-        $stmt->bind_param("i", $Product_ID);
-        if (!$stmt->execute()) {
-            error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=8&error=" . urlencode("Execute failed: " . $stmt->error));
-        }
-
-        $result = $stmt->get_result();
-        $product = $result->fetch_assoc();
-
-        $stmt->close();
-        $conn->close();
-
-        return json_encode($product);
+        return null;
     }
+    return $conn;
 }
 
-function addProduct($productData) {
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
-
-    // Check connection
-    if ($conn->connect_error) {
-        error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=9&error=" . urlencode("Connection failed: " . $conn->connect_error));
-        exit();
-    } else {
-        // Check if the product name is already taken
-        $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_Name=?");
-        $stmt->bind_param("s", $productData["Product_Name"]);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            header("Location: error_page.php?error_id=9&error=" . urlencode("Product name is already taken.")); // Redirect to login page
-            exit();
-        } else {
-            $stmt->close();
-
-            // Prepare statement to insert product details
-            $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?)");
-            // $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            if (!$stmt) {
-                error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-                header("Location: error_page.php?error_id=9&error=" . urlencode("Prepare failed: " . $conn->error));
-                exit();
-            }
-
-            // Sanitize inputs
-            $name = sanitize_input($productData['Product_Name']);
-            $description = sanitize_input($productData['Product_Description']);
-            // $image = sanitize_input($productData['Product_Image']);
-            $price = sanitize_input($productData['Price']);
-            $quantity = sanitize_input($productData['Quantity']);
-            $category = sanitize_input($productData['Product_Category']);
-            $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
-
-            // Bind parameters
-            $stmt->bind_param("ssdisi", // update the parameter
-                    $name,
-                    $description,
-                    // $image,
-                    $price,
-                    $quantity,
-                    $category,
-                    $available
-            );
-
-            if (!$stmt->execute()) {
-                error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-                header("Location: error_page.php?error_id=9&error=" . urlencode("Execute failed: " . $stmt->error));
-            }
-        }
-    }
-    $stmt->close();
-    $conn->close();
-
-    return header("Location: error_page.php?error_id=-1&error=" . urlencode("Product added successfully"));
-}
-
-function editProduct($productData) {
-    $config = parse_ini_file('/var/www/private/db-config.ini');
-    $conn = new mysqli($config['servername'], $config['username'], $config['password'], $config['dbname']);
-
-    if ($conn->connect_error) {
-        error_log("Connection failed: " . $conn->connect_error, 3, "/var/www/logs/error.log");
-        header("Location: error_page.php?error_id=10&error=" . urlencode("Connection failed: " . $conn->connect_error));
-        exit();
-    } else {
-        $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
-        // $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Product_Image = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
-        
-        if (!$stmt) {
-            error_log("Prepare failed: " . $conn->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=10&error=" . urlencode("Prepare failed: " . $conn->error));
-            exit();
-        }
-
-        // Sanitize inputs
-        $name = sanitize_input($productData['Product_Name']);
-        $description = sanitize_input($productData['Product_Description']);
-        // $image = sanitize_input($productData['Product_Image']);
-        $price = sanitize_input($productData['Price']);
-        $quantity = sanitize_input($productData['Quantity']);
-        $category = sanitize_input($productData['Product_Category']);
-        $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
-
-        // Bind parameters
-        $stmt->bind_param("ssssdisi",
-                $name,
-                $description,
-                // $image,
-                $price,
-                $quantity,
-                $category,
-                $available,
-                $productData["Product_ID"]
-        );
-
-        if (!$stmt->execute()) {
-            error_log("Execute failed: " . $stmt->error, 3, "/var/www/logs/error.log");
-            header("Location: error_page.php?error_id=10&error=" . urlencode("Execute failed: " . $stmt->error));
-        }
-
-        $stmt->close();
-        $conn->close();
-
-        return header("Location: error_page.php?error_id=-1&error=" . urlencode("Product updated successfully"));
-    }
-}
-
-function sanitize_input($data) {
+function sanitize_input($data)
+{
     $data = trim($data);
     $data = stripslashes($data);
+    $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
     return $data;
 }
 
-// Main execution
+function getAllProductsSales()
+{
+    $conn = getDatabaseConnection();
+    global $response;
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("SELECT Product_ID, Product_Name, Product_Description, Product_Image, Price, Quantity, Product_Category, Product_Available FROM Product ORDER BY Product_ID ASC");
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $arrResult = [];
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $row['Product_Image'] = base64_encode($row['Product_Image']);
+            $arrResult[] = $row;
+        }
+    }
+
+    $stmt->close();
+    $conn->close();
+    return json_encode(['icon' => 'success', 'data' => $arrResult]);
+}
+
+function addProduct($productData)
+{
+    $conn = getDatabaseConnection();
+    global $response;
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("SELECT * FROM Product WHERE Product_Name=?");
+    $stmt->bind_param("s", $productData["Product_Name"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $response["message"] = 'Product name is already taken.';
+        return json_encode($response);
+    } else {
+        $stmt->close();
+
+        $stmt = $conn->prepare("INSERT INTO Product (Product_Name, Product_Description, Price, Quantity, Product_Category, Product_Available) VALUES (?, ?, ?, ?, ?, ?)");
+        if (!$stmt) {
+            $response["message"] = 'Prepare failed: ' . $conn->error;
+            return json_encode($response);
+        }
+
+        $name = sanitize_input($productData['Product_Name']);
+        $description = sanitize_input($productData['Product_Description']);
+        $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT);
+        $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
+        $category = sanitize_input($productData['Product_Category']);
+        $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
+
+        $stmt->bind_param("ssdisi", $name, $description, $price, $quantity, $category, $available);
+
+        if (!$stmt->execute()) {
+            $response["message"] = 'Execute failed: ' . $stmt->error;
+            return json_encode($response);
+        }
+
+        $stmt->close();
+        $conn->close();
+
+        $response["icon"] = "sucess";
+        $response["title"] = "Product Added";
+        $response["message"] = "Product added successfully";
+        $response["redirect"] = "sales_index.php";
+        return json_encode($response);
+    }
+}
+
+function editProduct($productData)
+{
+    $conn = getDatabaseConnection();
+    global $response;
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("UPDATE Product SET Product_Name = ?, Product_Description = ?, Price = ?, Quantity = ?, Product_Category = ?, Product_Available = ? WHERE Product_ID = ?");
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
+
+    $name = sanitize_input($productData['Product_Name']);
+    $description = sanitize_input($productData['Product_Description']);
+    $price = filter_var($productData['Price'], FILTER_VALIDATE_FLOAT);
+    $quantity = filter_var($productData['Quantity'], FILTER_VALIDATE_INT);
+    $category = sanitize_input($productData['Product_Category']);
+    $available = isset($productData["Product_Available"]) && $productData["Product_Available"] == 1 ? 1 : 0;
+
+    $stmt->bind_param("ssdisii", $name, $description, $price, $quantity, $category, $available, $productData["Product_ID"]);
+
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    $response["icon"] = "success";
+    $response["title"] = "Product Updated";
+    $response["message"] = "Product updated successfully";
+    $response["redirect"] = "sales_index.php";
+    return json_encode($response);
+}
+
+function deleteProduct($Product_ID)
+{
+    $conn = getDatabaseConnection();
+    global $response;
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
+
+    if (empty($Product_ID)) {
+        $response["message"] = 'Empty Product ID.';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("DELETE FROM Product WHERE Product_ID = ?");
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
+
+    $stmt->bind_param("i", $Product_ID);
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+
+    $stmt->close();
+    $conn->close();
+    $response["icon"] = "success";
+    $response["title"] = "Product Deleted";
+    $response["message"] = "Product deleted successfully";
+    return json_encode($response);
+}
+
+function uploadProductImage($productData)
+{
+    $conn = getDatabaseConnection();
+    global $response;
+    if (!$conn) {
+        $response["message"] = 'Database connection failed';
+        return json_encode($response);
+    }
+
+    $Product_ID = sanitize_input($productData['Product_ID']);
+
+    // Validate image file
+    if (isset($_FILES['Product_Image']) && $_FILES['Product_Image']['error'] == UPLOAD_ERR_OK) {
+        $allowed_extensions = ['jpg', 'jpeg', 'png'];
+        $max_size = 1 * 1024 * 1024; // 1MB
+        $file_extension = strtolower(pathinfo($_FILES['Product_Image']['name'], PATHINFO_EXTENSION));
+        $file_size = $_FILES['Product_Image']['size'];
+
+        // Use Fileinfo to get MIME type
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime_type = $finfo->file($_FILES['Product_Image']['tmp_name']);
+
+        if (!in_array($file_extension, $allowed_extensions) || !in_array($mime_type, ['image/jpeg', 'image/png'])) {
+            $response["message"] = 'Invalid file type. Only JPG and PNG files are allowed.';
+            return json_encode($response);
+        }
+
+        if ($file_size > $max_size) {
+            $response["message"] = 'File size too large. Maximum allowed size is 1MB.';
+            return json_encode($response);
+        }
+
+        $image = file_get_contents($_FILES['Product_Image']['tmp_name']);
+    } else {
+        $response["message"] = 'Image upload failed';
+        return json_encode($response);
+    }
+
+    if (!$image) {
+        $response["message"] = 'Image upload failed';
+        return json_encode($response);
+    }
+
+    $stmt = $conn->prepare("UPDATE Product SET Product_Image = ? WHERE Product_ID = ?");
+    if (!$stmt) {
+        $response["message"] = 'Prepare failed: ' . $conn->error;
+        return json_encode($response);
+    }
+
+    // Bind image data as a blob
+    $null = NULL;
+    $stmt->bind_param("bi", $null, $Product_ID);
+    $stmt->send_long_data(0, $image);
+
+    if (!$stmt->execute()) {
+        $response["message"] = 'Execute failed: ' . $stmt->error;
+        return json_encode($response);
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    $response["icon"] = "success";
+    $response["title"] = "Image Uploaded";
+    $response["message"] = "Product image uploaded successfully";
+    return json_encode($response);
+}
+
+
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
 
-if ($action === 'getAllProducts') {
-    header('Content-Type: application/json');
-    echo getAllProducts();
-} elseif ($action === 'deleteProduct' && isset($_GET['Product_ID'])) {
-    header('Content-Type: application/json');
-    echo deleteProduct($_GET['Product_ID']);
-} elseif ($action === 'getProduct' && isset($_GET['Product_ID'])) {
-    header('Content-Type: application/json');
-    echo getProductById($_GET['Product_ID']);
-} elseif ($action === 'addProduct' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
-    echo addProduct($_POST);
-} elseif ($action === 'editProduct' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
-    echo editProduct($_POST);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if ($action === 'getAllProductsSales') {
+        echo getAllProductsSales();
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($action === 'addProduct') {
+        echo addProduct($_POST);
+    } elseif ($action === 'editProduct') {
+        echo editProduct($_POST);
+    } elseif ($action === 'deleteProduct' && isset($_POST['Product_ID'])) {
+        echo deleteProduct($_POST['Product_ID']);
+    } elseif ($action === 'uploadImage' && isset($_POST['Product_ID'])) {
+        echo uploadProductImage($_POST);
+    }
 }
+?>

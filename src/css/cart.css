@@ -1,12 +1,5 @@
-body {
-    background-color: black;    
-    font-family: Helvetica Neue,Helvetica,Arial,文泉驛正黑,WenQuanYi Zen Hei,Hiragino Sans GB,儷黑 Pro,LiHei Pro,Heiti TC,微軟正黑體,Microsoft JhengHei UI,Microsoft JhengHei,sans-serif;
-    font-size: 14px;
-    color:dimgray;
-}
-
 div {
-    display: block;
+    display: inline;
 }
 
 option {
@@ -33,7 +26,8 @@ option:disabled {
     border-radius: 1px;
     width: 30%;
     height: fit-content;
-    min-width: 300px; /* Add this property */
+    min-width: 300px;
+    /* Add this property */
 }
 
 .right-inner-container {
@@ -52,7 +46,7 @@ option:disabled {
     border-radius: 0.125rem;
     overflow: hidden;
     border-radius: 3px;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid black;
     height: 55px;
     font-size: 14px;
     margin-bottom: 12px;
@@ -60,36 +54,54 @@ option:disabled {
     padding: 0 20px;
 }
 
-.checkbox-all-rows {    
+.checkbox-all-rows {
     padding: 0 20px 0 5px;
     display: flex;
-    flex-direction: row-reverse;        
+    flex-direction: row-reverse;
     box-sizing: border-box;
     justify-content: center;
     align-items: center;
 }
 
-#room-hdr, .room-obj {
+#room-hdr,
+.room-obj {
     width: 40%;
 }
 
-#price-hdr{
+#qty-hdr {
+    width: 18%;
+}
+
+#uprice-hdr {
     width: 15%;
 }
 
-#date-hdr, .date-obj {
+#price-hdr {
     width: 15%;
 }
 
-#time-hdr{
+#date-hdr,
+.date-obj {
+    width: 15%;
+}
+
+#time-hdr {
+    width: 15%;
+}
+
+.uprice-obj {
     width: 15%;
 }
 
 .price-obj {
-    width: 10%;
+    width: 15%;
 }
 
-.time-obj{
+.qty-obj {
+    width: 18%;
+}
+
+.time-obj {
     width: 15%;
     margin-left: 5%;
 }
@@ -138,7 +150,10 @@ option:disabled {
 
 }
 
-#subtotal-row, #total-row, #discount-row, #voucher-row{
+#subtotal-row,
+#total-row,
+#discount-row,
+#voucher-row {
     display: flex;
     padding: 0 2% 2% 2%;
     justify-content: space-between;
@@ -180,25 +195,25 @@ option:disabled {
 
 .checkbox-all-rows [aria-hidden="true"],
 .date-obj [aria-hidden="true"] {
-  display: none !important;
-  visibility: hidden !important;
-  position: absolute !important;
-  left: -9999px !important;
-  top: -9999px !important;
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
 }
 
 .visually-hidden {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-  white-space: nowrap;
-  border: 0;
-  padding: 0;
-  margin: 0;
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap;
+    border: 0;
+    padding: 0;
+    margin: 0;
 }
 
 #member-display {
@@ -209,4 +224,34 @@ option:disabled {
 #valueM-display {
     flex: 1;
     text-align: right;
+}
+
+body,
+html {
+    font-family: 'Comic Neue', cursive;
+    background-color: #fff5cc;
+    color: black;
+}
+
+.container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color: black;
+}
+
+.hdr-row,
+.obj-rows,
+.room-obj,
+.qty-obj,
+.uprice-obj,
+.price-obj,
+.delete,
+#order-summary-header,
+#subtotal-row,
+#checkout-row {
+    color: black;
+}
+
+.text-center {
+    color: black;
 }

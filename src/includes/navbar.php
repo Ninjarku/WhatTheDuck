@@ -1,7 +1,11 @@
-<noscript style="color:white;background-color:black;width: 100%;display: block;">This course portal requires JavaScript to verify your identity. Please enable JavaScript to access the course.</noscript>
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$userRole = isset($_SESSION['cust_rol']) ? $_SESSION['cust_rol'] : null;
 ?>
+<noscript style="color:white;background-color:black;width: 100%;display: block;">This course portal requires JavaScript to verify your identity. Please enable JavaScript to access the course.</noscript>
 <script src="/js/jquery-3.5.1.js" type="text/javascript"></script>
 <script src="https://kit.fontawesome.com/70ab820747.js" crossorigin="anonymous"></script>
 <script src="/js/navbar-active-btn.js" type="text/javascript"></script>
@@ -23,6 +27,7 @@ session_start();
         font-weight: bold;
         display: inline-block;
         padding: 10px 15px;
+        font-family: 'Comic Neue', cursive;
     }
     .nav-item .nav-link:hover, .login-link:hover, .cart-link:hover {
         color: #fff !important;
@@ -96,14 +101,27 @@ session_start();
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/index.php">Home <span class="sr-only">(current)</span></a>
             </li>
-<!--            <li class="nav-item">
-                <a class="nav-link" href="OurRooms.php">Our Rooms</a>
-            </li>-->
             <li class="nav-item">
-                <a class="nav-link" href="AboutUs.php">About Us</a>
+                <a class="nav-link" href="/AboutUs.php">About Us</a>
             </li>
+            <?php if ($userRole === 'Sales Admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sales_index.php">Manage Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/sales_order.php">Manage Orders</a>
+                </li>
+            <?php elseif ($userRole === 'IT Admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin_index.php">Admin Dashboard</a>
+                </li>
+            <?php elseif ($userRole === 'Customer'): ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="/my_orders.php">My Orders</a>
+                </li>
+            <?php endif; ?>
             <?php
             if (isset($_SESSION["cust_login"]) && $_SESSION["cust_login"] == "success") {
                 ?>
@@ -114,29 +132,30 @@ session_start();
             } else {
                 ?>
                 <li class="nav-item">
-                    <a class="nav-link login-link" href="Login.php">Login</a>
+                    <a class="nav-link login-link" href="/Login.php">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link login-link" href="Signup.php">Sign Up</a>
+                    <a class="nav-link login-link" href="/Signup.php">Sign Up</a>
                 </li>
                 <?php
             }
             ?>
-            <li class="nav-item">
-                <a class="nav-link cart-link" href="cart.php">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="cartinfo d-inline-block"></span>
-                </a>
-            </li>
+            <?php if ($userRole !== 'Sales Admin' && $userRole !== 'IT Admin'): ?>
+                <li class="nav-item">
+                    <a class="nav-link cart-link" href="cart.php">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="cartinfo d-inline-block"></span>
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 </nav>
 
 <div id="AccountSidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <a href="MyAccount.php">My Account</a>
-    <a href="ViewReservations.php">View Reservation</a>
-    <a href="process_custlogout.php">Logout</a>
+    <a href="/MyAccount.php">My Account</a>
+    <a href="/process_custlogout.php">Logout</a>
 </div>
 <script>
     function openNav() {

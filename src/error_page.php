@@ -1,13 +1,13 @@
-<?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+<?php 
+session_start();
+include "includes/navbar.php"; 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>What The Duck</title>
+    <title>WhatTheDuck</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
 
     <!-- START OF THE LINK -->
@@ -31,28 +31,22 @@ error_reporting(E_ALL);
 </head>
 
 <body>
-<?php include "includes/navbar.php"; ?>
-
 <div class="container">
     <br>
     <?php
     $error_id = isset($_GET['error_id']) ? intval($_GET['error_id']) : -1;
 
-    $title = $error_id === -1 ? "SUCCESS!!!!!" : "ERROR!!!!!";
+    $title = $error_id === -1 ? "Duck Yeah!!!!" : "DUCK YOU!!!!";
     echo "<h1 class='text-center'>{$title}</h1>";
     ?>
     <p class="text-center"><?php echo htmlspecialchars($_GET['error'], ENT_QUOTES, 'UTF-8'); ?></p>
     <?php
     $error_redirects = [
-        0 => ["Back to Admin Login", "admin_login.php"],
-        1 => ["Back to Admin Index", "admin_index.php"],
-        2 => ["Back to Admin Index", "admin_index.php"],
-        4 => ["Back to User Form", "user_form.php"],
-        5 => ["Back to User Form", "user_form.php"],
-        6 => ["Back to Product Index", "product_index.php"],
-        7 => ["Back to Product Index", "product_index.php"],
-        9 => ["Back to Product Form", "product_form.php"],
-        10 => ["Back to Product Form", "product_form.php"]
+        0 => ["Back to Home Page", "index.php"],
+        1 => ["Back to IT Admin Page", "admin_index.php"],
+        2 => ["Back to User Form", "user_form.php"],
+        3 => ["Back to Sales Admin Page", "sales_index.php"],
+        4 => ["Back to Product Form", "product_form.php"]
     ];
 
     if (array_key_exists($error_id, $error_redirects)) {
