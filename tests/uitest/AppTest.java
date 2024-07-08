@@ -110,7 +110,6 @@ public class AppTest {
             throw new RuntimeException(e);
         }
     }
-
     @Test
     public void testAddingtoCartWithValidCredentials() {
         driver.get(loginUrl);
@@ -121,7 +120,7 @@ public class AppTest {
             driver.findElement(By.name("cust_pass")).sendKeys(validPassword);
             driver.findElement(By.id("submit")).click();
 
-          // Wait for the "Return to Home" button and click it
+            // Wait for the "Return to Home" button and click it
             System.out.println("Waiting for 'Return to Home' button...");
             wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[text()='Return to Home']")));
             WebElement returnToHomeButton = driver.findElement(By.xpath("//button[text()='Return to Home']"));
@@ -156,3 +155,4 @@ public class AppTest {
             throw new RuntimeException(e);
         }
     }
+}
