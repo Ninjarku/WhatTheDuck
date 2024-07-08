@@ -4,7 +4,8 @@ require '/var/www/html/jwt/jwt_gen_token.php';
 session_start();
 header('Content-Type: application/json');
 
-function sanitize_input($data) {
+function sanitize_input($data)
+{
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
@@ -52,9 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $db_password = $row["Password"];
                 $cust_id = $row["User_ID"];
                 $cust_rol = $row["User_Type"];
+                $account_active = $row["Account_Active"];
 
-
-                if (password_verify($cust_pw, $db_password)) {
+                if ($account_active != 1) {
+                    $response["message"] = "Your account is not active. Please contact support.";
+                } elseif (password_verify($cust_pw, $db_password)) {
                     $_SESSION["cust_login"] = "success";
                     $_SESSION["cust_username"] = $cust_username;
                     $_SESSION["userid"] = $cust_id;
@@ -66,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     try {
                         $jwt_val = gen_set_cookie($cust_id, $cust_rol);
                     } catch (Exception $e) {
-                        echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        echo 'Caught exception: ', $e->getMessage(), "\n";
                     }
 
                     $response["icon"] = "success";
