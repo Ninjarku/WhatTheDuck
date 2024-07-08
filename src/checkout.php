@@ -7,6 +7,9 @@ if (!isset($_SESSION["cust_login"]) || $_SESSION["cust_login"] !== "success") {
     header("Location: Login.php");
     exit();
 }
+include_once "includes/navbar.php";
+
+$User_ID = $_SESSION['userid'];  
 
 if (isset($_POST['selectedCartIds'])) {
     $cart_ids = $_POST['selectedCartIds'];
@@ -46,11 +49,7 @@ if (isset($_POST['selectedCartIds'])) {
         exit();
     }
     
-$_SESSION['selectedCartIds'] = $cart_ids;
-
-include_once "includes/navbar.php";
-
-$User_ID = $_SESSION['userid'];    
+    $_SESSION['selectedCartIds'] = $cart_ids;
 ?>
 <!DOCTYPE html>
 <html lang="en">
