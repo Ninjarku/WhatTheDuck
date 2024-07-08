@@ -1,5 +1,6 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 
 $response = array(
     "icon" => "error",
@@ -101,7 +102,7 @@ function addProduct($productData)
     $stmt->close();
     $conn->close();
 
-    $response["icon"] = "success";
+    
     $response["title"] = "Product Added";
     $response["message"] = "Product added successfully";
     $response["redirect"] = "sales_index.php";
