@@ -31,7 +31,7 @@ if (isset($_POST['selectedCartIds'])) {
                             FROM Cart c
                             JOIN Product p ON c.Product_ID = p.Product_ID 
                             WHERE c.Cart_ID = ? AND User_ID = ? ");
-        $stmt->bind_param('i', $cart_ids[$x], $User_ID);
+        $stmt->bind_param('ii', $cart_ids[$x], $User_ID);
         $stmt->execute();
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
