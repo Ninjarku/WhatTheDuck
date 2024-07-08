@@ -44,14 +44,19 @@ if (isset($_POST['selectedCartIds'])) {
     }
 
     if (empty($cartids)) {
-        header("Location: cart.php");
+        echo "<script> 
+        Swal.fire('No item selected. Redirecting to cart.');
+        window.location.href = 'cart.php';
+        </script>";
         exit();
     }
 
     $_SESSION['selectedCartIds'] = $cartids;
 }else { 
-    // Redirect back to cart if no items selected
-    header("Location: cart.php");
+    echo "<script> 
+    Swal.fire('No item selected. Redirecting to cart.');
+    window.location.href = 'cart.php';
+    </script>";
     exit();
 }
 
