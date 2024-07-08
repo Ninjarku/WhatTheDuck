@@ -17,6 +17,15 @@ if (!$decodedToken) {
     exit();
 }
 
+//Prevent direct url access
+$action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : null);
+if (empty($action) || ($action === 'uploadImage' && empty($_POST['Product_ID'])) || 
+    ($action === 'editProduct' && empty($_POST['Product_ID'])) || 
+    ($action === 'deleteProduct' && empty($_POST['Product_ID']))) {
+    header("Location: error_page.php?error_id=0&error=" . urlencode('Invalid or missing parameters'));
+    exit();
+}
+
 function getDatabaseConnection()
 {
     $config = parse_ini_file('/var/www/private/db-config.ini');
@@ -273,12 +282,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         echo deleteProduct($_POST['Product_ID']);
     } elseif ($action === 'uploadImage' && isset($_POST['Product_ID'])) {
         echo uploadProductImage($_POST);
-    } else {
-        $response["message"] = 'Invalid action';
-        echo json_encode($response);
     }
-} else {
-    $response["message"] = 'Invalid request method';
-    echo json_encode($response);
 }
 ?>
