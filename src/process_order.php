@@ -1,8 +1,6 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 $response = array(
     "icon" => "error",
@@ -39,7 +37,7 @@ function getAllOrders(){
             Billing_Address, 
             Order_Status 
         FROM `Order`
-        WHERE Order_Status IN ('Order Placed', 'Order Shipped')
+        WHERE Order_Status = 'Order Placed'
         GROUP BY Order_Num, Payment_Type, Billing_Address, Order_Status
         ORDER BY Order_Num ASC;
     ";
@@ -53,7 +51,7 @@ function getAllOrders(){
             Billing_Address, 
             Order_Status 
         FROM `Order`
-        WHERE Order_Status = 'Order Received'
+        WHERE Order_Status IN ('Order Shipped', 'Order Received')
         GROUP BY Order_Num, Payment_Type, Billing_Address, Order_Status
         ORDER BY Order_Num ASC;
     ";
@@ -239,7 +237,7 @@ function markAsShipped($Order_Num)
         return json_encode($response);
     }
 
-    $stmt->bind_param("s", $Order_Num);
+    $stmt->bind_param("i", $Order_Num);
     if (!$stmt->execute()) {
         $response["message"] = 'Execute failed: ' . $stmt->error;
         return json_encode($response);
