@@ -162,7 +162,7 @@ public class AppTest {
             driver.findElement(By.name("postalCode")).sendKeys("123456");
             driver.findElement(By.name("unitNo")).sendKeys("12A");
             System.out.println("Selecting payment method...");
-            Select paymentMethodDropdown = new Select(driver.findElement(By.name("payment_method")));
+            Select paymentMethodDropdown = new Select(driver.findElement(By.name("paymentMethod")));
             paymentMethodDropdown.selectByVisibleText("Credit/Debit Card");
 
             System.out.println("Clicking 'Pay Now' button...");
